@@ -28,6 +28,9 @@ public class ConfigServletContextListener implements ServletContextListener {
 
         // UsersRepository
         servletContext.setAttribute(Constants.CNTX_USERS_REPOSITRY, initializeUsersRepository(dataSource));
+
+        // todo : another repos and services classes
+        // update constants path
     }
 
     private DataSource initializeDataSource() {
@@ -46,9 +49,9 @@ public class ConfigServletContextListener implements ServletContextListener {
     }
 
     private Properties loadPropertiesResource() {
-        Properties properties = new Properties();
+        this.properties = new Properties();
         try {
-            properties.load(servletContext.getResourceAsStream("/WEB-INF/properties/app_db.properties"));
+            properties.load(servletContext.getResourceAsStream(Constants.PROPS_FILE_PATH));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -57,5 +60,7 @@ public class ConfigServletContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
+
     }
+
 }

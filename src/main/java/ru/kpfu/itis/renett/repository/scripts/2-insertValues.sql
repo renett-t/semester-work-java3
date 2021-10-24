@@ -1,0 +1,17 @@
+INSERT INTO user
+VALUES ();
+
+INSERT INTO article
+VALUES ();
+
+INSERT INTO tag
+VALUES ();
+
+INSERT INTO comment
+VALUES ();
+
+INSERT INTO article_tag
+VALUES ();
+
+INSERT INTO chord
+VALUES ();

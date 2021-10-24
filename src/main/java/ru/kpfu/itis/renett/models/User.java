@@ -12,23 +12,23 @@ public class User {
 
     private String email;
     private String login;
-    private String password;
+    private String passwordHash;
 
-    public User(String firstName, String secondName, String email, String login, String password) {
+    public User(String firstName, String secondName, String email, String login, String passwordHash) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.email = email;
         this.login = login;
-        this.password = password;
+        this.passwordHash = passwordHash;
     }
 
-    public User(int id, String firstName, String secondName, String email, String login, String password) {
+    public User(int id, String firstName, String secondName, String email, String login, String passwordHash) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
         this.email = email;
         this.login = login;
-        this.password = password;
+        this.passwordHash = passwordHash;
     }
 
     public String getFirstName() {
@@ -63,12 +63,12 @@ public class User {
         this.login = login;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public int getId() {
@@ -84,22 +84,23 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return user.id==this.id && Objects.equals(firstName, user.firstName) && Objects.equals(secondName, user.secondName) && email.equals(user.email) && login.equals(user.login);
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(secondName, user.secondName) && Objects.equals(email, user.email) && Objects.equals(login, user.login) && Objects.equals(passwordHash, user.passwordHash);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, secondName, email, login);
+        return Objects.hash(id, firstName, secondName, email, login, passwordHash);
     }
 
     @Override
     public String toString() {
-        return "User{" +
-                "firstName='" + firstName + '\'' +
+        return "User {" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
                 ", secondName='" + secondName + '\'' +
                 ", email='" + email + '\'' +
                 ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
                 '}';
     }
 }

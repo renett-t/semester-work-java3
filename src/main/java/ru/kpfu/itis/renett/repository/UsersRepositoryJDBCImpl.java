@@ -45,7 +45,7 @@ public class UsersRepositoryJDBCImpl implements UsersRepository {
                     .secondName(rows.getString(secondName))
                     .email(rows.getString(email))
                     .login(rows.getString(login))
-                    .password(rows.getString(password))
+                    .passwordHash(rows.getString(password))
                     .build();
         } catch (SQLException e) {
             throw new DataBaseException(e);
@@ -81,7 +81,7 @@ public class UsersRepositoryJDBCImpl implements UsersRepository {
             preparedStatement.setString(j++, user.getSecondName());
             preparedStatement.setString(j++, user.getEmail());
             preparedStatement.setString(j++, user.getLogin());
-            preparedStatement.setString(j++, user.getPassword());
+            preparedStatement.setString(j++, user.getPasswordHash());
 
             preparedStatement.executeQuery();
 
@@ -111,7 +111,7 @@ public class UsersRepositoryJDBCImpl implements UsersRepository {
             preparedStatement.setString(j++, user.getSecondName());
             preparedStatement.setString(j++, user.getEmail());
             preparedStatement.setString(j++, user.getLogin());
-            preparedStatement.setString(j++, user.getPassword());
+            preparedStatement.setString(j++, user.getPasswordHash());
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows != 1) {
                 throw new SQLException("Problem with update");

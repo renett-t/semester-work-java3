@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 public class UserDataValidator {
     private static final String EMAIL_PATTERN = "((?:[\\w\\d\\.\\-+\\/%!]*)|(?:[\\w\\d\\.\\-+\\/%!]*\\\"[\\w\\d\\.\\-+\\/%!\\s]+\\\"[\\w\\d\\.\\-+\\/%!]*))@((?:\\w|\\d)[\\w\\d-]{0,61}(?:\\w|\\d)).((?:\\w|\\d)[\\w\\d-]{0,61}(?:\\w|\\d))";
 
+    // todo: создать сервис-класс, инкапсулировать валидатор внутри него, убрать модификаторы static
     public static boolean isUserParametersCorrect(String firstName, String secondName, String email, String login, String password) throws InvalidRegistrationDataException {
         return isNameCorrect(firstName)
                 && isNameCorrect(secondName)

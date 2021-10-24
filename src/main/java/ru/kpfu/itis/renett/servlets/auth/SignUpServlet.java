@@ -1,4 +1,4 @@
-package ru.kpfu.itis.renett.servlets;
+package ru.kpfu.itis.renett.servlets.auth;
 
 import ru.kpfu.itis.renett.exceptions.DataBaseException;
 import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
@@ -18,7 +18,6 @@ import java.util.Optional;
 
 @WebServlet("/signup")
 public class SignUpServlet extends HttpServlet {
-    private int countOfRegisteredUsers = 0;
     private UsersRepository usersRepository;
 
     @Override
@@ -26,8 +25,6 @@ public class SignUpServlet extends HttpServlet {
         super.init();
         ServletContext servletContext = this.getServletContext();
         usersRepository = (UsersRepository) servletContext.getAttribute(Constants.CNTX_USERS_REPOSITRY);
-
-        countOfRegisteredUsers = usersRepository.findAll().size();
     }
 
     @Override
@@ -58,8 +55,6 @@ public class SignUpServlet extends HttpServlet {
                             throw new DataBaseException("User with the same login already exists");
                         }
 
-                        // если всё ок - достаём айдишник, сохраняем в бд, хорошо бы создать куку о регистрации, перенаправляем на табличку
-                        newUser.setId(++countOfRegisteredUsers);
                         usersRepository.save(newUser);
                         request.setAttribute("message", "You've been registered");
 

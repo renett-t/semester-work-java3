@@ -1,4 +1,4 @@
-package ru.kpfu.itis.renett.servlets;
+package ru.kpfu.itis.renett.servlets.auth;
 
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.repository.UsersRepository;
@@ -25,13 +25,11 @@ public class SignInServlet extends HttpServlet {
         usersRepository = (UsersRepository) servletContext.getAttribute(Constants.CNTX_USERS_REPOSITRY) ;
     }
 
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/signin.jsp").forward(request, response);
     }
 
-    // здесь лучше как-нить по-другому реализовать проверку не только с куки... но и через бд???
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("login");
@@ -39,10 +37,10 @@ public class SignInServlet extends HttpServlet {
 
         Optional<User> optionalUser = usersRepository.findByLogin(login);
         if (optionalUser.isPresent()) {
-            if (optionalUser.get().getPassword().equals(password)) {
+            if (optionalUser.get().getPasswordHash().equals(password)) {
                 Cookie authorizedCookie = new Cookie(Constants.COOKIE_AUTHORIZED_NAME, "какое-то значение куки");
                 authorizedCookie.setMaxAge(60 * 60 * 10);
-                request.setAttribute("message", "You've been authorized");
+                // request.setAttribute("message", "You've been authorized");
                 response.addCookie(authorizedCookie);
 
                 response.sendRedirect(getServletContext().getContextPath() + "/all");
@@ -52,6 +50,8 @@ public class SignInServlet extends HttpServlet {
             request.setAttribute("message", "Incorrect login, no user registered under this login '" + login + "';");
             request.getServletContext().getRequestDispatcher("/WEB-INF/jsp/signin.jsp").forward(request, response);
         }
+
+        request.getServletContext().getRequestDispatcher("/WEB-INF/jsp/signin.jsp").forward(request, response);
 
     }
 
