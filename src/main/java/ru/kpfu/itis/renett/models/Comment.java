@@ -35,19 +35,18 @@ public class Comment {
 
     @Override
     public String toString() {
-        String parent = "";
-        if (parentComment == null) {
-            parent = "NULL";
-        } else {
-            parent = "{ " + parentComment.getId() + ", " + parentComment.getAuthor() + " } ";
+        int parentNum = -1;
+        if (parentComment != null) {
+            parentNum = parentComment.id;
         }
+
         return "Comment{" +
                 "id=" + id +
                 ", body='" + body + '\'' +
                 ", article=" + article.getId() +
                 ", author=" + author.getId() +
                 ", publishedAt=" + publishedAt +
-                ", parentComment=" + parent +
+                ", parentComment=" + parentNum +
                 ", nestedComments=" + nestedComments +
                 '}';
     }

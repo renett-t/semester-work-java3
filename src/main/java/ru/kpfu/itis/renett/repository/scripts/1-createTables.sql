@@ -12,7 +12,7 @@ CREATE TABLE "auth"
 (
     login VARCHAR(255) NOT NULL UNIQUE,
     uuid UUID NOT NULL,
-    createdAt TIMESTAMP
+    created_at TIMESTAMP
 );
 
 CREATE TABLE "article"

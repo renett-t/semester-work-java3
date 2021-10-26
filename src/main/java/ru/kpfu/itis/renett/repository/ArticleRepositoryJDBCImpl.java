@@ -12,7 +12,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
 
-public class ArticleRepositoryJDBCTemplImpl implements ArticleRepository {
+public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     //language=sql
     private static final String SQL_SELECT_ALL = "SELECT article.id AS article_id, article.title AS article_title, article.body AS article_body, article.author_id AS article_author_id, article.published_at AS article_published_at, article.view_count AS article_view_count, tag.id AS tag_id, tag.title AS tag_title, comment.id AS comment_id, comment.body AS comment_body, comment.author_id AS comment_author_id, comment.article_id AS comment_article_id, comment.parent_comment_id AS comment_parent_comment_id, comment.published_at AS comment_published_at, \"user\".id AS user_id, \"user\".first_name AS user_first_name, \"user\".second_name AS user_second_name, \"user\".email AS user_email, \"user\".login AS user_login, \"user\".password_hash AS  user_password_hash FROM\n" +
             "article_tag left join article on article.id = article_tag.article_id\n" +
@@ -22,10 +22,10 @@ public class ArticleRepositoryJDBCTemplImpl implements ArticleRepository {
             "ORDER BY article.id;";
     //language=sql
     private static final String SQL_FIND_ALL_BY_AUTHOR_ID = "SELECT article.id AS article_id, article.title AS article_title, article.body AS article_body, article.author_id AS article_author_id, article.published_at AS article_published_at, article.view_count AS article_view_count, tag.id AS tag_id, tag.title AS tag_title, comment.id AS comment_id, comment.body AS comment_body, comment.author_id AS comment_author_id, comment.article_id AS comment_article_id, comment.parent_comment_id AS comment_parent_comment_id, comment.published_at AS comment_published_at, \"user\".id AS user_id, \"user\".first_name AS user_first_name, \"user\".second_name AS user_second_name, \"user\".email AS user_email, \"user\".login AS user_login, \"user\".password_hash AS  user_password_hash FROM\n" +
-            "article_tag left join article on article.id = article_tag.article_id\n" +
-            "            left join tag on tag.id = article_tag.tag_id\n" +
-            "            left join comment on article.id = comment.article_id\n" +
-            "            left join \"user\" on \"user\".id = article.author_id\n" +
+            "    article_tag left join article on article.id = article_tag.article_id\n" +
+            "                left join tag on tag.id = article_tag.tag_id\n" +
+            "                left join comment on article.id = comment.article_id\n" +
+            "                left join \"user\" on \"user\".id = article.author_id\n" +
             "WHERE article.author_id = ?;";
     //language=sql
     private static final String SQL_INSERT_ARTICLE = "INSERT INTO article(title, body, author_id) VALUES (?, ?, ?);";
@@ -38,6 +38,10 @@ public class ArticleRepositoryJDBCTemplImpl implements ArticleRepository {
             "WHERE article.id = ?;";
     //language=sql
     private static final String SQL_UPDATE_BY_ID = "UPDATE article set title = ?, body = ?, view_count = ? WHERE id=?";
+    //language=sql
+    private static final String SQL_DELETE_BY_ID = "DELETE FROM article WHERE id = ?;";
+    //language=sql
+    private static final String SQL_INSERT_ARTICLE_TAG = "INSERT INTO article_tag(article_id, tag_id) VALUES (?, ?);";  // todo IMPLEMENT INSERTING THERE
 
     //article columns
     private static final String id = "article_id";
@@ -50,7 +54,7 @@ public class ArticleRepositoryJDBCTemplImpl implements ArticleRepository {
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
 
-    public ArticleRepositoryJDBCTemplImpl(DataSource dataSource) {
+    public ArticleRepositoryJDBCImpl(DataSource dataSource) {
         this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -62,7 +66,7 @@ public class ArticleRepositoryJDBCTemplImpl implements ArticleRepository {
                     .title(row.getString(title))
                     .body(row.getString(body))
                     .publishedAt(row.getTimestamp(publishedAt))
-                    .view_count(row.getLong(viewCount))
+                    .viewCount(row.getLong(viewCount))
                     .commentList(new ArrayList<>())
                     .tagList(new ArrayList<>())
                     .build();
@@ -129,38 +133,97 @@ public class ArticleRepositoryJDBCTemplImpl implements ArticleRepository {
 
     @Override
     public List<Article> findAllByOwnerId(int ownerId) {
-        return null;
+        List<Article> articleList = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_BY_AUTHOR_ID);) {
+
+            preparedStatement.setInt(1, ownerId);
+
+            try (ResultSet rows = preparedStatement.executeQuery()) {
+                Set<Integer> processedArticles = new HashSet<>();
+                Article newArticle = null;
+
+                while (rows.next()) {
+
+                    if (!processedArticles.contains(rows.getInt(id))) {
+                        newArticle = getArticleFromRow.apply(rows);
+                        articleList.add(newArticle);
+                    }
+
+                    if (rows.getObject("comment_id", Integer.class) != null) {
+                        Comment comment = getCommentFromRow.apply(rows);
+                        comment.setArticle(newArticle);
+                        newArticle.getCommentList().add(comment);
+                    }
+
+                    if (rows.getObject("tag_id", Integer.class) != null) {
+                        Tag tag = getTagFromRow.apply(rows);
+                        newArticle.getTagList().add(tag);
+                    }
+
+                    User author = getUserFromRow.apply(rows);
+                    newArticle.setAuthor(author);
+
+                    processedArticles.add(newArticle.getId());
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataBaseException("Problem with processing query to get all articles of user " + ownerId, e);
+        }
+
+        return articleList;
     }
 
     @Override
-    public void save(Article entity) {
+    public void save(Article article) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE, Statement.RETURN_GENERATED_KEYS);) {
+            int j = 1;
+            preparedStatement.setString(j++, article.getTitle());
+            preparedStatement.setString(j++, article.getBody());
+            preparedStatement.setInt(j++, article.getAuthor().getId());
 
+            saveArticlesTags(article);
+
+            preparedStatement.executeUpdate();
+
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                resultSet.next();
+                Integer id = resultSet.getInt(1);
+                article.setId(id);
+            }
+        } catch (SQLException e) {
+            throw new DataBaseException("Problem with saving article", e);
+        }
+    }
+
+    private void saveArticlesTags(Article article) {
+        for (Tag tag : article.getTagList()) {
+            try (Connection connection = dataSource.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE_TAG);) {
+
+                int j = 1;
+                preparedStatement.setString(j++, article.getId().toString());
+                preparedStatement.setString(j++, tag.getId().toString());
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                throw new DataBaseException("Problem with saving article's tags", e);
+            }
+        }
     }
 
     @Override
     public void update(Article article) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BY_ID)) {
-            int j = 1;
-            preparedStatement.setString(j++, article.getTitle());
-            preparedStatement.setString(j++, article.getBody());
-            preparedStatement.setString(j++, String.valueOf(article.getView_count()));
-
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows != 1) {
-                throw new SQLException("Problem with update");
-            }
-        } catch (SQLException e) {
-            throw new DataBaseException("Problem with processing query to get all users", e);
-        }
-
+        jdbcTemplate.update(SQL_UPDATE_BY_ID, article.getTitle(), article.getBody(), article.getViewCount(), article.getId());
     }
 
     @Override
     public void delete(Article entity) {
-
+        jdbcTemplate.update(SQL_DELETE_BY_ID, entity.getId());
     }
 
+    //todo recheck method
     @Override
     public Optional<Article> findById(int id) {
         Article searchedArticle = null;
@@ -194,7 +257,7 @@ public class ArticleRepositoryJDBCTemplImpl implements ArticleRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new DataBaseException("Problem with processing query to get all users", e);
+            throw new DataBaseException("Problem with processing query to get an article", e);
         }
     }
 
@@ -232,7 +295,7 @@ public class ArticleRepositoryJDBCTemplImpl implements ArticleRepository {
                 processedArticles.add(newArticle.getId());
             }
         } catch (SQLException e) {
-            throw new DataBaseException("Problem with processing query to get all users", e);
+            throw new DataBaseException("Problem with processing query to get all articles", e);
         }
 
         return articleList;

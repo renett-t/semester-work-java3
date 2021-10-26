@@ -2,7 +2,6 @@ package ru.kpfu.itis.renett.servlets.auth;
 
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.repository.UserRepository;
-import ru.kpfu.itis.renett.repository.UserRepositoryJDBCImpl;
 import ru.kpfu.itis.renett.service.Constants;
 
 import javax.servlet.ServletConfig;
