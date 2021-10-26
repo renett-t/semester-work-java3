@@ -10,18 +10,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class UsersRepositoryJDBCImpl implements UsersRepository {
-    private Connection connection;
+public class UserRepositoryJDBCImpl implements UserRepository {
     //language=sql
     private static final String SQL_SELECT_ALL = "select * from \"user\" order by id";
     //language=sql
     private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM \"user\" WHERE login=?";
     //language=sql
-    private static final String SQL_INSERT_USER = "INSERT INTO \"user\"(id, first_name, second_name, email, login, password) VALUES (?, ?, ?, ?, ?, ?);";
+    private static final String SQL_INSERT_USER = "INSERT INTO \"user\"(first_name, second_name, email, login, password_hash) VALUES (?, ?, ?, ?, ?);";
     //language=sql
     private static final String SQL_FIND_BY_ID = "SELECT * FROM \"user\" WHERE id=?";
     //language=sql
-    private static final String SQL_UPDATE_BY_ID = "UPDATE \"user\" set first_name = ?, second_name = ?, email = ?, login = ?, password = ? WHERE id=?";
+    private static final String SQL_UPDATE_BY_ID = "UPDATE \"user\" set first_name = ?, second_name = ?, email = ?, login = ?, password_hash = ? WHERE id=?";
 
     //user columns
     private static final String id = "id";
@@ -29,11 +28,11 @@ public class UsersRepositoryJDBCImpl implements UsersRepository {
     private static final String secondName = "second_name";
     private static final String email = "email";
     private static final String login = "login";
-    private static final String password = "password";
+    private static final String password = "password_hash";
 
     private DataSource dataSource;
 
-    public UsersRepositoryJDBCImpl(DataSource dataSource) {
+    public UserRepositoryJDBCImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -76,7 +75,6 @@ public class UsersRepositoryJDBCImpl implements UsersRepository {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER);) {
             int j = 1;
-            preparedStatement.setInt(j++, user.getId());
             preparedStatement.setString(j++, user.getFirstName());
             preparedStatement.setString(j++, user.getSecondName());
             preparedStatement.setString(j++, user.getEmail());
@@ -84,10 +82,6 @@ public class UsersRepositoryJDBCImpl implements UsersRepository {
             preparedStatement.setString(j++, user.getPasswordHash());
 
             preparedStatement.executeQuery();
-
-// todo как доставать primary key вместо моего хардкода???
-//                user.setId(resultSet.getInt(id));
-
 
         } catch (SQLException e) {
             throw new DataBaseException("Problem with processing query to get all users", e);
@@ -157,12 +151,11 @@ public class UsersRepositoryJDBCImpl implements UsersRepository {
     @Override
     public Optional<User> findById(int id) throws DataBaseException {
         Optional<User> searchedUser = Optional.empty();
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
+
         ResultSet row = null;
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID);
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID);) {
+
             preparedStatement.setInt(1, id);
             row = preparedStatement.executeQuery();
             if (row.next()) {
@@ -175,18 +168,6 @@ public class UsersRepositoryJDBCImpl implements UsersRepository {
             if (row != null) {
                 try {
                     row.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
                 } catch (SQLException ignored) {
                 }
             }

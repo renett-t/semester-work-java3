@@ -5,7 +5,7 @@
 
 <t:mainLayout title="Регистрация">
     <div class="registration-form-wrapper">
-        <form class="row g-3 registration-form" action="http://localhost:8080/another/signup" method="POST">
+        <form class="row g-3 registration-form" action="<c:url value="/signup"/>" method="POST">
             <div class="col-md-4">
                 <label for="validationDefault01" class="form-label">Ваше имя</label>
                 <input name="firstName" type="text" value="<c:out default="" value="${session.getAttribute(\"firstName\")}"/>" class="form-control" id="validationDefault01" required>

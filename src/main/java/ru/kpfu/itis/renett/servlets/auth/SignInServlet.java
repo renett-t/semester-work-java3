@@ -1,9 +1,11 @@
 package ru.kpfu.itis.renett.servlets.auth;
 
 import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.repository.UsersRepository;
+import ru.kpfu.itis.renett.repository.UserRepository;
+import ru.kpfu.itis.renett.repository.UserRepositoryJDBCImpl;
 import ru.kpfu.itis.renett.service.Constants;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,13 +18,13 @@ import java.util.Optional;
 
 @WebServlet("/signin")
 public class SignInServlet extends HttpServlet {
-    private UsersRepository usersRepository;
+    private UserRepository usersRepository;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        ServletContext servletContext = this.getServletContext();
-        usersRepository = (UsersRepository) servletContext.getAttribute(Constants.CNTX_USERS_REPOSITRY) ;
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        ServletContext servletContext = config.getServletContext();
+        usersRepository = (UserRepository) servletContext.getAttribute(Constants.CNTX_USERS_REPOSITORY) ;
     }
 
     @Override

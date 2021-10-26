@@ -31,6 +31,10 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    public User(int id) {
+        this.setId(id);
+    }
+
     public String getFirstName() {
         return firstName;
     }

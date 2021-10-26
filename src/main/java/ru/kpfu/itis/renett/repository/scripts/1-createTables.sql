@@ -1,60 +1,49 @@
-CREATE TABLE user
+CREATE TABLE "user"
 (
     id SERIAL PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    second_name VARCHAR(100),
-    email VARCHAR(100) NOT NULL UNIQUE,
-    login VARCHAR(100) NOT NULL UNIQUE,
+    first_name VARCHAR(255) NOT NULL,
+    second_name VARCHAR(255),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    login VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(32) NOT NULL
 );
 
-CREATE TABLE auth
+CREATE TABLE "auth"
 (
-    login VARCHAR(100) NOT NULL UNIQUE,
+    login VARCHAR(255) NOT NULL UNIQUE,
     uuid UUID NOT NULL,
     createdAt TIMESTAMP
 );
 
-CREATE TABLE article
+CREATE TABLE "article"
 (
     id SERIAL PRIMARY KEY,
     title VARCHAR NOT NULL,
     body TEXT NOT NULL,
-    author_id INTEGER REFERENCES user(id),
-    publishedAt TIMESTAMP,
-    view_count BIGINTEGER
+    author_id INTEGER REFERENCES "user"(id),
+    published_at TIMESTAMP default current_timestamp,
+    view_count BIGINT default 0
 );
 
-CREATE TABLE comment
+CREATE TABLE "comment"
 (
     id SERIAL PRIMARY KEY,
     body TEXT NOT NULL,
-    author_id INTEGER REFERENCES user(id),
-    article_id INTEGER REFERENCES article(id),
-    parent_comment_id INTEGER REFERENCES comment(id),
-    publishedAt TIMESTAMP
+    author_id INTEGER REFERENCES "user"(id),
+    article_id INTEGER REFERENCES "article"(id),
+    parent_comment_id INTEGER REFERENCES "comment"(id),
+    published_at TIMESTAMP default current_timestamp
 );
 
-CREATE TABLE tag
+CREATE TABLE "tag"
 (
     id SERIAL PRIMARY KEY,
     title VARCHAR NOT NULL UNIQUE
 );
 
-CREATE TABLE article_tag
+CREATE TABLE "article_tag"
 (
-    tag_id INTEGER REFERENCES tag(id),
-    article_id INTEGER REFERENCES article_id(id),
+    article_id INTEGER REFERENCES "article"(id),
+    tag_id INTEGER REFERENCES "tag"(id),
     PRIMARY KEY(tag_id, article_id)
-);
-
--- необязательный функционал
-CREATE TABLE chord
-(
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(10) NOT NULL UNIQUE,
-    type VARCHAR(10) NOT NULL UNIQUE,
-    position JSON NOT NULL,
-    audio_file_path VARCHAR NOT NULL,
-    picture_file_path VARCHAR
 );

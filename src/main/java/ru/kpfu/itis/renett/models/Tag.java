@@ -6,8 +6,15 @@ import lombok.*;
 @Setter
 @Builder
 @EqualsAndHashCode
-@ToString
 public class Tag {
     private Integer id;
     private String title;
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }
