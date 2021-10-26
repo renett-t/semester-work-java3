@@ -10,9 +10,11 @@ public class Constants {
     public static final String DB_DRIVER = "db.driver";
     public static final String DB_POOL_SIZE = "db.hikari.max-pool-size";
 
-    public static final String CNTX_USERS_REPOSITORY = "usersRepository";
+    public static final String CNTX_SECURITY_SERVICE = "securityService";
     public static final String CNTX_DATA_SOURCE = "dataSource";
 
-    public static final String COOKIE_AUTHORIZED_NAME = "auth";
+    public static final String COOKIE_AUTHORIZED_NAME = "uuid";
+    public static final String SESSION_USER_ATTRIBUTE_NAME = "auth_user";
 
+    public static final String CNTX_USER_SERVICE = "usersRepo";
 }

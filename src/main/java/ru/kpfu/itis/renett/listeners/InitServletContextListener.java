@@ -2,8 +2,11 @@ package ru.kpfu.itis.renett.listeners;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import ru.kpfu.itis.renett.repository.AuthRepositoryJDBCImpl;
+import ru.kpfu.itis.renett.repository.UserRepository;
 import ru.kpfu.itis.renett.repository.UserRepositoryJDBCImpl;
 import ru.kpfu.itis.renett.service.Constants;
+import ru.kpfu.itis.renett.service.SecurityServiceImpl;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -38,8 +41,11 @@ public class InitServletContextListener implements ServletContextListener {
 
         servletContext.setAttribute(Constants.CNTX_DATA_SOURCE, dataSource);
 
-        // UsersRepository
-        servletContext.setAttribute(Constants.CNTX_USERS_REPOSITORY, new UserRepositoryJDBCImpl(dataSource));
+        // SecurityService
+        UserRepository userRepository = new UserRepositoryJDBCImpl(dataSource);
+        servletContext.setAttribute(Constants.CNTX_SECURITY_SERVICE, new SecurityServiceImpl(userRepository, new AuthRepositoryJDBCImpl(dataSource)));
+        servletContext.setAttribute(Constants.CNTX_USER_SERVICE, userRepository);
+
 
         // todo : another repos and services classes
         // update constants path

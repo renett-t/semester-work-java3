@@ -1,31 +1,30 @@
 package ru.kpfu.itis.renett.servlets.auth;
 
-import ru.kpfu.itis.renett.exceptions.DataBaseException;
 import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
 import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.repository.UserRepository;
 import ru.kpfu.itis.renett.service.Constants;
-import ru.kpfu.itis.renett.service.UserDataValidator;
+import ru.kpfu.itis.renett.service.SecurityService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.UUID;
 
 @WebServlet("/signup")
 public class SignUpServlet extends HttpServlet {
-    private UserRepository usersRepository;
+    private SecurityService securityService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ServletContext servletContext = config.getServletContext();
-        usersRepository = (UserRepository) servletContext.getAttribute(Constants.CNTX_USERS_REPOSITORY);
+        securityService = (SecurityService) servletContext.getAttribute(Constants.CNTX_SECURITY_SERVICE);
     }
 
     @Override
@@ -43,35 +42,26 @@ public class SignUpServlet extends HttpServlet {
         String repeatedPassword = request.getParameter("repeatedPassword");
 
         if (!password.equals(repeatedPassword)) {
-            request.setAttribute("message", "Passwords doesn't match. Try again");
+            request.setAttribute("message", "Пароли не совпадают попробуйте снова.");
+        } else if (password.length() < 5) {
+            request.setAttribute("message", "Слишком короткий пароль, попробуйте снова");
         } else {
             try {
-                if (UserDataValidator.isUserParametersCorrect(firstName, secondName, email, login, password)) {
-                    try {
-                        User newUser = new User(firstName, secondName, email, login, password);
+                User newUser = new User(firstName, secondName, email, login, password);
 
-                        // проверка зарегистрирован ли пользователем с тем же логином
-                        Optional<User> optionalUser = usersRepository.findByLogin(newUser.getLogin());
-                        if (optionalUser.isPresent()) {
-                            throw new DataBaseException("User with the same login already exists");
-                        }
+                UUID uuid = securityService.signUp(newUser, request.getSession());
+                Cookie authorizedCookie = new Cookie(Constants.COOKIE_AUTHORIZED_NAME, uuid.toString());
+                authorizedCookie.setMaxAge(60*60);  //TODO Change cookie's max age
+                response.addCookie(authorizedCookie);
 
-                        usersRepository.save(newUser);
-                        request.setAttribute("message", "You've been registered");
-
-                        response.sendRedirect(getServletContext().getContextPath() + "/all");
-                        return;
-                    } catch (DataBaseException ex) {
-                        request.setAttribute("message", ex.getMessage());
-                    }
-                } else {
-                    request.setAttribute("message", "Incorrect data entered or some error happened. Try again");
-                }
+                response.sendRedirect(getServletContext().getContextPath() + "/profile");
+                return;
             } catch (InvalidRegistrationDataException ex) {
-                request.setAttribute("message", "You weren't registered. " + ex.getMessage());
+                request.setAttribute("message", "Вы не были зарегистрированы. " + ex.getMessage());
             }
         }
 
+        // TODO recheck form data saving feature
         if ((firstName != null) && (firstName.length() > 0))
             request.getSession().setAttribute("firstName", firstName);
         if ((secondName != null) && (secondName.length() > 0))
@@ -82,5 +72,6 @@ public class SignUpServlet extends HttpServlet {
             request.getSession().setAttribute("login", login);
 
         getServletContext().getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
+
     }
 }

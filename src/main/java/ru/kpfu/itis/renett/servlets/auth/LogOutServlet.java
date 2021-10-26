@@ -1,5 +1,8 @@
 package ru.kpfu.itis.renett.servlets.auth;
 
+import ru.kpfu.itis.renett.service.Constants;
+import ru.kpfu.itis.renett.service.SecurityService;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,15 +13,17 @@ import java.io.IOException;
 
 @WebServlet("/logout")
 public class LogOutServlet extends HttpServlet {
+    private SecurityService securityService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
+        securityService = (SecurityService) config.getServletContext().getAttribute(Constants.CNTX_SECURITY_SERVICE);
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        securityService.logout(request);
+        response.sendRedirect(getServletContext().getContextPath() + "/signin");
     }
 }
