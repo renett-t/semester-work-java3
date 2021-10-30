@@ -1,8 +1,6 @@
 package ru.kpfu.itis.renett.servlets.auth;
 
 import ru.kpfu.itis.renett.exceptions.InvalidSignInDataException;
-import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.repository.UserRepository;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.SecurityService;
 
@@ -15,19 +13,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 @WebServlet("/signin")
 public class SignInServlet extends HttpServlet {
-    private UserRepository usersRepository;
     private SecurityService securityService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ServletContext servletContext = config.getServletContext();
-        usersRepository = (UserRepository) servletContext.getAttribute(Constants.CNTX_USER_SERVICE);
         securityService = (SecurityService) servletContext.getAttribute(Constants.CNTX_SECURITY_SERVICE);
     }
 

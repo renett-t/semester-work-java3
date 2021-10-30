@@ -86,6 +86,7 @@ public class SecurityServiceImpl implements SecurityService {
                     //  если в сесии тот же логин, что и у пользователя - всё ок, если нет - кто-то хотел украсть куку, делаем логаут
                     //  а если есть пользователь в сессии, но куку удалили..... (((
                     // FFFFFFF
+                    return true;
 
                 }
             }
@@ -106,6 +107,7 @@ public class SecurityServiceImpl implements SecurityService {
                 authModel.setUuid(UUID.fromString(cookie.getValue()));
                 authRepository.delete(authModel);
             }
+            // todo: remove cookie
         }
 
         httpSession.removeAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);

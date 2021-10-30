@@ -28,13 +28,18 @@ public class ArticleAllServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // тут может null упасть??
         User user = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+        List<Article> list = null;
+
+        // TAGS!
         if (user != null) {
             List<Article> userArticles = articleService.getUsersArticles(user);
-            request.setAttribute("userArticleList", userArticles);
+            list = articleService.getAllArticles();
+            request.setAttribute("userArticlesList", userArticles);
+        } else {
+            list = articleService.getAllArticlesExceptUsers(user);
         }
 
         // TODO: cookies of last viewed article, getting just a portion of articles
-        List<Article> list = articleService.getAllArticles();
         request.setAttribute("articlesList", list);
 
         getServletContext().getRequestDispatcher("/WEB-INF/jsp/articles_page.jsp").forward(request, response);

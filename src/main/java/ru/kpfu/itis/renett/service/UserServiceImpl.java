@@ -18,6 +18,11 @@ public class UserServiceImpl implements UserService{
         this.authRepository = authRepository;
     }
 
+    @Override
+    public User getUserById(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
     // TODO: IMPLEMENTATION OF USER_SERVICE'S METHODS
     @Override
     public void editUserData(User user) {

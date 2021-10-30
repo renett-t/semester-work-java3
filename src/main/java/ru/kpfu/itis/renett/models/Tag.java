@@ -2,10 +2,11 @@ package ru.kpfu.itis.renett.models;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode
 public class Tag {
     private Integer id;
     private String title;
@@ -16,5 +17,18 @@ public class Tag {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(id, tag.id) && Objects.equals(title, tag.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
     }
 }

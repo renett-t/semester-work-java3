@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 @WebListener
-public class InitServletContextListener implements ServletContextListener {
+public class ConfigListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {

@@ -4,11 +4,11 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode
 public class Comment {
     private Integer id;
     private String body;
@@ -49,5 +49,18 @@ public class Comment {
                 ", parentComment=" + parentNum +
                 ", nestedComments=" + nestedComments +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id.equals(comment.id) && body.equals(comment.body);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, body);
     }
 }

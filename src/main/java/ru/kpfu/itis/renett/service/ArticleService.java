@@ -11,6 +11,7 @@ public interface ArticleService {
     List<Article> getUsersArticles(User user);
     List<Article> getLikedArticles(User user);
     List<Article> getAllArticles();
+    List<Article> getAllArticlesExceptUsers(User user);
     // TODO
     List<Article> getPortionOfArticles();
 

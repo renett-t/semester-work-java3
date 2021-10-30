@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/article/*/")
+@WebServlet("/article")
 public class ArticleDisplayServlet extends HttpServlet {
     private ArticleService articleService;
 
@@ -28,11 +28,6 @@ public class ArticleDisplayServlet extends HttpServlet {
 
         if (request.getParameter("id") != null) {
             Article found = articleService.getArticleById(idOfRequestedArticle);
-
-            if (request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME) != null) {
-                // TODO: do smth when article is being viewed by registered user OR author
-            }
-
             request.setAttribute("articleInstance", found);
         } else {
             request.setAttribute("message", "Извините, но данная статья не была найдена. ");

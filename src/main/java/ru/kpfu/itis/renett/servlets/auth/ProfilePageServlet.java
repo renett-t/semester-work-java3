@@ -15,9 +15,9 @@ public class ProfilePageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME) != null) {
+            request.setAttribute("user", request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME));
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
         } else {
-//            response.setStatus(403); // TODO: status codes??
             response.sendRedirect(getServletContext().getContextPath() + "/signin");
         }
     }

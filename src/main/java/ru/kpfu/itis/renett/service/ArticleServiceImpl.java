@@ -7,6 +7,7 @@ import ru.kpfu.itis.renett.repository.ArticleRepository;
 import ru.kpfu.itis.renett.repository.CommentRepository;
 import ru.kpfu.itis.renett.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,11 @@ public class ArticleServiceImpl implements ArticleService {
     // TODO: IMPLEMENTATION OF ARTICLE SERVICE METHODS
     @Override
     public List<Article> getUsersArticles(User user) {
-        return null;
+        if (user != null) {
+            return articleRepository.findAllByOwnerId(user.getId());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -41,7 +46,17 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> getAllArticles() {
-        return null;
+        return articleRepository.findAll();
+    }
+
+    @Override
+    public List<Article> getAllArticlesExceptUsers(User user) {
+        List<Article> all = articleRepository.findAll();
+        if (user != null) {
+            List<Article> users = articleRepository.findAllByOwnerId(user.getId());
+            all.removeAll(users);
+        }
+        return all;
     }
 
     @Override
@@ -97,5 +112,16 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void editComment(Comment editedComment) {
 
+    }
+
+    private void setCommentAmount(Article article) {
+        int count = 0;
+        for(Comment comment : article.getCommentList()) {
+            count++;
+            for (Comment nested : comment.getNestedComments()) {
+                count++;
+            }
+        }
+        article.setCommentAmount(count);
     }
 }
