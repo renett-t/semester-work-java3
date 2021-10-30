@@ -3,6 +3,7 @@ package ru.kpfu.itis.renett.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import ru.kpfu.itis.renett.models.AuthModel;
+import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.models.User;
 
 import javax.sql.DataSource;
@@ -16,7 +17,11 @@ public class AuthRepositoryJDBCImpl implements AuthRepository {
     //language=sql
     private static final String SQL_UPDATE_BY_ID = "UPDATE auth set uuid = ?, created_at = current_timestamp WHERE login = ?";
     //language=sql
+    private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM auth WHERE login = ?;";
+    //language=sql
     private static final String SQL_INSERT_AUTH = "INSERT INTO auth(login, uuid) VALUES (?, ?);";
+    //language=sql
+    private static final String SQL_DELETE_BY_LOGIN = "DELETE FROM auth WHERE login = ?;";
     //language=sql
     private static final String SQL_FIND_USER_BY_UUID = "SELECT * FROM\n" +
             "    auth left join \"user\" on auth.login = \"user\".login\n" +
@@ -63,6 +68,17 @@ public class AuthRepositoryJDBCImpl implements AuthRepository {
     }
 
     @Override
+    public Optional<AuthModel> findAuthModelByLogin(String login) {
+        List<AuthModel> authModelList = jdbcTemplate.query(SQL_FIND_BY_LOGIN, authRowMapper, login);
+
+        if (authModelList.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(authModelList.get(0));
+        }
+    }
+
+    @Override
     public void save(AuthModel entity) {
         jdbcTemplate.update(SQL_INSERT_AUTH, entity.getLogin(), entity.getUuid());
     }
@@ -74,7 +90,7 @@ public class AuthRepositoryJDBCImpl implements AuthRepository {
 
     @Override
     public void delete(AuthModel entity) {
-        throw new UnsupportedOperationException();
+        jdbcTemplate.update(SQL_DELETE_BY_LOGIN, entity.getLogin());
     }
 
     @Override

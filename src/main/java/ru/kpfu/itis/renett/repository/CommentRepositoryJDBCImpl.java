@@ -255,9 +255,30 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
         }
     };
 
+    // so funny.................
     private void rearrangeCommentsList(List<Comment> commentList) {
-        for (int i = commentList.size() - 1; i >= 0; i--) {
-            // TOO
+        for (int i = 0; i < commentList.size(); i++) {
+            if (commentList.get(i).getNestedComments().size() > 0) {
+                for (int n_i = 0; n_i < commentList.get(i).getNestedComments().size(); n_i++) {
+                    for(int j = i; j < commentList.size(); j++) {
+                        if (commentList.get(j).getId().equals(commentList.get(i).getNestedComments().get(n_i).getId())) {
+                            System.out.println("removing " + commentList.get(j).getId());
+                            commentList.remove(j);
+                        }
+                    }
+                }
+            }
         }
+
+        for (int j = 0; j < commentList.size(); j++) {
+            List<Comment> listToReverse = commentList.get(j).getNestedComments();
+            for (int i = 0; i < listToReverse.size() / 2; i++) {
+                Comment temp = listToReverse.get(i);
+                listToReverse.set(i, listToReverse.get(listToReverse.size() - i - 1));
+                listToReverse.set(listToReverse.size() - i - 1, temp);
+            }
+
+        }
+
     }
 }

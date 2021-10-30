@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:mainLayout title="Профиль">
+<t:mainLayout title="Профиль"><%--@elvariable id="user" type="ru.kpfu.itis.renett.models.User"--%>
     <div class="centered-content-wrapper">
         <div class="profile">
             <h1>Ваш аккаунт ${user.getLogin()}</h1>

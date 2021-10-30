@@ -23,16 +23,28 @@ footer {
     height: 10%;
     font-size: 18px;
     text-align: center;
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
 }
 
 .registration-form-wrapper{
-    display: flex;
-    flex-direction: column;
-    margin: 20px;
+    width: 300px;
+    height: 400px;
+    margin: 100px auto 0;
+}
+
+.registration-form-wrapper .form-floating {
+    margin: 6px;
+    font-size: 18px;
 }
 
 .message-wrapper h6 {
     color: red;
+}
+
+#myCarousel {
+    height: auto;
 }
 
 

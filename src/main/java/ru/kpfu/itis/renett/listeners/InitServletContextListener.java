@@ -2,11 +2,8 @@ package ru.kpfu.itis.renett.listeners;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import ru.kpfu.itis.renett.repository.AuthRepositoryJDBCImpl;
-import ru.kpfu.itis.renett.repository.UserRepository;
-import ru.kpfu.itis.renett.repository.UserRepositoryJDBCImpl;
-import ru.kpfu.itis.renett.service.Constants;
-import ru.kpfu.itis.renett.service.SecurityServiceImpl;
+import ru.kpfu.itis.renett.repository.*;
+import ru.kpfu.itis.renett.service.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -36,19 +33,20 @@ public class InitServletContextListener implements ServletContextListener {
         hikariConfig.setUsername(properties.getProperty(Constants.DB_USERNAME));
         hikariConfig.setPassword(properties.getProperty(Constants.DB_PASSWORD));
         hikariConfig.setMaximumPoolSize(Integer.parseInt(properties.getProperty(Constants.DB_POOL_SIZE)));
-
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
-        servletContext.setAttribute(Constants.CNTX_DATA_SOURCE, dataSource);
-
-        // SecurityService
+        // Repositories
         UserRepository userRepository = new UserRepositoryJDBCImpl(dataSource);
+        ArticleRepository articleRepository = new ArticleRepositoryJDBCImpl(dataSource);
+        TagRepository tagRepository = new TagRepositoryJDBCImpl(dataSource);
+        AuthRepository authRepository = new AuthRepositoryJDBCImpl(dataSource);
+        CommentRepository commentRepository = new CommentRepositoryJDBCImpl(dataSource);
+
+        // Services Initialization
         servletContext.setAttribute(Constants.CNTX_SECURITY_SERVICE, new SecurityServiceImpl(userRepository, new AuthRepositoryJDBCImpl(dataSource)));
-        servletContext.setAttribute(Constants.CNTX_USER_SERVICE, userRepository);
-
-
-        // todo : another repos and services classes
-        // update constants path
+        servletContext.setAttribute(Constants.CNTX_ARTICLE_SERVICE, new ArticleServiceImpl(articleRepository, userRepository, commentRepository));
+        servletContext.setAttribute(Constants.CNTX_USER_SERVICE, new UserServiceImpl(userRepository, articleRepository, authRepository));
+        servletContext.setAttribute(Constants.CNTX_MEDIA_SERVICE, new MediaServiceImpl());
     }
 
     @Override

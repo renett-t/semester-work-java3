@@ -1,21 +1,27 @@
 <%@ page contentType="text/html;charset=UTF-8"  pageEncoding="UTF-8"%>
 <%@ page import="ru.kpfu.itis.renett.models.User" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:mainLayout title="Вход">
     <div class="registration-form-wrapper">
-        <form class="row g-3 authorization-form" method="POST">
-            <div class="col-md-4">
-                <label for="validationDefaultUsername" class="form-label">Логин</label>
-                <div class="input-group">
-                    <span class="input-group-text" id="inputGroupPrepend2">@</span>
-                    <input name="login" type="text" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" class="form-control" id="validationDefaultUsername"  aria-describedby="inputGroupPrepend2" required>
-                </div>
+        <form class="authorization-form" method="POST">
+<%--            <img class="mb-4" src="" alt="picG" width="72" height="57">--%>
+            <h1 class="h3 mb-3 fw-normal">Войти</h1>
+
+            <div class="form-floating">
+                <input type="text" class="form-control" name="login" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" id="floatingInput" placeholder="name@example.com" required>
+                <label for="floatingInput">Ваш логин</label>
             </div>
-            <div class="col-md-4">
-                <label for="validationDefault01" class="form-label">Пароль</label>
-                <input name="password" type="password" class="form-control" id="validationDefault01" required>
+            <div class="form-floating">
+                <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
+                <label for="floatingPassword">Пароль</label>
+            </div>
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Запомнить меня
+                </label>
             </div>
 
             <div class="message-wrapper">
@@ -24,17 +30,12 @@
                 </c:if>
             </div>
 
-            <div class="col-12">
-                <button class="btn btn-primary" type="submit">Sign in!</button>
-            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+        </form>
 
             <div>
-                Нет аккаунта?
-                <a class="to-registration underline-on-hover" href="<c:url value="/signup"/>">
-                    Регистрация
-                </a>
+                Ещё нет аккаунта? <a class="to-registration underline-on-hover" href="<c:url value="/signup"/>">Регистрация</a>
             </div>
-        </form>
     </div>
 </t:mainLayout>
 

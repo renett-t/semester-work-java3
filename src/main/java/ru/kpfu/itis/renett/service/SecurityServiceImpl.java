@@ -40,18 +40,36 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public UUID signIn(String login, String password, HttpSession session) {
         UUID uuid = null;
+
+        User sessionUser = (User) session.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+        if (sessionUser != null) {
+            if (!sessionUser.getLogin().equals(login)) {
+                session.removeAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+            } else {
+                uuid = UUID.randomUUID();
+                authRepository.update(AuthModel.builder().login(login).uuid(uuid).build());
+                return uuid;
+            }
+        }
+
         Optional<User> optionalUser = userRepository.findByLogin(login);
         if (!optionalUser.isPresent()) {
             throw new InvalidSignInDataException("Пользователь с логином " + login + " не был найден. Повторите попытку.");
         }
         if (password.equals(optionalUser.get().getPasswordHash())) { // TODO - password hashing
             uuid = UUID.randomUUID();
-            authRepository.save(AuthModel.builder().login(login).uuid(uuid).build());
+            Optional<AuthModel> authModelFromRepo = authRepository.findAuthModelByLogin(login);
+            if (authModelFromRepo.isPresent()) {
+                authRepository.update(AuthModel.builder().login(login).uuid(uuid).build());
+            } else {
+                authRepository.save(AuthModel.builder().login(login).uuid(uuid).build());
+            }
             session.setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, optionalUser.get());
+            return uuid;
+
         } else {
             throw new InvalidSignInDataException("Неверный пароль.");
         }
-        return uuid;
     }
 
     @Override
