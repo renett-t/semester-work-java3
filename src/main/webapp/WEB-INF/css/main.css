@@ -5,7 +5,6 @@
         font-family: 'Source Code Pro', monospace;
         font-size: 22px;
         color: black;
-        min-height: 100vh;
     }
 
     header {
@@ -83,7 +82,7 @@
         cursor: pointer;
     }
 
-    .views-comments-wrapper {
+    .views-comments-wrapper, .edit-delete-wrapper {
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -108,4 +107,24 @@
     .card-img-top:hover {
         box-shadow: 0 0 2px 1px #000000;
         transform: scale(1.1);
+    }
+
+    /* edit article styles - https://codepen.io/maheshambure21/pen/EozKKy */
+   .edit-delete-wrapper {
+
+   }
+
+    .edit-delete-wrapper .icon-img, .article-footer-wrapper .icon-img {
+        width: 20px;
+        height: 20px;
+        margin: 5px;
+    }
+
+    .article-heading-elements {
+        font-size: 14px;
+    }
+
+    /* COMMENT STYLES */
+    .child-comments-wrapper {
+        margin-left: 50px;
     }

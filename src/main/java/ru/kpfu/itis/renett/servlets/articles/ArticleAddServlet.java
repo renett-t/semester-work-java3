@@ -1,8 +1,9 @@
 package ru.kpfu.itis.renett.servlets.articles;
 
-import ru.kpfu.itis.renett.models.Article;
+import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.service.ArticleService;
 import ru.kpfu.itis.renett.service.Constants;
+import ru.kpfu.itis.renett.service.UserService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -11,29 +12,29 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
-@WebServlet("/article")
-public class ArticleDisplayServlet extends HttpServlet {
+@WebServlet("/article/new")
+public class ArticleAddServlet extends HttpServlet {
     private ArticleService articleService;
+    private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        userService = (UserService) config.getServletContext().getAttribute(Constants.CNTX_USER_SERVICE);
         articleService = (ArticleService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SERVICE);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int idOfRequestedArticle = -1;
+        List<Tag> tags = articleService.getAllTags();
+        request.setAttribute("tagList", tags);
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/article_edit.jsp");
+    }
 
-        if (request.getParameter("id") != null) {
-            Article found = articleService.getArticleById(idOfRequestedArticle);
-            request.setAttribute("articleInstance", found);
-            // set edit button if user is registered and owns article: boolean author
-        } else {
-            request.setAttribute("message", "Извините, но данная статья не была найдена. ");
-        }
-
-        getServletContext().getRequestDispatcher("/WEB-INF/jsp/article_display.jsp").forward(request, response);
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // TODO
     }
 }

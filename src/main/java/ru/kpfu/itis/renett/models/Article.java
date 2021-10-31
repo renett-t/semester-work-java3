@@ -15,6 +15,7 @@ public class Article {
     private String body;
     private User author;
     private Date publishedAt;
+    private String thumbnailPath;
     private List<Comment> commentList;
     private List<Tag> tagList;
     private Long viewCount;
@@ -25,11 +26,12 @@ public class Article {
         this.id = id;
     }
 
-    public Article(Integer id, String title, String body, User author, Date publishedAt, List<Comment> commentList, List<Tag> tagList, Long viewCount, int commentAmount, int likeAmount) {
+    public Article(Integer id, String title, String body, User author, Date publishedAt, String thumbnailPath, List<Comment> commentList, List<Tag> tagList, Long viewCount, int commentAmount, int likeAmount) {
         this.id = id;
         this.title = title;
         this.body = body;
         this.author = author;
+        this.thumbnailPath = thumbnailPath;
         this.publishedAt = publishedAt;
         this.commentList = commentList;
         this.tagList = tagList;

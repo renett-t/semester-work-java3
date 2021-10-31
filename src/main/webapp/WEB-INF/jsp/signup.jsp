@@ -1,4 +1,4 @@
-<%@page contentType="text/html;charset=UTF-8"  pageEncoding="UTF-8"%>
+<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="ru.kpfu.itis.renett.models.User" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -52,5 +52,8 @@
                 <button class="btn btn-primary" type="submit">Sign up!</button>
             </div>
         </form>
+        <div>
+            Уже зарегистрированы? <a class="" href="<c:url value="/signin"/>">Вход</a>
+        </div>
     </div>
 </t:mainLayout>

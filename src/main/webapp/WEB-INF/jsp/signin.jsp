@@ -4,38 +4,36 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:mainLayout title="Вход">
-    <div class="registration-form-wrapper">
-        <form class="authorization-form" method="POST">
-<%--            <img class="mb-4" src="" alt="picG" width="72" height="57">--%>
-            <h1 class="h3 mb-3 fw-normal">Войти</h1>
+        <div class="registration-form-wrapper">
+            <form class="authorization-form" method="POST">
+                <h1 class="h3 mb-3 fw-normal">Войти</h1>
 
-            <div class="form-floating">
-                <input type="text" class="form-control" name="login" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" id="floatingInput" placeholder="name@example.com" required>
-                <label for="floatingInput">Ваш логин</label>
-            </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
-                <label for="floatingPassword">Пароль</label>
-            </div>
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="login" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" id="floatingInput" placeholder="name@example.com" required>
+                    <label for="floatingInput">Ваш логин</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
+                    <label for="floatingPassword">Пароль</label>
+                </div>
 
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" value="remember-me"> Запомнить меня
-                </label>
-            </div>
+                <div class="checkbox mb-3">
+                    <label>
+                        <input type="checkbox" value="remember-me"> Запомнить меня
+                    </label>
+                </div>
 
-            <div class="message-wrapper">
-                <c:if test="${not empty message}">
-                    <h6 class="mx-3">${message}</h6>
-                </c:if>
-            </div>
+                <div class="message-wrapper">
+                    <c:if test="${not empty message}">
+                        <h6 class="mx-3">${message}</h6>
+                    </c:if>
+                </div>
 
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
-        </form>
-
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+            </form>
             <div>
-                Ещё нет аккаунта? <a class="to-registration underline-on-hover" href="<c:url value="/signup"/>">Регистрация</a>
+                Ещё нет аккаунта? <a class="" href="<c:url value="/signup"/>">Регистрация</a>
             </div>
-    </div>
+        </div>
 </t:mainLayout>
 

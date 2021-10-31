@@ -69,7 +69,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
                     .author(new User(row.getInt(authorId)))
                     .publishedAt(row.getTimestamp(publishedAt))
                     .parentComment(parentComment)
-                    .nestedComments(new ArrayList<>())
+                    .childComments(new ArrayList<>())
                     .build();
         } catch (SQLException e) {
             throw new DataBaseException(e);
@@ -161,7 +161,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
 
                 if (rows.getObject("child.id", Integer.class) != null) {
                     Comment comment = childCommentRowMapper.apply(rows);
-                    newComment.getNestedComments().add(comment);
+                    newComment.getChildComments().add(comment);
                 }
 
                 processedComments.add(newComment.getId());
@@ -198,7 +198,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
                         comment.setParentComment(newComment);
                         comment.getAuthor().setLogin(rows.getString("child_author_login"));
                         comment.getAuthor().setFirstName(rows.getString("child_author_name"));
-                        newComment.getNestedComments().add(comment);
+                        newComment.getChildComments().add(comment);
                     }
                     newComment.getAuthor().setLogin(rows.getString("parent_author_login"));
                     newComment.getAuthor().setFirstName(rows.getString("parent_author_name"));
@@ -211,7 +211,6 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
             throw new DataBaseException("Problem with processing query to get all article's comments", e);
         }
 
-        rearrangeCommentsList(commentList);
         return commentList;
     }
 
@@ -225,7 +224,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
                     .article(new Article(row.getInt("child_" + articleId)))
                     .author(new User(row.getInt("child_" + authorId)))
                     .publishedAt(row.getTimestamp("child_" + publishedAt))
-                    .nestedComments(new ArrayList<>())
+                    .childComments(new ArrayList<>())
                     .build();
         } catch (SQLException e) {
             throw new DataBaseException(e);
@@ -248,37 +247,10 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
                     .author(new User(row.getInt("parent_" + authorId)))
                     .publishedAt(row.getTimestamp("parent_" + publishedAt))
                     .parentComment(parentComment)
-                    .nestedComments(new ArrayList<>())
+                    .childComments(new ArrayList<>())
                     .build();
         } catch (SQLException e) {
             throw new DataBaseException(e);
         }
     };
-
-    // so funny.................
-    private void rearrangeCommentsList(List<Comment> commentList) {
-        for (int i = 0; i < commentList.size(); i++) {
-            if (commentList.get(i).getNestedComments().size() > 0) {
-                for (int n_i = 0; n_i < commentList.get(i).getNestedComments().size(); n_i++) {
-                    for(int j = i; j < commentList.size(); j++) {
-                        if (commentList.get(j).getId().equals(commentList.get(i).getNestedComments().get(n_i).getId())) {
-                            System.out.println("removing " + commentList.get(j).getId());
-                            commentList.remove(j);
-                        }
-                    }
-                }
-            }
-        }
-
-        for (int j = 0; j < commentList.size(); j++) {
-            List<Comment> listToReverse = commentList.get(j).getNestedComments();
-            for (int i = 0; i < listToReverse.size() / 2; i++) {
-                Comment temp = listToReverse.get(i);
-                listToReverse.set(i, listToReverse.get(listToReverse.size() - i - 1));
-                listToReverse.set(listToReverse.size() - i - 1, temp);
-            }
-
-        }
-
-    }
 }

@@ -17,16 +17,16 @@ public class Comment {
     private Date publishedAt;
 
     private Comment parentComment;
-    private List<Comment> nestedComments;
+    private List<Comment> childComments;
 
-    public Comment(Integer id, String body, Article article, User author, Date publishedAt, Comment parentComment, List<Comment> nestedComments) {
+    public Comment(Integer id, String body, Article article, User author, Date publishedAt, Comment parentComment, List<Comment> childComments) {
         this.id = id;
         this.body = body;
         this.article = article;
         this.author = author;
         this.publishedAt = publishedAt;
         this.parentComment = parentComment;
-        this.nestedComments = nestedComments;
+        this.childComments = childComments;
     }
 
     public Comment(Integer id) {
@@ -47,7 +47,7 @@ public class Comment {
                 ", author=" + author.getId() +
                 ", publishedAt=" + publishedAt +
                 ", parentComment=" + parentNum +
-                ", nestedComments=" + nestedComments +
+                ", childComments=" + childComments +
                 '}';
     }
 

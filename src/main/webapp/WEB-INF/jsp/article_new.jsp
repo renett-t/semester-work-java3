@@ -2,6 +2,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:mainLayout title="Редактирование статьи">
-    <t:article-edit articleInstance="${articleToEdit}" tagList="${tagList}"></t:article-edit>
+<t:mainLayout title="Создание статьи">
+    <t:article-edit tagList="${tagList}"></t:article-edit>
 </t:mainLayout>

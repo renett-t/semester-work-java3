@@ -2,6 +2,7 @@ package ru.kpfu.itis.renett.service;
 
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.Comment;
+import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.repository.ArticleRepository;
 import ru.kpfu.itis.renett.repository.CommentRepository;
@@ -26,7 +27,12 @@ public class ArticleServiceImpl implements ArticleService {
     public Article getArticleById(int id) {
         Optional<Article> foundArticle = articleRepository.findById(id);
 
-        return foundArticle.orElse(null);
+        Article article = foundArticle.orElse(null);
+        if (article != null) {
+            System.out.println(article.getCommentList());
+        }
+
+        return article;
     }
 
     // TODO: IMPLEMENTATION OF ARTICLE SERVICE METHODS
@@ -61,6 +67,16 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> getPortionOfArticles() {
+        return null;
+    }
+
+    @Override
+    public List<Tag> getAllTags() {
+        return null;
+    }
+
+    @Override
+    public List<Tag> getArticleTags(Article article) {
         return null;
     }
 
@@ -118,10 +134,37 @@ public class ArticleServiceImpl implements ArticleService {
         int count = 0;
         for(Comment comment : article.getCommentList()) {
             count++;
-            for (Comment nested : comment.getNestedComments()) {
+            for (Comment nested : comment.getChildComments()) {
                 count++;
             }
         }
         article.setCommentAmount(count);
+    }
+
+    // so funny.................
+    private void rearrangeCommentsList(List<Comment> commentList) {
+        for (int i = 0; i < commentList.size(); i++) {
+            if (commentList.get(i).getChildComments().size() > 0) {
+                for (int n_i = 0; n_i < commentList.get(i).getChildComments().size(); n_i++) {
+                    for(int j = i; j < commentList.size(); j++) {
+                        if (commentList.get(j).getId().equals(commentList.get(i).getChildComments().get(n_i).getId())) {
+                            System.out.println("removing " + commentList.get(j).getId());
+                            commentList.remove(j);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int j = 0; j < commentList.size(); j++) {
+            List<Comment> listToReverse = commentList.get(j).getChildComments();
+            for (int i = 0; i < listToReverse.size() / 2; i++) {
+                Comment temp = listToReverse.get(i);
+                listToReverse.set(i, listToReverse.get(listToReverse.size() - i - 1));
+                listToReverse.set(listToReverse.size() - i - 1, temp);
+            }
+
+        }
+
     }
 }

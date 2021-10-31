@@ -2,6 +2,7 @@ package ru.kpfu.itis.renett.service;
 
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.Comment;
+import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.models.User;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public interface ArticleService {
     List<Article> getAllArticlesExceptUsers(User user);
     // TODO
     List<Article> getPortionOfArticles();
+
+    List<Tag> getAllTags();
+    List<Tag> getArticleTags(Article article);
 
     void createArticle(Article newArticle);
     void deleteArticle(Article articleToDelete);
