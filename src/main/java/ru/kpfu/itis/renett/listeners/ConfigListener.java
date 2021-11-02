@@ -44,9 +44,9 @@ public class ConfigListener implements ServletContextListener {
 
         // Services Initialization
         servletContext.setAttribute(Constants.CNTX_SECURITY_SERVICE, new SecurityServiceImpl(userRepository, new AuthRepositoryJDBCImpl(dataSource)));
-        servletContext.setAttribute(Constants.CNTX_ARTICLE_SERVICE, new ArticleServiceImpl(articleRepository, userRepository, commentRepository));
+        servletContext.setAttribute(Constants.CNTX_ARTICLE_SERVICE, new ArticleServiceImpl(articleRepository, userRepository, commentRepository, tagRepository));
         servletContext.setAttribute(Constants.CNTX_USER_SERVICE, new UserServiceImpl(userRepository, articleRepository, authRepository));
-        servletContext.setAttribute(Constants.CNTX_MEDIA_SERVICE, new MediaServiceImpl());
+        servletContext.setAttribute(Constants.CNTX_FILE_SERVICE, new FileServiceImpl(Constants.STORAGE_URL));
     }
 
     @Override

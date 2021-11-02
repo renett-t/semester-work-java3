@@ -13,8 +13,6 @@ public interface ArticleService {
     List<Article> getLikedArticles(User user);
     List<Article> getAllArticles();
     List<Article> getAllArticlesExceptUsers(User user);
-    // TODO
-    List<Article> getPortionOfArticles();
 
     List<Tag> getAllTags();
     List<Tag> getArticleTags(Article article);
@@ -27,7 +25,7 @@ public interface ArticleService {
     boolean isArticleLikedByUser(Article article, User user);
 
     // what if i create another service class for comments...
-    List<Article> getArticleComments(Article article);
+    List<Comment> getArticleComments(Article article);
     void createComment(Comment newComment);
     void deleteComment(Comment commentToDelete);
     void editComment(Comment editedComment);

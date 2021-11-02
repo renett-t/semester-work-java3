@@ -12,10 +12,11 @@ public class Constants {
     public static final String CNTX_SECURITY_SERVICE = "securityService";
     public static final String CNTX_ARTICLE_SERVICE = "articleService";
     public static final String CNTX_USER_SERVICE = "userService";
-    public static final String CNTX_MEDIA_SERVICE = "mediaService";
+    public static final String CNTX_FILE_SERVICE = "fileService";
 
     public static final String COOKIE_AUTHORIZED_NAME = "uuid";
     public static final String SESSION_USER_ATTRIBUTE_NAME = "auth_user";
     public static final String REQUEST_ATTRIBUTE_AUTHORIZED = "authorized";  // renaming here is dangerous!! then edit jsp files
 
+    public static final String STORAGE_URL = "somehow/webapp/resources/articles/";
 }

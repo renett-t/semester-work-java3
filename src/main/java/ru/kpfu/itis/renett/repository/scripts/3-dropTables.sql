@@ -1,9 +1,9 @@
 DROP TABLE "user" CASCADE;
-DROP TABLE "article" CASCADE;
-DROP TABLE "comment" CASCADE;
-DROP TABLE "tag" CASCADE;
-DROP TABLE renett_test_db.public."article_tag";
+DROP TABLE article CASCADE;
+DROP TABLE comment CASCADE;
+DROP TABLE tag CASCADE;
+DROP TABLE like_article;
+DROP TABLE article_tag;
+DROP TABLE auth;
 
-DROP TABLE "auth";
-
-DROP TABLE "chord";
+-- DROP TABLE chord;

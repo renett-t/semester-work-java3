@@ -9,24 +9,21 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class Comment {
     private Integer id;
     private String body;
     private Article article;
     private User author;
     private Date publishedAt;
-
     private Comment parentComment;
     private List<Comment> childComments;
 
-    public Comment(Integer id, String body, Article article, User author, Date publishedAt, Comment parentComment, List<Comment> childComments) {
-        this.id = id;
+    public Comment(String body, Article article, User author, Comment parentComment) {
         this.body = body;
         this.article = article;
         this.author = author;
-        this.publishedAt = publishedAt;
         this.parentComment = parentComment;
-        this.childComments = childComments;
     }
 
     public Comment(Integer id) {

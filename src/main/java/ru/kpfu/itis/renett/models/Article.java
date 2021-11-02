@@ -9,6 +9,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class Article {
     private Integer id;
     private String title;
@@ -26,26 +27,11 @@ public class Article {
         this.id = id;
     }
 
-    public Article(Integer id, String title, String body, User author, Date publishedAt, String thumbnailPath, List<Comment> commentList, List<Tag> tagList, Long viewCount, int commentAmount, int likeAmount) {
-        this.id = id;
+    public Article(String title, String body, User author, String thumbnailPath) {
         this.title = title;
         this.body = body;
         this.author = author;
         this.thumbnailPath = thumbnailPath;
-        this.publishedAt = publishedAt;
-        this.commentList = commentList;
-        this.tagList = tagList;
-        this.viewCount = viewCount;
-        this.commentAmount = commentAmount;
-        this.likeAmount = likeAmount;
-    }
-
-    public Article(Integer id, String title, String body, Date publishedAt, Long viewCount) {
-        this.id = id;
-        this.title = title;
-        this.body = body;
-        this.publishedAt = publishedAt;
-        this.viewCount = viewCount;
     }
 
     @Override
@@ -54,11 +40,12 @@ public class Article {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
-                ", author=" + author +
+                ", author=" + author.getId() +
                 ", publishedAt=" + publishedAt +
+                ", thumbnailPath='" + thumbnailPath + '\'' +
                 ", commentList=" + commentList +
                 ", tagList=" + tagList +
-                ", view_count=" + viewCount +
+                ", viewCount=" + viewCount +
                 ", commentAmount=" + commentAmount +
                 ", likeAmount=" + likeAmount +
                 '}';
@@ -69,11 +56,11 @@ public class Article {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return id.equals(article.id) && title.equals(article.title) && body.equals(article.body);
+        return id.equals(article.id) && Objects.equals(title, article.title) && Objects.equals(body, article.body) && author.equals(article.author);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, body);
+        return Objects.hash(id, title, body, author);
     }
 }

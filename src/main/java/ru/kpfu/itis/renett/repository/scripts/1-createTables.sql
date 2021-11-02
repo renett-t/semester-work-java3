@@ -8,42 +8,50 @@ CREATE TABLE "user"
     password_hash VARCHAR(32) NOT NULL
 );
 
-CREATE TABLE "auth"
+CREATE TABLE auth
 (
     login VARCHAR(255) NOT NULL UNIQUE,
     uuid UUID NOT NULL,
     created_at TIMESTAMP
 );
 
-CREATE TABLE "article"
+CREATE TABLE article
 (
     id SERIAL PRIMARY KEY,
     title VARCHAR NOT NULL,
     body TEXT NOT NULL,
     author_id INTEGER REFERENCES "user"(id),
     published_at TIMESTAMP default current_timestamp,
+    thumbnail_path VARCHAR,
     view_count BIGINT default 0
 );
 
-CREATE TABLE "comment"
+CREATE TABLE comment
 (
     id SERIAL PRIMARY KEY,
     body TEXT NOT NULL,
     author_id INTEGER REFERENCES "user"(id),
-    article_id INTEGER REFERENCES "article"(id),
-    parent_comment_id INTEGER REFERENCES "comment"(id),
+    article_id INTEGER REFERENCES article(id),
+    parent_comment_id INTEGER REFERENCES comment(id),
     published_at TIMESTAMP default current_timestamp
 );
 
-CREATE TABLE "tag"
+CREATE TABLE tag
 (
     id SERIAL PRIMARY KEY,
     title VARCHAR NOT NULL UNIQUE
 );
 
-CREATE TABLE "article_tag"
+CREATE TABLE article_tag
 (
-    article_id INTEGER REFERENCES "article"(id),
-    tag_id INTEGER REFERENCES "tag"(id),
+    article_id INTEGER REFERENCES article(id),
+    tag_id INTEGER REFERENCES tag(id),
     PRIMARY KEY(tag_id, article_id)
+);
+
+CREATE TABLE like_article
+(
+    user_id INTEGER REFERENCES "user"(id),
+    article_id INTEGER REFERENCES article(id),
+    PRIMARY KEY (user_id, article_id)
 );

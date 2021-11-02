@@ -13,7 +13,22 @@ SELECT * FROM
 WHERE article_id = ?;
 
 
--- get all comments by article id + nested
+
+-- get all comments by article id + nested  RECURSIVE QUERY............
+----------------- NEW
+WITH RECURSIVE _comment AS
+                   (SELECT id, body, author_id, article_id, parent_comment_id, published_at,
+                           1 AS level
+                    FROM comment
+                    WHERE parent_comment_id IS NULL AND article_id = ?
+                    UNION
+                    SELECT comment.id, comment.body, comment.author_id, comment.article_id, comment.parent_comment_id, comment.published_at,
+                           (level + 1) AS level
+                    FROM comment INNER JOIN _comment ON _comment.id = comment.parent_comment_id)
+SELECT * FROM _comment ORDER BY level;
+
+
+----------------- OLD
 WITH parent AS
          (SELECT parent.id AS parent_id, parent.body AS parent_body, parent.author_id AS parent_author_id, parent.article_id AS parent_article_id, parent.parent_comment_id AS parent_comment_id, parent.published_at AS parent_published_at, author.login AS parent_author_login, author.first_name AS parent_author_name FROM
              comment parent left join "user" author on author.id = parent.author_id)
@@ -21,6 +36,5 @@ SELECT * FROM
     parent LEFT JOIN
     (SELECT child.id AS child_id, child.body AS child_body, child.author_id AS child_author_id, child.article_id AS child_article_id, child.parent_comment_id AS child_parent_comment_id, child.published_at AS child_published_at, ch_author.login AS child_author_login, ch_author.first_name AS child_author_name
      FROM comment child left join "user" ch_author on child.author_id = ch_author.id) AS child on child_parent_comment_id = parent_id
-WHERE parent_article_id = ?
+WHERE parent_article_id = 7
 ORDER BY parent_id;
-

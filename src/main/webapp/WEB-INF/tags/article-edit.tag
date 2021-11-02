@@ -5,19 +5,20 @@
 <%@attribute name="tagList" required="true" type="java.util.List"%>
 
 <div class="article-edit-wrapper">
-    <form action="<c:url value="/article/new"/>" method="POST">
-        <input type="file" name="thumbnailImage" id="fileupload">
-        <label for="fileupload">Выберите изображение для вашей статьи: </label>
-        <br>
-        <input type="image" src="<>" alt="put thumbnail" width="100">
-
-        <input class="effect-15" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${articleInstance.title}"/>">
-
-        <input class="effect-16" type="text" name="body" placeholder="Контентище" value="<c:out default="" value="${articleInstance.body}"/>">
-
+    <form action="<c:url value="/article/new"/>" method="POST" enctype="multipart/form-data">
+        <label for="fileupload"> Выберите изображение для вашей статьи: </label>
+        <input type="file" name="thumbnailImage" id="fileupload" accept=".jpg, .jpeg, .png">
+        <br> <br>
+        <label for="article-title"> Название статьи: </label>
+        <input class="" id="article-title" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${articleInstance.title}"/>">
+        <br> <br>
+        <label for="article-body"> Основное содержимое статьи: </label>
+        <input class="" id="article-body" type="text" name="body" placeholder="Основное содержимое" value="<c:out default="" value="${articleInstance.body}"/>">
+        <br> <br>
+        <p> Выберите тэги: </p>
         <div class="tags-wrapper">
-                <input type="checkbox" id="tag" name="tag" value="-1">
-                <label for="tag">Не выбрано</label>
+                <input type="checkbox" id="tag-1" name="tag" value="-1">
+                <label for="tag-1">Не выбрано</label>
                 <br>
             <c:forEach var="tag" items="${tagList}">
                 <input type="checkbox" id="tag" name="tag" value="${tag.id}">
@@ -25,6 +26,6 @@
                 <br>
             </c:forEach>
         </div>
-        <button class="btn" type="submit">Создать статью</button>
+        <button class="btn btn-primary" type="submit">Создать статью</button>
     </form>
 </div>

@@ -6,6 +6,7 @@ import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.repository.ArticleRepository;
 import ru.kpfu.itis.renett.repository.CommentRepository;
+import ru.kpfu.itis.renett.repository.TagRepository;
 import ru.kpfu.itis.renett.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -16,11 +17,13 @@ public class ArticleServiceImpl implements ArticleService {
     private ArticleRepository articleRepository;
     private UserRepository userRepository;
     private CommentRepository commentRepository;
+    private TagRepository tagRepository;
 
-    public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository, CommentRepository commentRepository) {
+    public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository, CommentRepository commentRepository, TagRepository tagRepository) {
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -35,7 +38,6 @@ public class ArticleServiceImpl implements ArticleService {
         return article;
     }
 
-    // TODO: IMPLEMENTATION OF ARTICLE SERVICE METHODS
     @Override
     public List<Article> getUsersArticles(User user) {
         if (user != null) {
@@ -66,13 +68,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<Article> getPortionOfArticles() {
-        return null;
-    }
-
-    @Override
     public List<Tag> getAllTags() {
-        return null;
+        return tagRepository.findAll();
     }
 
     @Override
@@ -111,8 +108,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<Article> getArticleComments(Article article) {
-        return null;
+    public List<Comment> getArticleComments(Article article) {
+        List<Comment> rawList = commentRepository.findAllArticleComments(article.getId());
+        rearrangeCommentsList(rawList);
+        return rawList;
     }
 
     @Override

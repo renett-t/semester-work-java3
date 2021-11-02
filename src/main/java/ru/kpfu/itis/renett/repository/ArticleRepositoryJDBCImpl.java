@@ -1,55 +1,56 @@
 package ru.kpfu.itis.renett.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import ru.kpfu.itis.renett.exceptions.DataBaseException;
 import ru.kpfu.itis.renett.models.Article;
-import ru.kpfu.itis.renett.models.Comment;
 import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.models.User;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
-import java.util.function.Function;
 
 public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     //language=sql
-    private static final String SQL_SELECT_ALL = "SELECT article.id AS article_id, article.title AS article_title, article.body AS article_body, article.author_id AS article_author_id, article.published_at AS article_published_at, article.view_count AS article_view_count, tag.id AS tag_id, tag.title AS tag_title, comment.id AS comment_id, comment.body AS comment_body, comment.author_id AS comment_author_id, comment.article_id AS comment_article_id, comment.parent_comment_id AS comment_parent_comment_id, comment.published_at AS comment_published_at, \"user\".id AS user_id, \"user\".first_name AS user_first_name, \"user\".second_name AS user_second_name, \"user\".email AS user_email, \"user\".login AS user_login, \"user\".password_hash AS  user_password_hash FROM\n" +
-            "article_tag left join article on article.id = article_tag.article_id\n" +
-            "            left join tag on tag.id = article_tag.tag_id\n" +
-            "            left join comment on article.id = comment.article_id\n" +
-            "            left join \"user\" on \"user\".id = article.author_id\n" +
-            "ORDER BY article.id;";
+    private static final String SQL_SELECT_ALL = "SELECT * FROM article";
     //language=sql
-    private static final String SQL_FIND_ALL_BY_AUTHOR_ID = "SELECT article.id AS article_id, article.title AS article_title, article.body AS article_body, article.author_id AS article_author_id, article.published_at AS article_published_at, article.view_count AS article_view_count, tag.id AS tag_id, tag.title AS tag_title, comment.id AS comment_id, comment.body AS comment_body, comment.author_id AS comment_author_id, comment.article_id AS comment_article_id, comment.parent_comment_id AS comment_parent_comment_id, comment.published_at AS comment_published_at, \"user\".id AS user_id, \"user\".first_name AS user_first_name, \"user\".second_name AS user_second_name, \"user\".email AS user_email, \"user\".login AS user_login, \"user\".password_hash AS  user_password_hash FROM\n" +
-            "    article_tag left join article on article.id = article_tag.article_id\n" +
-            "                left join tag on tag.id = article_tag.tag_id\n" +
-            "                left join comment on article.id = comment.article_id\n" +
-            "                left join \"user\" on \"user\".id = article.author_id\n" +
-            "WHERE article.author_id = ?;";
+    private static final String SQL_FIND_ALL_BY_AUTHOR_ID = "SELECT * FROM article WHERE author_id = ?;";
     //language=sql
-    private static final String SQL_INSERT_ARTICLE = "INSERT INTO article(title, body, author_id) VALUES (?, ?, ?);";
+    private static final String SQL_INSERT_ARTICLE = "INSERT INTO article(title, body, author_id, thumbnail_path) VALUES (?, ?, ?, ?);";
     //language=sql
-    private static final String SQL_FIND_BY_ID = "SELECT article.id AS article_id, article.title AS article_title, article.body AS article_body, article.author_id AS article_author_id, article.published_at AS article_published_at, article.view_count AS article_view_count, tag.id AS tag_id, tag.title AS tag_title, comment.id AS comment_id, comment.body AS comment_body, comment.author_id AS comment_author_id, comment.article_id AS comment_article_id, comment.parent_comment_id AS comment_parent_comment_id, comment.published_at AS comment_published_at, \"user\".id AS user_id, \"user\".first_name AS user_first_name, \"user\".second_name AS user_second_name, \"user\".email AS user_email, \"user\".login AS user_login, \"user\".password_hash AS  user_password_hash FROM\n" +
-            "article_tag left join article on article.id = article_tag.article_id\n" +
-            "            left join tag on tag.id = article_tag.tag_id\n" +
-            "            left join comment on article.id = comment.article_id\n" +
-            "            left join \"user\" on \"user\".id = article.author_id\n" +
-            "WHERE article.id = ?;";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM article WHERE id = ?";
     //language=sql
-    private static final String SQL_UPDATE_BY_ID = "UPDATE article set title = ?, body = ?, view_count = ? WHERE id=?";
+    private static final String SQL_UPDATE_BY_ID = "UPDATE article set title = ?, body = ?, thumbnail_path = ? WHERE id=?";
     //language=sql
     private static final String SQL_DELETE_BY_ID = "DELETE FROM article WHERE id = ?;";
     //language=sql
-    private static final String SQL_INSERT_ARTICLE_TAG = "INSERT INTO article_tag(article_id, tag_id) VALUES (?, ?);";  // todo IMPLEMENT INSERTING THERE
+    private static final String SQL_INSERT_ARTICLE_TAG = "INSERT INTO article_tag(article_id, tag_id) VALUES (?, ?);";
+    //language=sql
+    private static final String SQL_INSERT_LIKES = "INSERT INTO like_article VALUES (?, ?);";
+    //language=sql
+    private static final String SQL_REMOVE_LIKE = "DELETE FROM like_article WHERE user_id = ? AND article_id = ?";
+    //language=sql
+    private static final String SQL_COUNT_LIKES_FOR_ARTICLE = "SELECT COUNT(user_id) FROM like_article WHERE article_id = ?;";
+    //language=sql
+    private static final String SQL_UPDATE_VIEWS_BY_ARTICLE_ID = "UPDATE article set view_count = ? WHERE id=?";
+    //language=sql
+    private static final String SQL_FIND_ALL_BY_TAG_ID = "SELECT * FROM\n" +
+            "    article_tag LEFT JOIN article a on a.id = article_tag.article_id\n" +
+            "WHERE article_tag.tag_id = ?;";
+    //language=sql
+    private static final String SQL_FIND_ALL_ARTICLES_LIKED_BY_USER = "SELECT * FROM\n" +
+            "    like_article LEFT JOIN article a on a.id = like_article.article_id\n" +
+            "WHERE like_article.user_id = ?;";
 
     //article columns
-    private static final String id = "article_id";
-    private static final String title = "article_title";
-    private static final String body = "article_body";
-    private static final String authorId = "article_author_id";
-    private static final String publishedAt = "article_published_at";
-    private static final String viewCount = "article_view_count";
+    private static final String id = "id";
+    private static final String title = "title";
+    private static final String body = "body";
+    private static final String authorId = "author_id";
+    private static final String publishedAt = "published_at";
+    private static final String thumbnailPath = "thumbnail_path";
+    private static final String viewCount = "view_count";
 
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
@@ -59,13 +60,15 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    private final Function<ResultSet, Article> getArticleFromRow = row -> {
+    private final RowMapper<Article> getArticleFromRow = (row, rowNumber) -> {
         try {
             return Article.builder()
                     .id(row.getInt(id))
                     .title(row.getString(title))
                     .body(row.getString(body))
+                    .author(new User(row.getInt(authorId)))
                     .publishedAt(row.getTimestamp(publishedAt))
+                    .thumbnailPath(row.getString(thumbnailPath))
                     .viewCount(row.getLong(viewCount))
                     .commentList(new ArrayList<>())
                     .tagList(new ArrayList<>())
@@ -73,119 +76,20 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
         } catch (SQLException e) {
             throw new DataBaseException(e);
         }
-//    private Integer id;
-//    private String title;
-//    private String body;
-//    private User author;   -- обращение за юзером
-//    private Date publishedAt;
-//    private List<Comment> commentList;   -- обращение за комментариями
-//    private List<Tag> tagList;    -- обращение за тэгами
-//    private Long view_count;
-//    private int commentAmount;
-
     };
-
-    private final Function<ResultSet, Comment> getCommentFromRow = row -> {
-        try {
-            Comment parentComment = null;
-            int parentComId = row.getInt("comment_parent_comment_id");
-            if (parentComId > 0) {
-                parentComment = new Comment(parentComId);
-            }
-
-            return Comment.builder()
-                    .id(row.getInt("comment_id"))
-                    .body(row.getString("comment_body"))
-                    .author(new User(row.getInt("comment_author_id")))             // todo get USER, get PARENT COMMENT, get NESTED COMMENTS
-                    .parentComment(parentComment)
-                    .publishedAt(row.getTimestamp("comment_published_at"))
-                    .build();
-        } catch (SQLException e) {
-            throw new DataBaseException(e);
-        }
-    };
-
-    private final Function<ResultSet, User> getUserFromRow = row -> {
-        try {
-            return User.builder()
-                    .id(row.getInt("user_id"))
-                    .firstName(row.getString("user_first_name"))
-                    .secondName(row.getString("user_second_name"))
-                    .email(row.getString("user_email"))
-                    .login(row.getString("user_login"))
-                    .passwordHash(row.getString("user_password_hash"))
-                    .build();
-        } catch (SQLException e) {
-            throw new DataBaseException(e);
-        }
-    };
-
-    private final Function<ResultSet, Tag> getTagFromRow = row -> {
-        try {
-            return Tag.builder()
-                    .id(row.getInt("tag_id"))
-                    .title("tag_title")
-                    .build();
-        } catch (SQLException e) {
-            throw new DataBaseException(e);
-        }
-    };
-
-    @Override
-    public List<Article> findAllByOwnerId(int ownerId) {
-        List<Article> articleList = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_BY_AUTHOR_ID);) {
-
-            preparedStatement.setInt(1, ownerId);
-
-            try (ResultSet rows = preparedStatement.executeQuery()) {
-                Set<Integer> processedArticles = new HashSet<>();
-                Article newArticle = null;
-
-                while (rows.next()) {
-
-                    if (!processedArticles.contains(rows.getInt(id))) {
-                        newArticle = getArticleFromRow.apply(rows);
-                        articleList.add(newArticle);
-                    }
-
-                    if (rows.getObject("comment_id", Integer.class) != null) {
-                        Comment comment = getCommentFromRow.apply(rows);
-                        comment.setArticle(newArticle);
-                        newArticle.getCommentList().add(comment);
-                    }
-
-                    if (rows.getObject("tag_id", Integer.class) != null) {
-                        Tag tag = getTagFromRow.apply(rows);
-                        newArticle.getTagList().add(tag);
-                    }
-
-                    User author = getUserFromRow.apply(rows);
-                    newArticle.setAuthor(author);
-
-                    processedArticles.add(newArticle.getId());
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataBaseException("Problem with processing query to get all articles of user " + ownerId, e);
-        }
-
-        return articleList;
-    }
 
     @Override
     public void save(Article article) {
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE, Statement.RETURN_GENERATED_KEYS);) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE, Statement.RETURN_GENERATED_KEYS);) {
             int j = 1;
             preparedStatement.setString(j++, article.getTitle());
             preparedStatement.setString(j++, article.getBody());
             preparedStatement.setInt(j++, article.getAuthor().getId());
-
-            saveArticlesTags(article);
+            preparedStatement.setString(j++, article.getThumbnailPath());
 
             preparedStatement.executeUpdate();
+            saveArticlesTags(article);
 
             try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
                 resultSet.next();
@@ -197,25 +101,9 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
         }
     }
 
-    private void saveArticlesTags(Article article) {
-        for (Tag tag : article.getTagList()) {
-            try (Connection connection = dataSource.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE_TAG);) {
-
-                int j = 1;
-                preparedStatement.setString(j++, article.getId().toString());
-                preparedStatement.setString(j++, tag.getId().toString());
-
-                preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                throw new DataBaseException("Problem with saving article's tags", e);
-            }
-        }
-    }
-
     @Override
     public void update(Article article) {
-        jdbcTemplate.update(SQL_UPDATE_BY_ID, article.getTitle(), article.getBody(), article.getViewCount(), article.getId());
+        jdbcTemplate.update(SQL_UPDATE_BY_ID, article.getTitle(), article.getBody(), article.getThumbnailPath(), article.getId());
     }
 
     @Override
@@ -223,81 +111,78 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
         jdbcTemplate.update(SQL_DELETE_BY_ID, entity.getId());
     }
 
-    //todo recheck method
     @Override
-    public Optional<Article> findById(int id) {
-        Article searchedArticle = null;
+    public List<Article> findAllByOwnerId(int ownerId) {
+        return jdbcTemplate.query(SQL_FIND_ALL_BY_AUTHOR_ID, getArticleFromRow, ownerId);
+    }
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID);) {
+    @Override
+    public void updateLikesAmount(int userId, int articleId) {
+        jdbcTemplate.update(SQL_INSERT_LIKES, userId, articleId);
+    }
 
-            preparedStatement.setInt(1, id);
+    @Override
+    public void removeLikeFromArticle(int userId, int articleId) {
+        jdbcTemplate.update(SQL_REMOVE_LIKE, userId, articleId);
+    }
 
-            try (ResultSet row = preparedStatement.executeQuery();) {
-                if (row.next()) {
-                    searchedArticle = getArticleFromRow.apply(row);
+    @Override
+    public int getLikesAmount(int articleId) {
+        return jdbcTemplate.query(SQL_COUNT_LIKES_FOR_ARTICLE,
+                new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet row, int rowNum) throws SQLException {
+                        return row.getInt("count");
+                    }
+                },
+                articleId).get(0);
+    }
 
-                    do {
-                        Comment comment = getCommentFromRow.apply(row);
-                        comment.setArticle(searchedArticle);
-                        searchedArticle.getCommentList().add(comment);
+    @Override
+    public void updateViewCount(int articleId, int viewCount) {
+        jdbcTemplate.update(SQL_UPDATE_VIEWS_BY_ARTICLE_ID, viewCount, articleId);
+    }
 
-                        Tag tag = getTagFromRow.apply(row);
-                        searchedArticle.getTagList().add(tag);
+    @Override
+    public List<Article> findAllByTagId(int tagId) {
+        return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_ID, getArticleFromRow, tagId);
+    }
 
-                        User author = getUserFromRow.apply(row);
-                        searchedArticle.setAuthor(author);
+    @Override
+    public List<Article> findAllLikedArticles(int userId) {
+        return jdbcTemplate.query(SQL_FIND_ALL_ARTICLES_LIKED_BY_USER, getArticleFromRow, userId);
+    }
 
-                    } while (row.next());
-                    searchedArticle.setCommentAmount(searchedArticle.getCommentList().size());
+    private void saveArticlesTags(Article article) {
+        if (article.getTagList() != null) {
+            for (Tag tag : article.getTagList()) {
+                try (Connection connection = dataSource.getConnection();
+                     PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE_TAG);) {
 
-                    return Optional.of(searchedArticle);
-                } else {
-                    return Optional.empty();
+                    int j = 1;
+                    preparedStatement.setString(j++, article.getId().toString());
+                    preparedStatement.setString(j++, tag.getId().toString());
+
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    throw new DataBaseException("Problem with saving article's tags", e);
                 }
             }
-        } catch (SQLException e) {
-            throw new DataBaseException("Problem with processing query to get an article", e);
+        }
+    }
+
+    @Override
+    public Optional<Article> findById(int id) {
+        List<Article> articleList = jdbcTemplate.query(SQL_FIND_BY_ID, getArticleFromRow, id);
+        if (articleList.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(articleList.get(0));
         }
     }
 
     @Override
     public List<Article> findAll() {
-        List<Article> articleList = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement();
-                    ResultSet rows = statement.executeQuery(SQL_SELECT_ALL)) {
-
-            Set<Integer> processedArticles = new HashSet<>();
-            Article newArticle = null;
-
-            while (rows.next()) {
-
-                if (!processedArticles.contains(rows.getInt(id))) {
-                    newArticle = getArticleFromRow.apply(rows);
-                    articleList.add(newArticle);
-                }
-
-                if (rows.getObject("comment_id", Integer.class) != null) {
-                    Comment comment = getCommentFromRow.apply(rows);
-                    comment.setArticle(newArticle);
-                    newArticle.getCommentList().add(comment);
-                }
-
-                if (rows.getObject("tag_id", Integer.class) != null) {
-                    Tag tag = getTagFromRow.apply(rows);
-                    newArticle.getTagList().add(tag);
-                }
-
-                User author = getUserFromRow.apply(rows);
-                newArticle.setAuthor(author);
-
-                processedArticles.add(newArticle.getId());
-            }
-        } catch (SQLException e) {
-            throw new DataBaseException("Problem with processing query to get all articles", e);
-        }
-
-        return articleList;
+        return jdbcTemplate.query(SQL_SELECT_ALL, getArticleFromRow);
     }
 }
