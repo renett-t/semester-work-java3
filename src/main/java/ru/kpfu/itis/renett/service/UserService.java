@@ -8,7 +8,5 @@ public interface UserService {
     User getUserById(int id);
     void editUserData(User user);
     void deleteUser(User user, HttpServletRequest servletRequest);
-    void getLikedArticles(User user);
-    void getDislikedArticles(User user);
-    void getCreatedArticles(User user);
+    void addNewUser(User user);
 }

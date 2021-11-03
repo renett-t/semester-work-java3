@@ -12,7 +12,7 @@ import java.util.*;
 
 public class CommentRepositoryJDBCImpl implements CommentRepository{
     //language=sql
-    private static final String SQL_SELECT_ALL_COMMENTS = "SELECT * FROM comment";
+    private static final String SQL_SELECT_ALL_COMMENTS = "SELECT * FROM comment ORDER BY id";
     //language=sql
     private static final String SQL_FIND_COMMENT_BY_ID = "SELECT * FROM comment WHERE id = ?;";
     //language=sql
@@ -100,7 +100,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
 
     @Override
     public void update(Comment entity) {
-        jdbcTemplate.update(SQL_UPDATE_COMMENT_BY_ID, entity.getBody(), entity.getBody());
+        jdbcTemplate.update(SQL_UPDATE_COMMENT_BY_ID, entity.getBody(), entity.getId());
     }
 
     @Override

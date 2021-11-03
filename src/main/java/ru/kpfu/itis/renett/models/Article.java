@@ -19,7 +19,7 @@ public class Article {
     private String thumbnailPath;
     private List<Comment> commentList;
     private List<Tag> tagList;
-    private Long viewCount;
+    private Long viewAmount;
     private int commentAmount;
     private int likeAmount;
 
@@ -45,7 +45,7 @@ public class Article {
                 ", thumbnailPath='" + thumbnailPath + '\'' +
                 ", commentList=" + commentList +
                 ", tagList=" + tagList +
-                ", viewCount=" + viewCount +
+                ", viewCount=" + viewAmount +
                 ", commentAmount=" + commentAmount +
                 ", likeAmount=" + likeAmount +
                 '}';
@@ -56,11 +56,11 @@ public class Article {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return id.equals(article.id) && Objects.equals(title, article.title) && Objects.equals(body, article.body) && author.equals(article.author);
+        return id.equals(article.id) && Objects.equals(title, article.title) && Objects.equals(body, article.body) && (author.getId() == (article.author.getId()));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, body, author);
+        return Objects.hash(id, title, body, author.getId());
     }
 }

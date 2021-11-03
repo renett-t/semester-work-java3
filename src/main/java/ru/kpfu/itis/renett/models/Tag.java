@@ -7,9 +7,14 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class Tag {
     private Integer id;
     private String title;
+
+    public Tag(Integer id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

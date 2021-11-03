@@ -10,6 +10,8 @@ import java.util.UUID;
 @Builder
 @EqualsAndHashCode
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthModel {
     private String login;
     private UUID uuid;

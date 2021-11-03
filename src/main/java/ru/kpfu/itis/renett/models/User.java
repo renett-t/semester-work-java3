@@ -1,29 +1,21 @@
 package ru.kpfu.itis.renett.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.util.Objects;
 
 @Builder
+@AllArgsConstructor
 public class User {
     private Integer id;
     private String firstName;
     private String secondName;
-
     private String email;
     private String login;
     private String passwordHash;
 
     public User(String firstName, String secondName, String email, String login, String passwordHash) {
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.email = email;
-        this.login = login;
-        this.passwordHash = passwordHash;
-    }
-
-    public User(int id, String firstName, String secondName, String email, String login, String passwordHash) {
-        this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
         this.email = email;

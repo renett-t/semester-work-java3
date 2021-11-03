@@ -30,6 +30,11 @@ public class Comment {
         this.id = id;
     }
 
+    public Comment(int i, String s) {
+        id = i;
+        body = s;
+    }
+
     @Override
     public String toString() {
         int parentNum = -1;
@@ -53,11 +58,11 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return id.equals(comment.id) && body.equals(comment.body);
+        return id.equals(comment.id) && body.equals(comment.body) && (article.getId() == comment.getAuthor().getId()) && (author.getId() == (comment.getAuthor().getId()));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, body);
+        return Objects.hash(id, body, article.getId(), author.getId());
     }
 }

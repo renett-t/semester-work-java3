@@ -31,8 +31,15 @@ public class ArticleServiceImpl implements ArticleService {
         Optional<Article> foundArticle = articleRepository.findById(id);
 
         Article article = foundArticle.orElse(null);
+
         if (article != null) {
-            System.out.println(article.getCommentList());
+            User author = userRepository.findById(article.getAuthor().getId()).orElse(article.getAuthor());
+            article.setAuthor(author);
+            List<Comment> commentList = this.getArticleComments(article);
+            article.setCommentAmount(commentList.size());
+            article.setCommentList(this.rearrangeArticleCommentsList(commentList));
+            article.setTagList(this.getArticleTags(article));
+            article.setLikeAmount(this.getArticleLikesAmount(article));
         }
 
         return article;
@@ -41,7 +48,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<Article> getUsersArticles(User user) {
         if (user != null) {
-            return articleRepository.findAllByOwnerId(user.getId());
+            List<Article> articleList = articleRepository.findAllByOwnerId(user.getId());
+            initializeArticlesWithBasicInfo(articleList);
+            return articleList;
         } else {
             return new ArrayList<>();
         }
@@ -49,12 +58,19 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> getLikedArticles(User user) {
-        return null;
+        if (user != null) {
+            List<Article> articleList = articleRepository.findAllLikedArticles(user.getId());
+            initializeArticlesWithBasicInfo(articleList);
+            return articleList;
+        }
+        return new ArrayList<>();
     }
 
     @Override
     public List<Article> getAllArticles() {
-        return articleRepository.findAll();
+        List<Article> articleList = articleRepository.findAll();
+        initializeArticlesWithBasicInfo(articleList);
+        return articleList;
     }
 
     @Override
@@ -63,8 +79,19 @@ public class ArticleServiceImpl implements ArticleService {
         if (user != null) {
             List<Article> users = articleRepository.findAllByOwnerId(user.getId());
             all.removeAll(users);
+            initializeArticlesWithBasicInfo(all);
         }
         return all;
+    }
+
+    @Override
+    public List<Article> getAllArticlesByTag(Tag tag) {
+        if (tag != null) {
+            List<Article> articleList = articleRepository.findAllByTagId(tag.getId());
+            initializeArticlesWithBasicInfo(articleList);
+            return articleList;
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -74,82 +101,78 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Tag> getArticleTags(Article article) {
-        return null;
+        return tagRepository.findAllArticleTags(article.getId());
     }
 
     @Override
     public void createArticle(Article newArticle) {
-
+        if (newArticle != null) {
+            articleRepository.save(newArticle);
+        }
     }
 
     @Override
     public void deleteArticle(Article articleToDelete) {
-
+        if (articleToDelete != null) {
+            articleRepository.delete(articleToDelete);
+        }
     }
 
     @Override
     public void editArticle(Article editedArticle) {
-
+        if (editedArticle != null) {
+            articleRepository.update(editedArticle);
+        }
     }
 
     @Override
-    public void likeArticle(Article likedArticle, User user) {
-
+    public void likeArticle(User user, Article likedArticle) {
+        if (likedArticle != null && user != null) {
+            articleRepository.updateLikesAmount(user.getId(), likedArticle.getId());
+        }
     }
 
     @Override
-    public void dislikeArticle(Article dislikedArticle, User user) {
-
+    public void dislikeArticle(User user, Article dislikedArticle) {
+        if (user != null && dislikedArticle != null) {
+            articleRepository.removeLikeFromArticle(user.getId(), dislikedArticle.getId());
+        }
     }
 
     @Override
-    public boolean isArticleLikedByUser(Article article, User user) {
+    public boolean isArticleLikedByUser(User user, Article article) {
+        if (user != null && article != null) {
+            List<Article> articleList = this.getLikedArticles(user);
+            return articleList.contains(article);
+        }
         return false;
     }
 
     @Override
+    public int getArticleLikesAmount(Article article) {
+        return articleRepository.getLikesAmount(article.getId());
+    }
+
+    /**
+     * Not rearranged comment list. Call rearrangeArticleCommentsList before displaying article
+     * @param article
+     * @return raw list of article's comments
+     */
+    @Override
     public List<Comment> getArticleComments(Article article) {
-        List<Comment> rawList = commentRepository.findAllArticleComments(article.getId());
-        rearrangeCommentsList(rawList);
-        return rawList;
+        return commentRepository.findAllArticleComments(article.getId());
     }
 
     @Override
-    public void createComment(Comment newComment) {
-
-    }
-
-    @Override
-    public void deleteComment(Comment commentToDelete) {
-
-    }
-
-    @Override
-    public void editComment(Comment editedComment) {
-
-    }
-
-    private void setCommentAmount(Article article) {
-        int count = 0;
-        for(Comment comment : article.getCommentList()) {
-            count++;
-            for (Comment nested : comment.getChildComments()) {
-                count++;
-            }
-        }
-        article.setCommentAmount(count);
-    }
-
-    // so funny.................
-    private void rearrangeCommentsList(List<Comment> commentList) {
-        for (int i = 0; i < commentList.size(); i++) {
-            if (commentList.get(i).getChildComments().size() > 0) {
-                for (int n_i = 0; n_i < commentList.get(i).getChildComments().size(); n_i++) {
-                    for(int j = i; j < commentList.size(); j++) {
-                        if (commentList.get(j).getId().equals(commentList.get(i).getChildComments().get(n_i).getId())) {
-                            System.out.println("removing " + commentList.get(j).getId());
-                            commentList.remove(j);
-                        }
+    public List<Comment> rearrangeArticleCommentsList(List<Comment> commentList) {
+        for (int i = commentList.size() - 1; i >= 0; i--) {                                                                 // нужно идти с конца, так как id вложенных комментариев точно больше родительских
+            Comment child = commentList.get(i);
+            if (child.getParentComment() != null) {
+                commentList.remove(i);
+                for (int k = 0; k < commentList.size(); k++) {
+                    if (commentList.get(k).getId().equals(child.getParentComment().getId())){
+                        commentList.get(k).getChildComments().add(child);
+                        break;
                     }
                 }
             }
@@ -164,6 +187,39 @@ public class ArticleServiceImpl implements ArticleService {
             }
 
         }
+        return commentList;
+    }
 
+    @Override
+    public void createComment(Comment newComment) {
+        if (newComment != null) {
+            commentRepository.save(newComment);
+        }
+    }
+
+    @Override
+    public void deleteComment(Comment commentToDelete) {
+        if (commentToDelete != null) {
+            commentRepository.delete(commentToDelete);
+        }
+    }
+
+    @Override
+    public void editComment(Comment editedComment) {
+        if (editedComment != null) {
+            commentRepository.update(editedComment);
+        }
+    }
+
+    private void initializeArticlesWithBasicInfo(List<Article> articleList) {
+        for (Article art : articleList) {
+            this.initializeArticleWithBasicInfo(art);
+        }
+    }
+
+    private void initializeArticleWithBasicInfo(Article article) {
+        article.setCommentAmount(this.getArticleComments(article).size());
+        article.setLikeAmount(this.getArticleLikesAmount(article));
+        article.setTagList(this.getArticleTags(article));
     }
 }

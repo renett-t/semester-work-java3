@@ -4,6 +4,7 @@ import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.SecurityService;
+import ru.kpfu.itis.renett.service.UserService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -19,12 +20,14 @@ import java.util.UUID;
 @WebServlet("/signup")
 public class SignUpServlet extends HttpServlet {
     private SecurityService securityService;
+    private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ServletContext servletContext = config.getServletContext();
         securityService = (SecurityService) servletContext.getAttribute(Constants.CNTX_SECURITY_SERVICE);
+        userService = (UserService) servletContext.getAttribute(Constants.CNTX_USER_SERVICE);
     }
 
     @Override
@@ -51,8 +54,9 @@ public class SignUpServlet extends HttpServlet {
 
                 UUID uuid = securityService.signUp(newUser, request.getSession());
                 Cookie authorizedCookie = new Cookie(Constants.COOKIE_AUTHORIZED_NAME, uuid.toString());
-                authorizedCookie.setMaxAge(60*60);  //TODO Change cookie's max age
+                authorizedCookie.setMaxAge(60*60);  // TODO Change cookie's max age
                 response.addCookie(authorizedCookie);
+                userService.addNewUser(newUser);
 
                 response.sendRedirect(getServletContext().getContextPath() + "/profile");
                 return;

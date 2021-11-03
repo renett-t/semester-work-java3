@@ -13,9 +13,9 @@ import java.util.*;
 
 public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     //language=sql
-    private static final String SQL_SELECT_ALL = "SELECT * FROM article";
+    private static final String SQL_SELECT_ALL = "SELECT * FROM article ORDER BY id";
     //language=sql
-    private static final String SQL_FIND_ALL_BY_AUTHOR_ID = "SELECT * FROM article WHERE author_id = ?;";
+    private static final String SQL_FIND_ALL_BY_AUTHOR_ID = "SELECT * FROM article WHERE author_id = ? ORDER BY id;";
     //language=sql
     private static final String SQL_INSERT_ARTICLE = "INSERT INTO article(title, body, author_id, thumbnail_path) VALUES (?, ?, ?, ?);";
     //language=sql
@@ -37,11 +37,11 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     //language=sql
     private static final String SQL_FIND_ALL_BY_TAG_ID = "SELECT * FROM\n" +
             "    article_tag LEFT JOIN article a on a.id = article_tag.article_id\n" +
-            "WHERE article_tag.tag_id = ?;";
+            "WHERE article_tag.tag_id = ? ORDER by a.id;";
     //language=sql
     private static final String SQL_FIND_ALL_ARTICLES_LIKED_BY_USER = "SELECT * FROM\n" +
             "    like_article LEFT JOIN article a on a.id = like_article.article_id\n" +
-            "WHERE like_article.user_id = ?;";
+            "WHERE like_article.user_id = ? ORDER BY a.id;";
 
     //article columns
     private static final String id = "id";
@@ -69,7 +69,7 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
                     .author(new User(row.getInt(authorId)))
                     .publishedAt(row.getTimestamp(publishedAt))
                     .thumbnailPath(row.getString(thumbnailPath))
-                    .viewCount(row.getLong(viewCount))
+                    .viewAmount(row.getLong(viewCount))
                     .commentList(new ArrayList<>())
                     .tagList(new ArrayList<>())
                     .build();
