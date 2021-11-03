@@ -16,13 +16,7 @@
                     <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
                     <label for="floatingPassword">Пароль</label>
                 </div>
-
-                <div class="checkbox mb-3">
-                    <label>
-                        <input type="checkbox" value="remember-me"> Запомнить меня
-                    </label>
-                </div>
-
+                <br>
                 <div class="message-wrapper">
                     <c:if test="${not empty message}">
                         <h6 class="mx-3">${message}</h6>

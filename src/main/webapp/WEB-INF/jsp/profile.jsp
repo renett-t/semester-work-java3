@@ -11,10 +11,7 @@
                 <p>${user.email}</p>
             <a href="<c:url value="/logout"/>" class="logout-button" id="logout">Выйти</a>
         </div>
-
-        <hr>
-        <div class="heading-second">Ваши статьи: </div>
-
+        <br>
         <hr>
         <div class="heading-second">Понравившиеся статьи: </div>
 

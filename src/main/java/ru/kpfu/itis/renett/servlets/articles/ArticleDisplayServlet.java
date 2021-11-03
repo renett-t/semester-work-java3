@@ -1,6 +1,7 @@
 package ru.kpfu.itis.renett.servlets.articles;
 
 import ru.kpfu.itis.renett.models.Article;
+import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.service.ArticleService;
 import ru.kpfu.itis.renett.service.Constants;
 
@@ -24,12 +25,24 @@ public class ArticleDisplayServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int idOfRequestedArticle = -1;
+        int idOfRequestedArticle = 0;
 
         if (request.getParameter("id") != null) {
-            Article found = articleService.getArticleById(idOfRequestedArticle);
-            request.setAttribute("articleInstance", found);
-            // set edit button if user is registered and owns article: boolean author
+            try {
+                idOfRequestedArticle = Integer.parseInt(request.getParameter("id"));
+                Article requestedArticle = articleService.getArticleById(idOfRequestedArticle);
+                if (requestedArticle != null) {
+                    User user = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+                    if (user != null && user.getId() == requestedArticle.getAuthor().getId()) {
+                        request.setAttribute("author", user);
+                    }
+                    request.setAttribute("articleInstance", requestedArticle);
+                } else {
+                    request.setAttribute("message", "Извините, но данная статья не была найдена. ");
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("message", "Извините, но данная статья не была найдена. ");
+            }
         } else {
             request.setAttribute("message", "Извините, но данная статья не была найдена. ");
         }

@@ -10,6 +10,7 @@
         <input type="file" name="thumbnailImage" id="fileupload" accept=".jpg, .jpeg, .png">
         <br> <br>
         <label for="article-title"> Название статьи: </label>
+        <br>
         <input class="" id="article-title" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${articleInstance.title}"/>">
         <br> <br>
         <label for="article-body"> Основное содержимое статьи: </label>
@@ -28,4 +29,13 @@
         </div>
         <button class="btn btn-primary" type="submit">Создать статью</button>
     </form>
+<%--    https://ckeditor.com/docs/ckeditor5/latest/builds/guides/predefined-builds/quick-start.html#next-steps--%>
+    <script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#article-body' ) )
+            .catch( error => {
+                console.error( error );
+            });
+    </script>
 </div>

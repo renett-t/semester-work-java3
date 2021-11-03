@@ -32,4 +32,6 @@ public interface ArticleService {
     void createComment(Comment newComment);
     void deleteComment(Comment commentToDelete);
     void editComment(Comment editedComment);
+
+    Tag getTagById(int tagId);
 }

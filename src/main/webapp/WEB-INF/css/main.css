@@ -82,7 +82,7 @@
         cursor: pointer;
     }
 
-    .views-comments-wrapper, .edit-delete-wrapper {
+    .views-comments-wrapper, .edit-delete-wrapper, .article-footer-wrapper, .article-title-controls-wrapper {
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -108,23 +108,92 @@
         box-shadow: 0 0 2px 1px #000000;
         transform: scale(1.1);
     }
-
-    /* edit article styles - https://codepen.io/maheshambure21/pen/EozKKy */
-   .edit-delete-wrapper {
-
-   }
-
-    .edit-delete-wrapper .icon-img, .article-footer-wrapper .icon-img {
-        width: 20px;
-        height: 20px;
-        margin: 5px;
-    }
-
-    .article-heading-elements {
-        font-size: 14px;
+    .card-img-create {
+        height: 466px;
     }
 
     /* COMMENT STYLES */
     .child-comments-wrapper {
-        margin-left: 50px;
+        margin-left: 70px;
+    }
+
+
+    /* TAGS STYLES */
+    .tag-wrapper {
+        font-size: 12px;
+        text-decoration: none;
+        color: black;
+    }
+
+    /* ARTICLE DISPLAY PAGE STYLES */
+    .article-heading-elements {
+        margin: 10px;
+    }
+
+    .article-heading-elements h3 {
+
+    }
+
+    .article-heading-elements .article-heading-author {
+        font-size: 14px;
+        margin-left: 40px;
+    }
+
+    .article-title-controls-wrapper {
+        gap: 40px;
+    }
+
+    .edit-delete-wrapper {
+        margin-left: 40px;
+    }
+
+    .article-footer-wrapper {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 25px;
+        margin-left: 20px;
+    }
+
+    .edit-delete-wrapper .icon-img, .article-footer-wrapper .icon-img {
+        width: 40px;
+        height: 40px;
+        margin: 5px;
+    }
+
+    .article-footer-wrapper .like-icon {
+        cursor: pointer;
+    }
+
+    .article-body {
+        margin: 10px;
+    }
+
+    .comment-profile-icon {
+        height: 44px;
+        height: 44px;
+        margin: 3px;
+    }
+
+    .comment-heading-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 3px;
+        font-size: 12px;
+    }
+
+    .comment-body-wrapper {
+        font-size: 18px;
+    }
+
+    .reply-button {
+        align-items: center;
+        border: 0;
+        border-radius: 14px;
+        cursor: pointer;
+        padding: 2px;
+        background-color: transparent;
+        font-size: 14px;
+        color: blue;
     }

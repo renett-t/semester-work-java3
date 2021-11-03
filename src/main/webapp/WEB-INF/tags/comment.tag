@@ -5,17 +5,15 @@
 
 <div class="comment-wrapper">
     <div class="comment-heading-wrapper">
-        <img class="profile-icon" src="<c:url value="/resources/icons/profile.png"/>" alt="profile pic">
-        <p>${commentInstance.author.login}</p>
-        <p>${commentInstance.publishedAt.toLocaleString()}</p>
+        <img class="comment-profile-icon" src="<c:url value="/resources/icons/profile.png"/>" alt="profile pic">
+        <div>${commentInstance.author.login}</div>
+        <div>${commentInstance.publishedAt.toLocaleString()}</div>
     </div>
     <div class="comment-body-wrapper">
         ${commentInstance.body}
     </div>
     <div class="comment-footer-wrapper">
-        <form class="row action="<c:url value="/article?id=*/newcomment"/>" method="POST">
-        <button class="btn" type="submit"> Ответить </button>
-        </form>
+        <button class="reply-button" id="reply-button">Ответить</button>
     </div>
     <div class="child-comments-wrapper">
         <c:forEach var="child" items="${commentInstance.childComments}">

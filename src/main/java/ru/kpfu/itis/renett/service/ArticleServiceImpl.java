@@ -160,7 +160,12 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public List<Comment> getArticleComments(Article article) {
-        return commentRepository.findAllArticleComments(article.getId());
+        List<Comment> commentList = commentRepository.findAllArticleComments(article.getId());
+        for (Comment comment : commentList) {
+            User actualAuthor = userRepository.findById(comment.getAuthor().getId()).orElse(comment.getAuthor());
+            comment.setAuthor(actualAuthor);
+        }
+        return commentList;
     }
 
     @Override
@@ -209,6 +214,11 @@ public class ArticleServiceImpl implements ArticleService {
         if (editedComment != null) {
             commentRepository.update(editedComment);
         }
+    }
+
+    @Override
+    public Tag getTagById(int tagId) {
+        return tagRepository.findById(tagId).orElse(null);
     }
 
     private void initializeArticlesWithBasicInfo(List<Article> articleList) {
