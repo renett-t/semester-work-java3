@@ -1,9 +1,9 @@
 INSERT INTO "user"(first_name, second_name, email, login, password_hash) VALUES
-                                                                             ('Регина', 'Тяпкина', 'rtapkina@gmail.com', 'renett_t', 'qwerty007'),
-                                                                             ('Андрей', 'Солнцев', 'sunandre@gmail.com', 'sunandre', 'sunandre007'),
-                                                                             ('Елизавета', 'Лунева', 'moonaliza@gmail.com', 'moonaliza', 'qwerty007'),
-                                                                             ('Rus', 'Surname', 'rus.surname@gmail.com', 'rus.surname', 'rus.surname007'),
-                                                                             ('Адель', 'Маратов', 'adel.maratov@gmail.com', 'adel.maratov', 'adel.maratov007');
+                                                                             ('Регина', 'Тяпкина', 'rtapkina@gmail.com', 'renett_t', '1318b4f61f0dd525459cebdc446ba2fed827277a22b8b30549f14982c82a5939'),
+                                                                             ('Андрей', 'Солнцев', 'sunandre@gmail.com', 'sunandre', 'cbd114f2f00d7495ffe4ba3121ae9982831ff3d2c3cc18b4ef1e4d05559f0b87'),
+                                                                             ('Елизавета', 'Лунева', 'moonaliza@gmail.com', 'moonaliza', '1318b4f61f0dd525459cebdc446ba2fed827277a22b8b30549f14982c82a5939'),
+                                                                             ('Rus', 'Surname', 'rus.surname@gmail.com', 'rus.surname', 'c6293e5e4f716566a08f03813f1c68bf1b52b537df9704b4f925ef83695cf442'),
+                                                                             ('Адель', 'Маратов', 'adel.maratov@gmail.com', 'adel.maratov', '04b8bb985492a68885a7822f23822f493ffc3703c6f44b1dd270f5bfe5c587ed');
 
 INSERT INTO article(title, body, author_id, thumbnail_path, view_count) VALUES
                                                               ('Manual: Как создать статью на нашем сайте?', 'Просто переходи по ссылке и создавай, интерфейс же понятен =)', 1, '', 19),

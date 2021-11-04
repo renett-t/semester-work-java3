@@ -1,5 +1,6 @@
 package ru.kpfu.itis.renett.service;
 
+import ru.kpfu.itis.renett.exceptions.InvalidCookieException;
 import ru.kpfu.itis.renett.exceptions.InvalidSignInDataException;
 import ru.kpfu.itis.renett.models.AuthModel;
 import ru.kpfu.itis.renett.models.User;
@@ -8,6 +9,7 @@ import ru.kpfu.itis.renett.repository.UserRepository;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,30 +18,36 @@ public class SecurityServiceImpl implements SecurityService {
     private final UserRepository userRepository;
     private final RegistrationDataValidator registrationDataValidator;
     private final AuthRepository authRepository;
+    private final EncoderInterface encoder;
 
-    public SecurityServiceImpl(UserRepository userRepository, AuthRepository authRepository) {
+    public SecurityServiceImpl(UserRepository userRepository, AuthRepository authRepository, EncoderInterface encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
         this.registrationDataValidator = new RegistrationDataValidator();
         this.authRepository = authRepository;
     }
 
     @Override
-    public UUID signUp(User user, HttpSession session) {
+    public UUID signUp(User user, HttpServletRequest request, HttpServletResponse response) {
         UUID uuid = null;
+        HttpSession session = request.getSession(true);
+        String rawPass = user.getPasswordHash();
         if (registrationDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin())) {
-            user.setPasswordHash(user.getPasswordHash()); // TODO - PASSWORD HASHING
+            user.setPasswordHash(encoder.encodeString(rawPass));
             uuid = UUID.randomUUID();
             userRepository.save(user);
             AuthModel authModel = AuthModel.builder().login(user.getLogin()).uuid(uuid).build();
             authRepository.save(authModel);
             session.setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, user);
+            setAuthorizedCookieToResponse(uuid, response);
         }
         return uuid;
     }
 
     @Override
-    public UUID signIn(String login, String password, HttpSession session) {
+    public UUID signIn(String login, String password, HttpServletRequest request, HttpServletResponse response) {
         UUID uuid = null;
+        HttpSession session = request.getSession(true);
 
         User sessionUser = (User) session.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
         if (sessionUser != null) {
@@ -48,6 +56,7 @@ public class SecurityServiceImpl implements SecurityService {
             } else {
                 uuid = UUID.randomUUID();
                 authRepository.update(AuthModel.builder().login(login).uuid(uuid).build());
+                setAuthorizedCookieToResponse(uuid, response);
                 return uuid;
             }
         }
@@ -56,7 +65,8 @@ public class SecurityServiceImpl implements SecurityService {
         if (!optionalUser.isPresent()) {
             throw new InvalidSignInDataException("Пользователь с логином " + login + " не был найден. Повторите попытку.");
         }
-        if (password.equals(optionalUser.get().getPasswordHash())) { // TODO - password hashing
+        String passHash = encoder.encodeString(password);
+        if (passHash.equals(optionalUser.get().getPasswordHash())) {
             uuid = UUID.randomUUID();
             Optional<AuthModel> authModelFromRepo = authRepository.findAuthModelByLogin(login);
             if (authModelFromRepo.isPresent()) {
@@ -65,8 +75,8 @@ public class SecurityServiceImpl implements SecurityService {
                 authRepository.save(AuthModel.builder().login(login).uuid(uuid).build());
             }
             session.setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, optionalUser.get());
+            setAuthorizedCookieToResponse(uuid, response);
             return uuid;
-
         } else {
             throw new InvalidSignInDataException("Неверный пароль.");
         }
@@ -74,42 +84,45 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public boolean isAuthenticated(HttpServletRequest request) {
-        HttpSession httpSession = request.getSession();
-        if (httpSession.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME) == null) {
+        HttpSession httpSession = request.getSession(false);
+        User userFromSession;
+        if (httpSession == null) {
             return false;
+        }
+        userFromSession = (User) httpSession.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+        if (userFromSession != null) {
+            return true;
         } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession httpSession = request.getSession(false);
+        User userToLogOut = (User) httpSession.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+        AuthModel authModel = AuthModel.builder().login(userToLogOut.getLogin()).build();
+
+        if (userToLogOut != null) {
             Cookie[] cookies = request.getCookies();
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(Constants.COOKIE_AUTHORIZED_NAME)) {
-                    // TODO - доделать метод проверки акторизации
-                    //  получить пользователя по токену в куке
-                    //  если в сесии тот же логин, что и у пользователя - всё ок, если нет - кто-то хотел украсть куку, делаем логаут
-                    //  а если есть пользователь в сессии, но куку удалили..... (((
-                    // FFFFFFF
-                    return true;
-
+                    try {
+                        authModel.setUuid(UUID.fromString(cookie.getValue()));
+                    } catch (IllegalArgumentException ignored) {   // если в куках неправильные данные, без разницы, её всё равно нужно удалить
+                    }
+                    authRepository.delete(authModel);
+                    cookie.setMaxAge(1);
                 }
             }
         }
 
-        return false;
+        httpSession.removeAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
     }
 
-    @Override
-    public void logout(HttpServletRequest request) {
-        HttpSession httpSession = request.getSession();
-        User userToLogOut = (User) httpSession.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-        AuthModel authModel = AuthModel.builder().login(userToLogOut.getLogin()).build();
-
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(Constants.COOKIE_AUTHORIZED_NAME)) {
-                authModel.setUuid(UUID.fromString(cookie.getValue()));
-                authRepository.delete(authModel);
-            }
-            // todo: remove cookie
-        }
-
-        httpSession.removeAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+    private void setAuthorizedCookieToResponse(UUID uuid, HttpServletResponse response) {
+        Cookie authorizedCookie = new Cookie(Constants.COOKIE_AUTHORIZED_NAME, uuid.toString());
+        authorizedCookie.setMaxAge(60*60*24);
+        response.addCookie(authorizedCookie);
     }
 }

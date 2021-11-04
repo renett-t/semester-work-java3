@@ -3,6 +3,8 @@ package ru.kpfu.itis.renett.service;
 public class Constants {
     public static final String PROPS_FILE_PATH = "WEB-INF/properties/appdb.properties";
 
+    public static  final String HASHING_ALGORITHM_NAME = "SHA-256";
+
     public static final String DB_URL ="db.url";
     public static final String DB_USERNAME = "db.username";
     public static final String DB_PASSWORD = "db.password";
@@ -14,7 +16,7 @@ public class Constants {
     public static final String CNTX_USER_SERVICE = "userService";
     public static final String CNTX_FILE_SERVICE = "fileService";
 
-    public static final String COOKIE_AUTHORIZED_NAME = "uuid";
+    public static final String COOKIE_AUTHORIZED_NAME = "uuid-user";
     public static final String SESSION_USER_ATTRIBUTE_NAME = "auth_user";
     public static final String REQUEST_ATTRIBUTE_AUTHORIZED = "authorized";  // renaming here is dangerous!! then edit jsp files
 

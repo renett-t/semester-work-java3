@@ -28,7 +28,6 @@ public class AuthorizedAttributeFilter implements Filter {
             request.setAttribute(Constants.REQUEST_ATTRIBUTE_AUTHORIZED, true);
         } else {
             request.setAttribute(Constants.REQUEST_ATTRIBUTE_AUTHORIZED, false);
-            //maybe здесь делать редиректы если пользователь заходит на недоступную ему страничку, если он не авторизован...
         }
 
         filterChain.doFilter(request, response);

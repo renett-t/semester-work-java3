@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/article/new")
-public class ArticleNewServlet extends HttpServlet {
+public class ArticleAddServlet extends HttpServlet {
     private ArticleService articleService;
     private UserService userService;
     private FileService fileService;
@@ -38,10 +38,13 @@ public class ArticleNewServlet extends HttpServlet {
     }
 
     // https://www.baeldung.com/upload-file-servlet
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Part part = request.getPart("thumbnailImage");
+        String title = request.getParameter("title");
+        String body = request.getParameter("body");
+        // checkbox values
 
+        // TODO
     }
 }

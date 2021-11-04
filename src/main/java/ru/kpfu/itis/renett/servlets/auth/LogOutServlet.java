@@ -1,5 +1,6 @@
 package ru.kpfu.itis.renett.servlets.auth;
 
+import ru.kpfu.itis.renett.exceptions.InvalidCookieException;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.SecurityService;
 
@@ -23,7 +24,7 @@ public class LogOutServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        securityService.logout(request);
+        securityService.logout(request, response);
         response.sendRedirect(getServletContext().getContextPath() + "/signin");
     }
 }

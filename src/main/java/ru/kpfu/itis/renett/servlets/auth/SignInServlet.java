@@ -37,10 +37,7 @@ public class SignInServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            UUID uuid = securityService.signIn(login, password, request.getSession());
-            Cookie authorizedCookie = new Cookie(Constants.COOKIE_AUTHORIZED_NAME, uuid.toString());
-            authorizedCookie.setMaxAge(60*60);
-            response.addCookie(authorizedCookie);
+            UUID uuid = securityService.signIn(login, password, request, response);
 
             response.sendRedirect(getServletContext().getContextPath()  + "/profile");
             return;

@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/delete")
-public class ArticleDeleteServlet extends HttpServlet {
+@WebServlet("/like?id=*")
+public class ArticleLikeServlet extends HttpServlet {
     private ArticleService articleService;
 
     @Override
@@ -25,28 +25,25 @@ public class ArticleDeleteServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (request.getParameter("id") == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        } else {
-            try {
-                int id = Integer.parseInt(request.getParameter("id"));
-                Article articleToDelete = articleService.getArticleById(id);
-                if (articleToDelete != null) {
-                    User user = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-                    if (user == null || user.getId() != articleToDelete.getAuthor().getId()) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                        return;
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            Article article = articleService.getArticleById(id);
+            User user = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+            if (user != null) {
+                if (article != null) {
+                    if (articleService.isArticleLikedByUser(user, article)) {
+                        articleService.dislikeArticle(user, article);
                     } else {
-                        articleService.deleteArticle(articleToDelete);
+                        articleService.likeArticle(user, article);
                     }
                 } else {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
                 }
-            } catch (NumberFormatException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return;
+            } else {
+                response.sendRedirect(getServletContext().getContextPath() + "/signin");
             }
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 }

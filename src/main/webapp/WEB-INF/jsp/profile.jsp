@@ -13,7 +13,13 @@
         </div>
         <br>
         <hr>
-        <div class="heading-second">Понравившиеся статьи: </div>
-
+        <c:if test="${not empty likedArticlesList}">
+            <div class="heading-second">Понравившиеся статьи: </div>
+            <div class="card-group row row-cols-3 g-4">
+            <c:forEach items="${likedArticlesList}" var="likedArticle">
+                    <t:article-card articleInstance="${likedArticle}" tagList="${likedArticle.tagList}"></t:article-card>
+            </c:forEach>
+            </div>
+        </c:if>
     </div>
 </t:mainLayout>

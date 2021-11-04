@@ -6,7 +6,7 @@
 <div class="comment-wrapper">
     <div class="comment-heading-wrapper">
         <img class="comment-profile-icon" src="<c:url value="/resources/icons/profile.png"/>" alt="profile pic">
-        <div>${commentInstance.author.login}</div>
+        <div><b> ${commentInstance.author.login}    <b></b></div>
         <div>${commentInstance.publishedAt.toLocaleString()}</div>
     </div>
     <div class="comment-body-wrapper">
@@ -14,6 +14,7 @@
     </div>
     <div class="comment-footer-wrapper">
         <button class="reply-button" id="reply-button">Ответить</button>
+        <div class="comment-edit-wrapper"></div>
     </div>
     <div class="child-comments-wrapper">
         <c:forEach var="child" items="${commentInstance.childComments}">

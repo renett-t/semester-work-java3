@@ -25,18 +25,16 @@ public class AuthRepositoryJDBCImpl implements AuthRepository {
     //language=sql
     private static final String SQL_FIND_USER_BY_UUID = "SELECT * FROM\n" +
             "    auth left join \"user\" on auth.login = \"user\".login\n" +
-            "WHERE \"user\".login = ?;\n";
+            "WHERE \"user\".login = ?;";
 
     //auth model columns
     private static final String login = "login";
     private static final String uuid = "uuid";
     private static final String createdAt = "created_at";
 
-    private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
 
     public AuthRepositoryJDBCImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -51,14 +49,14 @@ public class AuthRepositoryJDBCImpl implements AuthRepository {
         List<User> userList = jdbcTemplate.query(SQL_FIND_USER_BY_UUID,
                 (row, rowNum) ->
                     User.builder()
-                    .id(row.getInt("\"user\".id"))
-                    .firstName(row.getString("\"user\".firstName"))
-                    .secondName(row.getString("\"user\".secondName"))
-                    .email(row.getString("\"user\".email"))
+                    .id(row.getInt("id"))
+                    .firstName(row.getString("firstName"))
+                    .secondName(row.getString("secondName"))
+                    .email(row.getString("email"))
                     .login(row.getString("\"user\".login"))
-                    .passwordHash(row.getString("\"user\".password"))
+                    .passwordHash(row.getString("password_hash"))
                     .build(),
-                uuid);
+                uuid.toString());
 
         if (userList.size() == 0) {
             return Optional.empty();

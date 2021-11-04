@@ -51,12 +51,7 @@ public class SignUpServlet extends HttpServlet {
         } else {
             try {
                 User newUser = new User(firstName, secondName, email, login, password);
-
-                UUID uuid = securityService.signUp(newUser, request.getSession());
-                Cookie authorizedCookie = new Cookie(Constants.COOKIE_AUTHORIZED_NAME, uuid.toString());
-                authorizedCookie.setMaxAge(60*60);  // TODO Change cookie's max age
-                response.addCookie(authorizedCookie);
-                userService.addNewUser(newUser);
+                UUID uuid = securityService.signUp(newUser, request, response);
 
                 response.sendRedirect(getServletContext().getContextPath() + "/profile");
                 return;
