@@ -2,6 +2,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@attribute name="commentInstance" required="true" type="ru.kpfu.itis.renett.models.Comment" %>
+<%@attribute name="parentCommentInstance" type="ru.kpfu.itis.renett.models.Comment" %>
 
 <div class="comment-wrapper">
     <div class="comment-heading-wrapper">
@@ -13,12 +14,12 @@
         ${commentInstance.body}
     </div>
     <div class="comment-footer-wrapper">
-        <button class="reply-button" id="reply-button">Ответить</button>
-        <div class="comment-edit-wrapper"></div>
+        <button class="reply-button" id="${commentInstance.id}" name="parentComment" value="${parentCommentInstance.id}">Ответить</button>
+        <div id="comment-edit-wrapper-${commentInstance.id}"></div>
     </div>
     <div class="child-comments-wrapper">
         <c:forEach var="child" items="${commentInstance.childComments}">
-            <t:comment commentInstance="${child}"/>
+            <t:comment commentInstance="${child}" parentCommentInstance="${commentInstance}"/>
         </c:forEach>
     </div>
 </div>

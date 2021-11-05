@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/delete")
+@WebServlet("/deleteArticle")
 public class ArticleDeleteServlet extends HttpServlet {
     private ArticleService articleService;
 

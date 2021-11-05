@@ -21,6 +21,7 @@ public class ConfigListener implements ServletContextListener {
         Properties properties = new Properties();
 
         try {
+            // TODO: read and understand https://stackoverflow.com/questions/2308188/getresourceasstream-vs-fileinputstream
             properties.load(servletContext.getResourceAsStream(Constants.PROPS_FILE_PATH));
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -46,7 +47,8 @@ public class ConfigListener implements ServletContextListener {
         servletContext.setAttribute(Constants.CNTX_SECURITY_SERVICE, new SecurityServiceImpl(userRepository, new AuthRepositoryJDBCImpl(dataSource), new Encoder(Constants.HASHING_ALGORITHM_NAME)));
         servletContext.setAttribute(Constants.CNTX_ARTICLE_SERVICE, new ArticleServiceImpl(articleRepository, userRepository, commentRepository, tagRepository));
         servletContext.setAttribute(Constants.CNTX_USER_SERVICE, new UserServiceImpl(userRepository));
-        servletContext.setAttribute(Constants.CNTX_FILE_SERVICE, new FileServiceImpl(Constants.STORAGE_URL));
+        servletContext.setAttribute(Constants.CNTX_FILE_SERVICE, new FileServiceImpl(properties.getProperty(Constants.STORAGE_URL)));
+        servletContext.setAttribute(Constants.CHAR_ENCODING_ATTR_NAME, Constants.CHAR_ENCODING);
     }
 
     @Override

@@ -5,33 +5,33 @@
 
 <t:mainLayout title="Регистрация">
     <div class="registration-form-wrapper">
-        <form class="row g-3 registration-form" action="<c:url value="/signup"/>" method="POST">
-            <div class="col-md-4">
-                <label for="validationDefault01" class="form-label">Ваше имя</label>
-                <input name="firstName" type="text" value="<c:out default="" value="${session.getAttribute(\"firstName\")}"/>" class="form-control" id="validationDefault01" required>
+        <form class="registration-form" action="<c:url value="/signup"/>" method="POST">
+            <div>
+                <label for="nameInput" class="form-label">Ваше имя</label>
+                <input name="firstName input-field" id="nameInput" type="text" value="<c:out default="" value="${session.getAttribute(\"firstName\")}"/>" class="form-control" required>
             </div>
-            <div class="col-md-4">
-                <label for="validationDefault02" class="form-label">Ваша фамилия</label>
-                <input name="secondName" type="text" value="<c:out default="" value="${session.getAttribute(\"secondName\")}"/>" class="form-control" id="validationDefault02" required>
+            <div>
+                <label for="name2Input" class="form-label">Ваша фамилия</label>
+                <input name="secondName" id="name2Input" type="text" value="<c:out default="" value="${session.getAttribute(\"secondName\")}"/>" class="form-control" required>
             </div>
-            <div class="col-md-4">
-                <label for="validationDefault02" class="form-label">E-mail</label>
-                <input name="email" type="text" value="<c:out default="" value="${session.getAttribute(\"email\")}"/>" class="form-control" id="validationDefault03" required>
+            <div>
+                <label for="emailInput" class="form-label">E-mail</label>
+                <input name="email input-field" id="emailInput" type="text" value="<c:out default="" value="${session.getAttribute(\"email\")}"/>" class="form-control" required>
             </div>
-            <div class="col-md-4">
-                <label for="validationDefaultUsername" class="form-label">Логин (никнэйм)</label>
+            <div>
+                <label for="loginInput" class="form-label">Логин (никнэйм)</label>
                 <div class="input-group">
                     <span class="input-group-text" id="inputGroupPrepend2">@</span>
-                    <input name="login" type="text" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" class="form-control" id="validationDefaultUsername"  aria-describedby="inputGroupPrepend2" required>
+                    <input name="login input-field" id="loginInput" type="text" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" class="form-control" aria-describedby="inputGroupPrepend2" required>
                 </div>
             </div>
-            <div class="col-md-4">
-                <label for="validationDefault02" class="form-label">Пароль</label>
-                <input name="password" type="password" class="form-control" id="validationDefault05" required>
+            <div>
+                <label for="passwordInput" class="form-label">Пароль</label>
+                <input name="password input-field" id="passwordInput" type="password" class="form-control" required>
             </div>
-            <div class="col-md-4">
-                <label for="validationDefault02" class="form-label">Повторите пароль</label>
-                <input name="repeatedPassword" type="password" class="form-control" id="validationDefault06" required>
+            <div>
+                <label for="repeatedPasswordInput" class="form-label">Повторите пароль</label>
+                <input name="repeatedPassword input-field" id="repeatedPasswordInput" type="password" class="form-control" required>
             </div>
             <div class="col-12">
                 <div class="form-check">
@@ -49,11 +49,15 @@
             </div>
 
             <div class="col-12">
-                <button class="btn btn-primary" type="submit">Sign up!</button>
+                <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
             </div>
         </form>
         <div>
             Уже зарегистрированы? <a class="" href="<c:url value="/signin"/>">Вход</a>
         </div>
     </div>
+
+    <script>
+        <%@include file = "/WEB-INF/scripts/form-control.js"%>
+    </script>
 </t:mainLayout>

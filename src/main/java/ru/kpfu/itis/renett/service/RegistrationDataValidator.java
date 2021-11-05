@@ -2,7 +2,6 @@ package ru.kpfu.itis.renett.service;
 
 import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegistrationDataValidator implements UserDataValidatorInterface {
@@ -16,7 +15,7 @@ public class RegistrationDataValidator implements UserDataValidatorInterface {
     }
 
     public boolean isNameCorrect(String name) throws InvalidRegistrationDataException {
-        if ((name.length() > 0) & (name.length() < 100)) {
+        if (name != null && name.length() > 0) {
             return true;
         } else {
             throw new InvalidRegistrationDataException("Invalid value for name: \'" + name + "\'");
@@ -25,8 +24,7 @@ public class RegistrationDataValidator implements UserDataValidatorInterface {
 
     public boolean isEmailCorrect(String email) throws InvalidRegistrationDataException {
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(email);
-        if (email.length() > 5 && matcher.matches()) {
+        if (email != null && email.length() > 5 && pattern.matcher(email).matches()) {
             return true;
         } else {
             throw new InvalidRegistrationDataException("Invalid value for email: \'" + email + "\'");
@@ -34,7 +32,7 @@ public class RegistrationDataValidator implements UserDataValidatorInterface {
     }
 
     public boolean isLoginCorrect(String login) throws InvalidRegistrationDataException {
-        if (login.length() > 5) {
+        if (login != null && login.length() > 5) {
             return true;
         } else {
             throw new InvalidRegistrationDataException("Invalid value for login. It should contain more than 5 characters");

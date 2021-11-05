@@ -20,5 +20,7 @@ public class Constants {
     public static final String SESSION_USER_ATTRIBUTE_NAME = "auth_user";
     public static final String REQUEST_ATTRIBUTE_AUTHORIZED = "authorized";  // renaming here is dangerous!! then edit jsp files
 
-    public static final String STORAGE_URL = "somehow/webapp/resources/articles/";
+    public static final String STORAGE_URL = "storage.url";
+    public static final String CHAR_ENCODING = "UTF-8";
+    public static final String CHAR_ENCODING_ATTR_NAME = "encoding";
 }

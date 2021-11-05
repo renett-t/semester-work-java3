@@ -28,7 +28,7 @@ public class ProfilePageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
         if (user != null) {
-            List<Article> likedArticlesList = articleService.getUsersArticles(user);
+            List<Article> likedArticlesList = articleService.getLikedArticles(user);
             request.setAttribute("user", user);
             request.setAttribute("likedArticlesList", likedArticlesList);
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);

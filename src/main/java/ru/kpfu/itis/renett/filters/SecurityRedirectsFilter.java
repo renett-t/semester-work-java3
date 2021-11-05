@@ -1,24 +1,21 @@
 package ru.kpfu.itis.renett.filters;
 
-import ru.kpfu.itis.renett.exceptions.InvalidCookieException;
-import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.SecurityService;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @WebFilter("/*")
 public class SecurityRedirectsFilter implements Filter {
     private SecurityService securityService;
     private Map<String, String> paths;
+    private static final String DEFAULT_REDIRECT_PATH = "/signin";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -28,38 +25,29 @@ public class SecurityRedirectsFilter implements Filter {
     }
 
     private Map<String, String> initializePathsMap() {
-        Map<String, String> protectedPaths = new HashMap<>();
-        protectedPaths.put("/profile", "/signin");
-        protectedPaths.put("", "");
-        return null;
+        List<String> pathsToProtect = Arrays.asList("/profile", "/logout", "/newArticle", "/deleteArticle", "/editArticle", "/like", "/newComment", "/deleteComment", "/editComment");
+        return pathsToProtect.stream().collect(Collectors.toMap(key -> key, value -> DEFAULT_REDIRECT_PATH));
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        boolean isAccessible = false;
+        boolean isAccessible = true;
         String pathToRedirect = "";
 
-        if (securityService.isAuthenticated(request)) {
-            isAccessible = true;
-        } else { // попытка проверить, авторизировался ли пользователь, имеется ли нужная кука
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals(Constants.COOKIE_AUTHORIZED_NAME)) {
-                        // TODO
-                        isAccessible = true;
-                        filterChain.doFilter(request, response);
-                        return;
-                    }
+        if (!securityService.isAuthenticated(request)) {
+            for (Map.Entry<String, String> entry: paths.entrySet()){
+                if (request.getRequestURI().startsWith(request.getServletContext().getContextPath() + entry.getKey())) {
+                    pathToRedirect = entry.getValue();
+                    isAccessible = false;
                 }
             }
-            // TODO - check paths
         }
 
         if (!isAccessible) {
             response.sendRedirect(request.getServletContext().getContextPath() + pathToRedirect);
+            return;
         }
 
         filterChain.doFilter(request, response);

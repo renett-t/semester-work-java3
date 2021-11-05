@@ -12,11 +12,11 @@
             <h3>${articleInstance.title}</h3>
             <c:if test="${not empty author}">
                 <div class="edit-delete-wrapper">
-                    <a href="<c:url value="/edit?id=${articleInstance.id}"/>">
+                    <a href="<c:url value="/editArticle?id=${articleInstance.id}"/>">
                         <img class="icon-img edit-icon" src="<c:url value="/resources/icons/edit.png"/>" alt="edit">
                     </a>
-                    <a href="<c:url value="/delete?id=${articleInstance.id}"/>">
-                        <img class="icon-img delete-icon" src="<c:url value="/resources/icons/cancel.png"/>" alt="delete">
+                    <a href="<c:url value="/deleteArticle?id=${articleInstance.id}"/>">
+                        <img class="icon-img delete-icon" id="delete-icon-request" src="<c:url value="/resources/icons/cancel.png"/>" alt="delete">
                     </a>
                 </div>
             </c:if>
@@ -34,7 +34,7 @@
             <img class="icon-img comment-icon" src="<c:url value="/resources/icons/comment.png"/>" alt="comments count icon">
         </div>
          <div class="article-comments-count">${articleInstance.likeAmount}
-             <img class="icon-img like-icon" src="<c:url value="/resources/icons/like.png"/>" alt="likes count icon">
+             <img class="icon-img like-icon" id="like-icon-request" src="<c:url value="/resources/icons/like.png"/>" alt="likes count icon">
          </div>
     </div>
     <hr>
@@ -56,4 +56,6 @@
     </div>
 
 </div>
-<script src="/WEB-INF/scripts/article-display-scripts.js"></script>
+<script>
+    <%@include file = "/WEB-INF/scripts/article-display-scripts.js"%>
+</script>

@@ -14,7 +14,7 @@
                 </c:forEach>
                 <div class="col">
                     <div class="card h-100">
-                        <a href="<c:url value="/article/new"/>">
+                        <a href="<c:url value="/newArticle"/>">
                             <img src="<c:url value="/resources/icons/new.png"/>" class="card-img-top card-img-create" alt="create new article image">
                             <div class="card-body">
                                 <h5 class="card-title">Создай свою статью</h5>
