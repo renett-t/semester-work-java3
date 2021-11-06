@@ -19,7 +19,7 @@
                 <br>
                 <div class="message-wrapper">
                     <c:if test="${not empty message}">
-                        <h6 class="mx-3">${message}</h6>
+                        <h6>${message}</h6>
                     </c:if>
                 </div>
 

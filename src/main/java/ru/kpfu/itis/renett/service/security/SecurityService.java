@@ -1,13 +1,11 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.security;
 
-import ru.kpfu.itis.renett.exceptions.InvalidCookieException;
 import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
 import ru.kpfu.itis.renett.exceptions.InvalidSignInDataException;
 import ru.kpfu.itis.renett.models.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 public interface SecurityService {

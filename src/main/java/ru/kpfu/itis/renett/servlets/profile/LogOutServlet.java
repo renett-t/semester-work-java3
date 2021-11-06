@@ -1,8 +1,7 @@
-package ru.kpfu.itis.renett.servlets.auth;
+package ru.kpfu.itis.renett.servlets.profile;
 
-import ru.kpfu.itis.renett.exceptions.InvalidCookieException;
 import ru.kpfu.itis.renett.service.Constants;
-import ru.kpfu.itis.renett.service.SecurityService;
+import ru.kpfu.itis.renett.service.security.SecurityService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

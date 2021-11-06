@@ -1,9 +1,10 @@
 package ru.kpfu.itis.renett.servlets.articles;
 
+import ru.kpfu.itis.renett.exceptions.InvalidRequestDataException;
 import ru.kpfu.itis.renett.models.Article;
-import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.service.ArticleService;
+import ru.kpfu.itis.renett.service.articleService.ArticleService;
 import ru.kpfu.itis.renett.service.Constants;
+import ru.kpfu.itis.renett.service.security.RequestValidatorInterface;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,37 +17,28 @@ import java.io.IOException;
 @WebServlet("/deleteArticle")
 public class ArticleDeleteServlet extends HttpServlet {
     private ArticleService articleService;
+    private RequestValidatorInterface requestValidator;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         articleService = (ArticleService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SERVICE);
+        requestValidator = (RequestValidatorInterface) config.getServletContext().getAttribute(Constants.CNTX_REQUEST_VALIDATOR);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (request.getParameter("id") == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        } else {
-            try {
-                int id = Integer.parseInt(request.getParameter("id"));
-                Article articleToDelete = articleService.getArticleById(id);
-                if (articleToDelete != null) {
-                    User user = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-                    if (user.getId() != articleToDelete.getAuthor().getId()) {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                        return;
-                    } else {
-                        articleService.deleteArticle(articleToDelete);
-                    }
-                } else {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
-                }
-            } catch (NumberFormatException e) {
+        try {
+            int id = requestValidator.checkRequestedIdCorrect(request.getParameter("id"));
+            Article articleToDelete = articleService.getArticleById(id);
+            if (articleToDelete != null) {
+                articleService.deleteArticle(articleToDelete);
+            } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
+        } catch (InvalidRequestDataException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 }

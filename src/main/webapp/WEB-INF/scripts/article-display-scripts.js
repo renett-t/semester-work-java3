@@ -6,22 +6,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
         button.onclick = insertCommentEditField;
     }
 
-    // function checkUserAuthorized() {
-    //     console.log(${pageContext.request.authorized});
-    // }
-
     function insertCommentEditField() {
-        // checkUserAuthorized()
-        id = this.id;
-        console.log("ID: " + id);
-        document.getElementById("comment-edit-wrapper-" + id).innerHTML = '<div class="comment-edit-wrapper"><form id="comment-form" action="<c:url value="/newComment?id=${id}"/>"><textarea id="comment-body" form="comment-form" name="commentBody" placeholder="Введите текст комментария"></textarea><br><button class="btn" type="submit" name="submit" value="create">Отправить комментарий</button></form></div>';
+        prevId = this.id;
+        articleId = this.dataset.article
+        console.log("ID: " + prevId);
+        document.getElementById("comment-edit-wrapper-" + prevId).innerHTML = '<div class="comment-edit-wrapper"><form id="comment-form" action="${pageContext.request.contextPath}/newComment?id=${prevId}"><textarea id="comment-body" form="comment-form" name="commentBody" placeholder="Введите текст комментария"></textarea><br><input type="hidden" name="articleId" value="${articleId}"><input type="hidden" name="parentCommentId" value="${prevId}"><button class="btn" type="submit" name="submit" value="create">Отправить комментарий</button></form></div>';
     }
 
-    document.getElementById("like-icon-request").onclick = async function (event) {
+    document.getElementById("like-icon-request").onclick = async function () {
         likeIcon = document.getElementById("like-icon-request");
         id = document.getElementById("article-id").value
         url = "${pageContext.request.contextPath}" + "/like?id=" + id;
-        console.log(url);
         let response = await fetch(url);
 
         if (response.ok) {
@@ -38,10 +33,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 
     document.getElementById("delete-icon-request").onclick = async function () {
-        let isConfirmed = confirm("Вы действительно желаете удалить статью? Это действие нельзя отменить.");
-        console.log(isConfirmed);
+        let isConfirmed = confirm(" Do you really want to delete article? This cannot be undone.");
         if (isConfirmed) {
-            id = document.getElementById("article-id").value
+            id = this.dataset.id;
+            console.log(id);
             url = "${pageContext.request.contextPath}" + "/deleteArticle?id=" + id;
             console.log(url);
             let response = await fetch(url);

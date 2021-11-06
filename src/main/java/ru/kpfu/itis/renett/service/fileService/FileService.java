@@ -1,4 +1,4 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.fileService;
 
 import java.io.InputStream;
 

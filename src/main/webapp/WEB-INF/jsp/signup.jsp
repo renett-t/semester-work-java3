@@ -61,8 +61,8 @@
             Уже зарегистрированы? <a class="" href="<c:url value="/signin"/>">Вход</a>
         </div>
     </div>
-
-    <script>
-        <%@include file = "/WEB-INF/scripts/form-control.js"%>
-    </script>
 </t:mainLayout>
+
+<script>
+    <%@include file = "/WEB-INF/scripts/form-control.js"%>
+</script>

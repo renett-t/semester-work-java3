@@ -1,10 +1,14 @@
 package ru.kpfu.itis.renett.listeners;
 
+import ru.kpfu.itis.renett.repository.*;
+import ru.kpfu.itis.renett.service.Constants;
+import ru.kpfu.itis.renett.service.articleService.*;
+import ru.kpfu.itis.renett.service.fileService.*;
+import ru.kpfu.itis.renett.service.security.*;
+import ru.kpfu.itis.renett.service.userService.*;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import ru.kpfu.itis.renett.repository.*;
-import ru.kpfu.itis.renett.service.*;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -21,7 +25,6 @@ public class ConfigListener implements ServletContextListener {
         Properties properties = new Properties();
 
         try {
-            // TODO: read and understand https://stackoverflow.com/questions/2308188/getresourceasstream-vs-fileinputstream
             properties.load(servletContext.getResourceAsStream(Constants.PROPS_FILE_PATH));
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -44,16 +47,19 @@ public class ConfigListener implements ServletContextListener {
         CommentRepository commentRepository = new CommentRepositoryJDBCImpl(dataSource);
 
         // Services Initialization
-        servletContext.setAttribute(Constants.CNTX_SECURITY_SERVICE, new SecurityServiceImpl(userRepository, new AuthRepositoryJDBCImpl(dataSource), new Encoder(Constants.HASHING_ALGORITHM_NAME)));
+        servletContext.setAttribute(Constants.CNTX_SECURITY_SERVICE, new SecurityServiceImpl(userRepository, authRepository, new Encoder(Constants.HASHING_ALGORITHM_NAME)));
         servletContext.setAttribute(Constants.CNTX_ARTICLE_SERVICE, new ArticleServiceImpl(articleRepository, userRepository, commentRepository, tagRepository));
         servletContext.setAttribute(Constants.CNTX_USER_SERVICE, new UserServiceImpl(userRepository));
         servletContext.setAttribute(Constants.CNTX_FILE_SERVICE, new FileServiceImpl(properties.getProperty(Constants.STORAGE_URL)));
+        servletContext.setAttribute(Constants.CNTX_PREFERENCES_MANAGER, new UserPreferencesManager());
+        servletContext.setAttribute(Constants.CNTX_REQUEST_VALIDATOR, new RequestValidator());
+
+        // Encoding Initialization
         servletContext.setAttribute(Constants.CHAR_ENCODING_ATTR_NAME, Constants.CHAR_ENCODING);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
     }
 
 }

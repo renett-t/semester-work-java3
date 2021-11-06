@@ -3,7 +3,7 @@ package ru.kpfu.itis.renett.servlets.articles;
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.service.ArticleService;
+import ru.kpfu.itis.renett.service.articleService.ArticleService;
 import ru.kpfu.itis.renett.service.Constants;
 
 import javax.servlet.ServletConfig;
@@ -56,7 +56,6 @@ public class ArticleAllServlet extends HttpServlet {
             list = articleService.getAllArticles();
         }
 
-        // TODO: cookies of last viewed article
         request.setAttribute("articlesList", list);
         getServletContext().getRequestDispatcher("/WEB-INF/jsp/articles_page.jsp").forward(request, response);
     }

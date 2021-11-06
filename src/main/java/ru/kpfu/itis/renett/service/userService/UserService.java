@@ -1,4 +1,4 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.userService;
 
 import ru.kpfu.itis.renett.models.User;
 

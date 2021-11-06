@@ -1,4 +1,4 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

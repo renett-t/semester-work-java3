@@ -1,4 +1,4 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.articleService;
 
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.Comment;

@@ -7,14 +7,14 @@
 <div class="comment-wrapper">
     <div class="comment-heading-wrapper">
         <img class="comment-profile-icon" src="<c:url value="/resources/icons/profile.png"/>" alt="profile pic">
-        <div><b> ${commentInstance.author.login}    <b></b></div>
+        <div><b> ${commentInstance.author.login} <b></b></div>
         <div>${commentInstance.publishedAt.toLocaleString()}</div>
     </div>
     <div class="comment-body-wrapper">
         ${commentInstance.body}
     </div>
     <div class="comment-footer-wrapper">
-        <button class="reply-button" id="${commentInstance.id}" name="parentComment" value="${parentCommentInstance.id}">Ответить</button>
+        <button class="reply-button" id="${commentInstance.id}" data-article="${commentInstance.article.id}" name="parentComment" value="${parentCommentInstance.id}">Ответить</button>
         <div id="comment-edit-wrapper-${commentInstance.id}"></div>
     </div>
     <div class="child-comments-wrapper">

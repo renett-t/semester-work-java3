@@ -5,7 +5,12 @@
 <t:mainLayout title="Welcome!">
     <div class="message-wrapper">
         <c:if test="${not empty message}">
-            <h6 class="mx-3">${message}</h6>
+            <h6>${message}</h6>
         </c:if>
     </div>
+    <%--@elvariable id="lwai" type="ru.kpfu.itis.renett.models.Article"--%>
+    <c:if test="${not empty lwai}">
+        <p>Последняя просмотренная Вами статья: </p>
+        <t:article-card articleInstance="${lwai}" tagList="${lwai.tagList}"></t:article-card>
+    </c:if>
 </t:mainLayout>

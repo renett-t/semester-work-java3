@@ -1,7 +1,7 @@
 package ru.kpfu.itis.renett.filters;
 
 import ru.kpfu.itis.renett.service.Constants;
-import ru.kpfu.itis.renett.service.SecurityService;
+import ru.kpfu.itis.renett.service.security.SecurityService;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;

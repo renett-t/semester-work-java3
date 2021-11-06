@@ -1,11 +1,12 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.userService;
 
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.repository.UserRepository;
+import ru.kpfu.itis.renett.service.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {

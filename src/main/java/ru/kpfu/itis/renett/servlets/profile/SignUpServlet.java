@@ -1,16 +1,15 @@
-package ru.kpfu.itis.renett.servlets.auth;
+package ru.kpfu.itis.renett.servlets.profile;
 
 import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.service.Constants;
-import ru.kpfu.itis.renett.service.SecurityService;
-import ru.kpfu.itis.renett.service.UserService;
+import ru.kpfu.itis.renett.service.security.SecurityService;
+import ru.kpfu.itis.renett.service.userService.UserService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,26 +40,24 @@ public class SignUpServlet extends HttpServlet {
         String secondName = request.getParameter("secondName");
         String email = request.getParameter("email");
         String login = request.getParameter("login");
-        String password = request.getParameter("password");
-        String repeatedPassword = request.getParameter("repeatedPassword");
 
-        if (!password.equals(repeatedPassword)) {
-            request.setAttribute("message", "Пароли не совпадают попробуйте снова.");
-        } else if (password.length() < 5) {
-            request.setAttribute("message", "Слишком короткий пароль, попробуйте снова");
-        } else {
-            try {
-                User newUser = new User(firstName, secondName, email, login, password);
-                UUID uuid = securityService.signUp(newUser, request, response);
+        try {
+            User newUser = new User(firstName, secondName, email, login);
+            securityService.signUp(newUser, request, response);
 
-                response.sendRedirect(getServletContext().getContextPath() + "/profile");
-                return;
-            } catch (InvalidRegistrationDataException ex) {
-                request.setAttribute("message", "Вы не были зарегистрированы. " + ex.getMessage());
-            }
+            response.sendRedirect(getServletContext().getContextPath() + "/profile");
+            return;
+        } catch (InvalidRegistrationDataException ex) {
+            request.setAttribute("message", "Вы не были зарегистрированы. " + ex.getMessage());
         }
 
-        // TODO recheck form data saving feature
+        rememberInputValues(request, firstName, secondName, email, login);
+
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
+
+    }
+
+    private void rememberInputValues(HttpServletRequest request, String firstName, String secondName, String email, String login) {
         if ((firstName != null) && (firstName.length() > 0))
             request.getSession().setAttribute("firstName", firstName);
         if ((secondName != null) && (secondName.length() > 0))
@@ -69,8 +66,5 @@ public class SignUpServlet extends HttpServlet {
             request.getSession().setAttribute("email", email);
         if ((login != null) && (login.length() > 0))
             request.getSession().setAttribute("login", login);
-
-        getServletContext().getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
-
     }
 }

@@ -27,8 +27,8 @@
                 <label for="tag-1">Не выбрано</label>
                 <br>
             <c:forEach var="tag" items="${tagList}">
-                <input type="checkbox" id="tag" name="tag" value="${tag.id}">
-                <label for="tag">${tag.title}</label>
+                <input type="checkbox" id="tag${tag.id}" name="tag" value="${tag.id}">
+                <label for="tag${tag.id}">${tag.title}</label>
                 <br>
             </c:forEach>
         </div>

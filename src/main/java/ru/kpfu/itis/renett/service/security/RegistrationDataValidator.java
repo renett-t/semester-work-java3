@@ -1,4 +1,4 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.security;
 
 import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
 
@@ -7,11 +7,16 @@ import java.util.regex.Pattern;
 public class RegistrationDataValidator implements UserDataValidatorInterface {
     private static final String EMAIL_PATTERN = "((?:[\\w\\d\\.\\-+\\/%!]*)|(?:[\\w\\d\\.\\-+\\/%!]*\\\"[\\w\\d\\.\\-+\\/%!\\s]+\\\"[\\w\\d\\.\\-+\\/%!]*))@((?:\\w|\\d)[\\w\\d-]{0,61}(?:\\w|\\d)).((?:\\w|\\d)[\\w\\d-]{0,61}(?:\\w|\\d))";
 
-    public boolean isUserParametersCorrect(String firstName, String secondName, String email, String login) throws InvalidRegistrationDataException {
+    public boolean isUserParametersCorrect(String firstName, String secondName, String email, String login, String password, String repeatedPassword) throws InvalidRegistrationDataException {
         return isNameCorrect(firstName)
                 && isNameCorrect(secondName)
                 && isEmailCorrect(email)
-                && isLoginCorrect(login);
+                && isLoginCorrect(login)
+                && isPasswordsCorrect(password, repeatedPassword);
+    }
+
+    private boolean isPasswordsCorrect(String password, String repeatedPassword) {
+        return true;
     }
 
     public boolean isNameCorrect(String name) throws InvalidRegistrationDataException {

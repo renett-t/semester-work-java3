@@ -1,4 +1,4 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.fileService;
 
 import ru.kpfu.itis.renett.exceptions.FileUploadException;
 
@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Random;
 
 public class FileServiceImpl implements FileService {

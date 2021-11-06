@@ -1,7 +1,6 @@
 <%@tag description="Article Displaying Tag" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="articleInstance" required="true" type="ru.kpfu.itis.renett.models.Article" %>
-<%@attribute name="authorized" type="java.lang.Boolean"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <div class="article-wrapper">
@@ -16,11 +15,14 @@
                     <a href="<c:url value="/editArticle?id=${articleInstance.id}"/>">
                         <img class="icon-img edit-icon" src="<c:url value="/resources/icons/edit.png"/>" alt="edit">
                     </a>
-                    <img class="icon-img delete-icon" id="delete-icon-request" src="<c:url value="/resources/icons/cancel.png"/>" alt="delete">
+                    <img class="icon-img delete-icon" id="delete-icon-request" data-id="${articleInstance.id}" src="<c:url value="/resources/icons/cancel.png"/>" alt="delete">
                 </div>
             </c:if>
         </div>
         <div class="article-heading-author">Опубликовано пользователем ${articleInstance.author.login}, ${articleInstance.publishedAt.toLocaleString()}</div>
+        <c:forEach var="tagInstance" items="${articleInstance.tagList}">
+            <t:tags tag="${tagInstance}"></t:tags>
+        </c:forEach>
     </div>
     <hr>
     <div class="article-body">${articleInstance.body}</div>
@@ -48,19 +50,20 @@
             <t:comment commentInstance="${commentInstance}"></t:comment>
         </c:forEach>
         <br><hr><br>
-        <c:if test="${authorized}">
-            <t:comment-edit id="${articleInstance.id}"></t:comment-edit>
-            <br>
-        </c:if>
-        <c:if test="${not authorized}">
+        <c:if test="${not empty authorized && not authorized}">
             <div>
                 Войдите, чтобы оставить комментарий: <a class="" href="<c:url value="/signin"/>">Вход</a>
             </div>
             <br>
         </c:if>
+        <c:if test="${authorized}">
+            <t:comment-edit id="${articleInstance.id}"></t:comment-edit>
+            <br>
+        </c:if>
     </div>
 
 </div>
+
 <script>
     <%@include file = "/WEB-INF/scripts/article-display-scripts.js"%>
 </script>

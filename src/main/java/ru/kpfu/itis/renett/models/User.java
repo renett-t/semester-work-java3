@@ -15,12 +15,11 @@ public class User {
     private String login;
     private String passwordHash;
 
-    public User(String firstName, String secondName, String email, String login, String passwordHash) {
+    public User(String firstName, String secondName, String email, String login) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.email = email;
         this.login = login;
-        this.passwordHash = passwordHash;
     }
 
     public User(int id) {

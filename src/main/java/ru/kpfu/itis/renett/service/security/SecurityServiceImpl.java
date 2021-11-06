@@ -1,11 +1,11 @@
-package ru.kpfu.itis.renett.service;
+package ru.kpfu.itis.renett.service.security;
 
-import ru.kpfu.itis.renett.exceptions.InvalidCookieException;
 import ru.kpfu.itis.renett.exceptions.InvalidSignInDataException;
 import ru.kpfu.itis.renett.models.AuthModel;
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.repository.AuthRepository;
 import ru.kpfu.itis.renett.repository.UserRepository;
+import ru.kpfu.itis.renett.service.Constants;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +31,9 @@ public class SecurityServiceImpl implements SecurityService {
     public UUID signUp(User user, HttpServletRequest request, HttpServletResponse response) {
         UUID uuid = null;
         HttpSession session = request.getSession(true);
-        String rawPass = user.getPasswordHash();
-        if (registrationDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin())) {
+        String rawPass = (String) request.getAttribute("password");
+        String repeatedPass = (String) request.getAttribute("repeatedPassword");
+        if (registrationDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), rawPass, repeatedPass)) {
             user.setPasswordHash(encoder.encodeString(rawPass));
             uuid = UUID.randomUUID();
             userRepository.save(user);

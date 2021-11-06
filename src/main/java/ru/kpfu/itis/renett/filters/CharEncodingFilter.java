@@ -1,7 +1,6 @@
 package ru.kpfu.itis.renett.filters;
 
 import ru.kpfu.itis.renett.service.Constants;
-import ru.kpfu.itis.renett.service.security.SecurityService;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -10,13 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebFilter("/*")
-public class AuthorizedAttributeFilter implements Filter {
-    private SecurityService securityService;
-
+public class CharEncodingFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        securityService = (SecurityService) filterConfig.getServletContext().getAttribute(Constants.CNTX_SECURITY_SERVICE);
     }
 
     @Override
@@ -24,13 +20,12 @@ public class AuthorizedAttributeFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (securityService.isAuthenticated(request)) {
-            request.setAttribute(Constants.REQUEST_ATTRIBUTE_AUTHORIZED, true);
-        } else {
-            request.setAttribute(Constants.REQUEST_ATTRIBUTE_AUTHORIZED, false);
-        }
+        String encoding = (String) request.getServletContext().getAttribute(Constants.CHAR_ENCODING_ATTR_NAME);
 
-        filterChain.doFilter(request, response);
+        request.setCharacterEncoding(encoding);
+        response.setCharacterEncoding(encoding);
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override

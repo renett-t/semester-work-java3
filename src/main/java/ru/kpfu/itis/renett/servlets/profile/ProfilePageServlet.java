@@ -1,8 +1,8 @@
-package ru.kpfu.itis.renett.servlets.auth;
+package ru.kpfu.itis.renett.servlets.profile;
 
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.service.ArticleService;
+import ru.kpfu.itis.renett.service.articleService.ArticleService;
 import ru.kpfu.itis.renett.service.Constants;
 
 import javax.servlet.ServletConfig;

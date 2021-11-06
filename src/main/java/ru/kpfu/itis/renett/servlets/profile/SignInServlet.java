@@ -1,14 +1,13 @@
-package ru.kpfu.itis.renett.servlets.auth;
+package ru.kpfu.itis.renett.servlets.profile;
 
 import ru.kpfu.itis.renett.exceptions.InvalidSignInDataException;
 import ru.kpfu.itis.renett.service.Constants;
-import ru.kpfu.itis.renett.service.SecurityService;
+import ru.kpfu.itis.renett.service.security.SecurityService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +36,7 @@ public class SignInServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            UUID uuid = securityService.signIn(login, password, request, response);
+            securityService.signIn(login, password, request, response);
 
             response.sendRedirect(getServletContext().getContextPath()  + "/profile");
             return;
