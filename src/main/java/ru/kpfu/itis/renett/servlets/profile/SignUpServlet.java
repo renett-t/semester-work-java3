@@ -4,7 +4,6 @@ import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.security.SecurityService;
-import ru.kpfu.itis.renett.service.userService.UserService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -14,19 +13,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.UUID;
 
 @WebServlet("/signup")
 public class SignUpServlet extends HttpServlet {
     private SecurityService securityService;
-    private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ServletContext servletContext = config.getServletContext();
         securityService = (SecurityService) servletContext.getAttribute(Constants.CNTX_SECURITY_SERVICE);
-        userService = (UserService) servletContext.getAttribute(Constants.CNTX_USER_SERVICE);
     }
 
     @Override

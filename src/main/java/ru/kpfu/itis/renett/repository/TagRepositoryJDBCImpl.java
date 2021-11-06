@@ -30,8 +30,8 @@ public class TagRepositoryJDBCImpl implements TagRepository {
     private static final String id = "id";
     private static final String title = "title";
 
-    private DataSource dataSource;
-    private JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
 
     public TagRepositoryJDBCImpl(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -46,7 +46,7 @@ public class TagRepositoryJDBCImpl implements TagRepository {
     @Override
     public void save(Tag entity) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_TAG, Statement.RETURN_GENERATED_KEYS);) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_TAG, Statement.RETURN_GENERATED_KEYS)) {
             int j = 1;
             preparedStatement.setString(j++, entity.getTitle());
             preparedStatement.executeUpdate();

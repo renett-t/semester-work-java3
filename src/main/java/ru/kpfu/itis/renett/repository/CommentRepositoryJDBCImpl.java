@@ -41,8 +41,8 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
     private static final String parentCommentId = "parent_comment_id";
     private static final String publishedAt = "published_at";
 
-    private DataSource dataSource;
-    private JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
 
     public CommentRepositoryJDBCImpl(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -74,7 +74,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
     @Override
     public void save(Comment entity) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_SAVE_COMMENT, Statement.RETURN_GENERATED_KEYS);) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_SAVE_COMMENT, Statement.RETURN_GENERATED_KEYS)) {
             int j = 1;
             preparedStatement.setString(j++, entity.getBody());
             preparedStatement.setInt(j++, entity.getAuthor().getId());

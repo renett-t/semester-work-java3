@@ -3,7 +3,6 @@ package ru.kpfu.itis.renett.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import ru.kpfu.itis.renett.models.AuthModel;
-import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.models.User;
 
 import javax.sql.DataSource;
@@ -32,7 +31,7 @@ public class AuthRepositoryJDBCImpl implements AuthRepository {
     private static final String uuid = "uuid";
     private static final String createdAt = "created_at";
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public AuthRepositoryJDBCImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);

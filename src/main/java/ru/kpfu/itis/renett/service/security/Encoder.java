@@ -5,8 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Encoder implements EncoderInterface {
-    private String hashingAlgorithm;
-    private String salt;
+    private final String hashingAlgorithm;
+    private final String salt;
 
     public Encoder(String hashingAlgorithm) {
         this.hashingAlgorithm = hashingAlgorithm;

@@ -28,7 +28,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public UUID signUp(User user, HttpServletRequest request, HttpServletResponse response) {
+    public void signUp(User user, HttpServletRequest request, HttpServletResponse response) {
         UUID uuid = null;
         HttpSession session = request.getSession(true);
         String rawPass = (String) request.getAttribute("password");
@@ -42,11 +42,10 @@ public class SecurityServiceImpl implements SecurityService {
             session.setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, user);
             setAuthorizedCookieToResponse(uuid, response);
         }
-        return uuid;
     }
 
     @Override
-    public UUID signIn(String login, String password, HttpServletRequest request, HttpServletResponse response) {
+    public void signIn(String login, String password, HttpServletRequest request, HttpServletResponse response) {
         UUID uuid = null;
         HttpSession session = request.getSession(true);
 
@@ -58,7 +57,7 @@ public class SecurityServiceImpl implements SecurityService {
                 uuid = UUID.randomUUID();
                 authRepository.update(AuthModel.builder().login(login).uuid(uuid).build());
                 setAuthorizedCookieToResponse(uuid, response);
-                return uuid;
+                return;
             }
         }
 
@@ -77,7 +76,6 @@ public class SecurityServiceImpl implements SecurityService {
             }
             session.setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, optionalUser.get());
             setAuthorizedCookieToResponse(uuid, response);
-            return uuid;
         } else {
             throw new InvalidSignInDataException("Неверный пароль.");
         }

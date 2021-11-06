@@ -26,7 +26,6 @@ public interface ArticleService {
     boolean isArticleLikedByUser(User user, Article article);
     int getArticleLikesAmount(Article article);
 
-    // what if i create another service class for comments...
     List<Comment> getArticleComments(Article article);
     List<Comment> rearrangeArticleCommentsList(List<Comment> commentList);
     void createComment(Comment newComment);

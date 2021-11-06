@@ -33,9 +33,9 @@ public class ArticleDeleteServlet extends HttpServlet {
             Article articleToDelete = articleService.getArticleById(id);
             if (articleToDelete != null) {
                 articleService.deleteArticle(articleToDelete);
+                response.sendRedirect(getServletContext().getContextPath() + "/articles");
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return;
             }
         } catch (InvalidRequestDataException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);

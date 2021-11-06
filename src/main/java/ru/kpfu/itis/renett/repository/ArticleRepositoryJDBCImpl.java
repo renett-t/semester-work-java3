@@ -52,8 +52,8 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     private static final String thumbnailPath = "thumbnail_path";
     private static final String viewCount = "view_count";
 
-    private DataSource dataSource;
-    private JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
 
     public ArticleRepositoryJDBCImpl(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -81,7 +81,7 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     @Override
     public void save(Article article) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE, Statement.RETURN_GENERATED_KEYS);) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE, Statement.RETURN_GENERATED_KEYS)) {
             int j = 1;
             preparedStatement.setString(j++, article.getTitle());
             preparedStatement.setString(j++, article.getBody());
@@ -129,12 +129,7 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     @Override
     public int getLikesAmount(int articleId) {
         return jdbcTemplate.query(SQL_COUNT_LIKES_FOR_ARTICLE,
-                new RowMapper<Integer>() {
-                    @Override
-                    public Integer mapRow(ResultSet row, int rowNum) throws SQLException {
-                        return row.getInt("count");
-                    }
-                },
+                (row, rowNum) -> row.getInt("count"),
                 articleId).get(0);
     }
 
@@ -157,7 +152,7 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
         if (article.getTagList() != null) {
             for (Tag tag : article.getTagList()) {
                 try (Connection connection = dataSource.getConnection();
-                     PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE_TAG);) {
+                     PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE_TAG)) {
 
                     int j = 1;
                     preparedStatement.setString(j++, article.getId().toString());

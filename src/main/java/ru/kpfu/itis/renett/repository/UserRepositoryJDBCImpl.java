@@ -33,8 +33,8 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     private static final String login = "login";
     private static final String password = "password_hash";
 
-    private DataSource dataSource;
-    private JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
 
     public UserRepositoryJDBCImpl(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -58,7 +58,7 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     @Override
     public void save(User user) throws DataBaseException {
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER, Statement.RETURN_GENERATED_KEYS);) {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER, Statement.RETURN_GENERATED_KEYS)) {
             int j = 1;
             preparedStatement.setString(j++, user.getFirstName());
             preparedStatement.setString(j++, user.getSecondName());

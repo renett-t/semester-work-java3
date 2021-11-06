@@ -8,7 +8,6 @@ import ru.kpfu.itis.renett.repository.ArticleRepository;
 import ru.kpfu.itis.renett.repository.CommentRepository;
 import ru.kpfu.itis.renett.repository.TagRepository;
 import ru.kpfu.itis.renett.repository.UserRepository;
-import ru.kpfu.itis.renett.service.articleService.ArticleService;
 
 import java.util.ArrayList;
 import java.util.List;

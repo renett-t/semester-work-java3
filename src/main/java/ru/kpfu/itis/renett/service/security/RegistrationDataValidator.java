@@ -16,6 +16,15 @@ public class RegistrationDataValidator implements UserDataValidatorInterface {
     }
 
     private boolean isPasswordsCorrect(String password, String repeatedPassword) {
+        if (password != null && repeatedPassword != null) {
+            if (password.length() < 5) {
+                throw new InvalidRegistrationDataException("Пароль не может быть меньше 5 символов");
+            } else if (password.equals(repeatedPassword)) {
+                throw new InvalidRegistrationDataException("Пароли не совпадают :0");
+            }
+        } else {
+            throw new InvalidRegistrationDataException("Пароль не должен быть пустым");
+        }
         return true;
     }
 
