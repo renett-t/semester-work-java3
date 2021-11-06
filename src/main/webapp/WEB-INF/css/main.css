@@ -197,3 +197,13 @@
         font-size: 14px;
         color: blue;
     }
+
+
+    /*form control*/
+    .invalid-data {
+        border-color: red;
+    }
+    .error-field {
+        color: red;
+        font-size: 10px;
+    }

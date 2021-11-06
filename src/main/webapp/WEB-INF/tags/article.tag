@@ -1,6 +1,7 @@
 <%@tag description="Article Displaying Tag" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="articleInstance" required="true" type="ru.kpfu.itis.renett.models.Article" %>
+<%@attribute name="authorized" type="java.lang.Boolean"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <div class="article-wrapper">
@@ -15,9 +16,7 @@
                     <a href="<c:url value="/editArticle?id=${articleInstance.id}"/>">
                         <img class="icon-img edit-icon" src="<c:url value="/resources/icons/edit.png"/>" alt="edit">
                     </a>
-                    <a href="<c:url value="/deleteArticle?id=${articleInstance.id}"/>">
-                        <img class="icon-img delete-icon" id="delete-icon-request" src="<c:url value="/resources/icons/cancel.png"/>" alt="delete">
-                    </a>
+                    <img class="icon-img delete-icon" id="delete-icon-request" src="<c:url value="/resources/icons/cancel.png"/>" alt="delete">
                 </div>
             </c:if>
         </div>
@@ -34,7 +33,13 @@
             <img class="icon-img comment-icon" src="<c:url value="/resources/icons/comment.png"/>" alt="comments count icon">
         </div>
          <div class="article-comments-count">${articleInstance.likeAmount}
-             <img class="icon-img like-icon" id="like-icon-request" src="<c:url value="/resources/icons/like.png"/>" alt="likes count icon">
+             <c:if test="${not empty liked}">
+                 <img class="icon-img like-icon liked" id="like-icon-request" src="<c:url value="/resources/icons/like-active.png"/>" alt="likes count icon">
+             </c:if>
+             <c:if test="${empty liked}">
+                 <img class="icon-img like-icon" id="like-icon-request" src="<c:url value="/resources/icons/like.png"/>" alt="likes count icon">
+             </c:if>
+             <input type="hidden" id="article-id" value="${articleInstance.id}">
          </div>
     </div>
     <hr>

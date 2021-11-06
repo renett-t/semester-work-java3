@@ -33,8 +33,8 @@ public class ArticleDeleteServlet extends HttpServlet {
                 Article articleToDelete = articleService.getArticleById(id);
                 if (articleToDelete != null) {
                     User user = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-                    if (user == null || user.getId() != articleToDelete.getAuthor().getId()) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    if (user.getId() != articleToDelete.getAuthor().getId()) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
                         return;
                     } else {
                         articleService.deleteArticle(articleToDelete);

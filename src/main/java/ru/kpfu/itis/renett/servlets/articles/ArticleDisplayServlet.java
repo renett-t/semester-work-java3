@@ -33,8 +33,13 @@ public class ArticleDisplayServlet extends HttpServlet {
                 Article requestedArticle = articleService.getArticleById(idOfRequestedArticle);
                 if (requestedArticle != null) {
                     User user = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-                    if (user != null && user.getId() == requestedArticle.getAuthor().getId()) {
-                        request.setAttribute("author", user);
+                    if (user != null) {
+                        if (user.getId() == requestedArticle.getAuthor().getId()) {
+                            request.setAttribute("author", user);
+                        }
+                        if (articleService.isArticleLikedByUser(user, requestedArticle)) {
+                            request.setAttribute("liked", true);
+                        }
                     }
                     request.setAttribute("articleInstance", requestedArticle);
                 } else {

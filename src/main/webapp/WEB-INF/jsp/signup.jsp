@@ -8,35 +8,40 @@
         <form class="registration-form" action="<c:url value="/signup"/>" method="POST">
             <div>
                 <label for="nameInput" class="form-label">Ваше имя</label>
-                <input name="firstName input-field" id="nameInput" type="text" value="<c:out default="" value="${session.getAttribute(\"firstName\")}"/>" class="form-control" required>
+                <input name="firstName" class="input-field" id="nameInput" type="text" value="<c:out default="" value="${session.getAttribute(\"firstName\")}"/>" required>
+                <div class="error-field" id="error-nameInput"></div><br>
             </div>
             <div>
                 <label for="name2Input" class="form-label">Ваша фамилия</label>
-                <input name="secondName" id="name2Input" type="text" value="<c:out default="" value="${session.getAttribute(\"secondName\")}"/>" class="form-control" required>
+                <input name="secondName" id="name2Input" type="text" value="<c:out default="" value="${session.getAttribute(\"secondName\")}"/>" required>
             </div>
             <div>
                 <label for="emailInput" class="form-label">E-mail</label>
-                <input name="email input-field" id="emailInput" type="text" value="<c:out default="" value="${session.getAttribute(\"email\")}"/>" class="form-control" required>
+                <input name="email" class="input-field" id="emailInput" type="text" value="<c:out default="" value="${session.getAttribute(\"email\")}"/>" required>
+                <div class="error-field" id="error-emailInput"></div><br>
             </div>
             <div>
                 <label for="loginInput" class="form-label">Логин (никнэйм)</label>
                 <div class="input-group">
                     <span class="input-group-text" id="inputGroupPrepend2">@</span>
-                    <input name="login input-field" id="loginInput" type="text" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" class="form-control" aria-describedby="inputGroupPrepend2" required>
+                    <input name="login" class="input-field" id="loginInput" type="text" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" required>
+                    <div class="error-field" id="error-loginInput"></div><br>
                 </div>
             </div>
             <div>
                 <label for="passwordInput" class="form-label">Пароль</label>
-                <input name="password input-field" id="passwordInput" type="password" class="form-control" required>
+                <input name="password" class="input-field" id="passwordInput" type="password" required>
+                <div class="error-field" id="error-passwordInput"></div><br>
             </div>
             <div>
                 <label for="repeatedPasswordInput" class="form-label">Повторите пароль</label>
-                <input name="repeatedPassword input-field" id="repeatedPasswordInput" type="password" class="form-control" required>
+                <input name="repeatedPassword" class="input-field" id="repeatedPasswordInput" type="password" required>
+                <div class="error-field" id="error-repeatedPasswordInput"></div><br>
             </div>
             <div class="col-12">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck2" required>
-                    <label class="form-check-label" for="invalidCheck2">
+                    <input class="form-check-input" type="checkbox" value="" id="agreement" required>
+                    <label class="form-check-label" for="agreement">
                         Согласен с политикой конфиденциальности и условиями обработки персональных данных
                     </label>
                 </div>
