@@ -5,7 +5,7 @@
 
 <div class="article-wrapper">
     <div class="article-thumbnail">
-        <img class="article-thumbnail-img" src="<c:url value="/resources/articles/${articleInstance.thumbnailPath}"/>" alt="article thumbnail">
+        <img class="article-thumbnail-img" src="<c:url value="/resources/articles/guitar-background.jpg"/>" alt="article thumbnail">
     </div>
     <div class="article-heading-elements">
         <div class="article-title-controls-wrapper">
@@ -34,7 +34,7 @@
         <div class="article-comments-count">${articleInstance.commentAmount}
             <img class="icon-img comment-icon" src="<c:url value="/resources/icons/comment.png"/>" alt="comments count icon">
         </div>
-         <div class="article-comments-count">${articleInstance.likeAmount}
+        <div class="article-likes-count"><span id="article-likes-count">${articleInstance.likeAmount}</span>
              <c:if test="${not empty liked}">
                  <img class="icon-img like-icon liked" id="like-icon-request" src="<c:url value="/resources/icons/like-active.png"/>" alt="likes count icon">
              </c:if>
@@ -46,6 +46,7 @@
     </div>
     <hr>
     <div class="article-comments-wrapper">
+        <p class="comments-heading">Комментарии:</p>
         <c:forEach var="commentInstance" items="${articleInstance.commentList}">
             <t:comment commentInstance="${commentInstance}"></t:comment>
         </c:forEach>
@@ -55,15 +56,17 @@
                 Войдите, чтобы оставить комментарий: <a class="" href="<c:url value="/signin"/>">Вход</a>
             </div>
             <br>
+            <script src="<c:url value="/scripts/article-display-script-non-auth.js"/>"charset="UTF-8">
+            </script>
         </c:if>
         <c:if test="${authorized}">
             <t:comment-edit id="${articleInstance.id}"></t:comment-edit>
             <br>
+            <script src="<c:url value="/scripts/article-display-scripts-auth.js"/>" charset="UTF-8">
+            </script>
         </c:if>
     </div>
 
 </div>
 
-<script>
-    <%@include file = "/WEB-INF/scripts/article-display-scripts.js"%>
-</script>
+

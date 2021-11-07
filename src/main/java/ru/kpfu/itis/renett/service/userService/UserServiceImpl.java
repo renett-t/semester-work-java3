@@ -2,7 +2,6 @@ package ru.kpfu.itis.renett.service.userService;
 
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.repository.UserRepository;
-import ru.kpfu.itis.renett.service.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,9 +23,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(User user, HttpServletRequest servletRequest) {
+    public void deleteUser(User user) {
         userRepository.delete(user);
-        servletRequest.getSession().removeAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
     }
 
     @Override

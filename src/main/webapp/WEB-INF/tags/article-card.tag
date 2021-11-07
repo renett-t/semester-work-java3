@@ -1,17 +1,19 @@
 <%@tag description="Article Card Tag" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@attribute name="articleInstance" required="true" type="ru.kpfu.itis.renett.models.Article"%>
-<%@attribute name="tagList" required="true" type="java.util.List"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
             <div class="col">
                 <div class="card h-100">
                     <a href="<c:url value="/article?id=${articleInstance.id}"/>">
-                        <img src="<c:url value="/resources/guitar-background.jpg"/>" class="card-img-top" alt="there should be thumbnail of article... sorry">
+                        <img src="<c:url value="/resources/articles/guitar-background.jpg"/>" class="card-img-top" alt="there should be thumbnail of article... sorry">
                         <div class="card-body">
                             <h5 class="card-title">${articleInstance.title}</h5>
-                            <c:forEach var="tagInstance" items="${tagList}">
+                            <c:forEach var="tagInstance" items="${articleInstance.tagList}">
                                 <t:tags tag="${tagInstance}"></t:tags>
                             </c:forEach>
+                            <c:if test="${articleInstance.tagList.size() == 0}">
+                                <br>
+                            </c:if>
                         </div>
                         <div class="card-footer">
                             <div class="views-comments-wrapper text-muted">

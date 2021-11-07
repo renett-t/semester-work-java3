@@ -1,6 +1,6 @@
 package ru.kpfu.itis.renett.servlets.profile;
 
-import ru.kpfu.itis.renett.exceptions.InvalidSignInDataException;
+import ru.kpfu.itis.renett.exceptions.InvalidUserDataException;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.security.SecurityService;
 
@@ -39,7 +39,7 @@ public class SignInServlet extends HttpServlet {
 
             response.sendRedirect(getServletContext().getContextPath()  + "/profile");
             return;
-        } catch (InvalidSignInDataException e) {
+        } catch (InvalidUserDataException e) {
             request.setAttribute("message", e.getMessage());
         }
 

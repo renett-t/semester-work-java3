@@ -6,11 +6,17 @@
 
 <div class="article-edit-wrapper">
     <form method="POST" enctype="multipart/form-data">
+        <br>
+        <c:if test="${not empty articleInstance}">
+            <h3>Текущее изображение статьи:</h3>
+            <img class="article-thumbnail-img" src="<c:url value="/resources/articles/guitar-background.jpg"/>" alt="article thumbnail">
+            <br>
+        </c:if>
         <label for="thumbnailImage"> Выберите изображение для вашей статьи: </label>
         <input type="file" name="thumbnailImage" id="thumbnailImage" accept=".jpg, .jpeg, .png">
         <div class="message-wrapper">
             <c:if test="${not empty message}">
-                <h6 class="mx-3">${message}</h6>
+                <h6>${message}</h6>
             </c:if>
         </div>
         <br> <br>
@@ -22,7 +28,7 @@
         <textarea class="" id="article-body" name="article-body" placeholder="Основное содержимое"><c:out default="" value="${articleInstance.body}"/></textarea>
         <br> <br>
         <p> Выберите тэги: </p>
-        <div class="tags-wrapper">
+        <div class="tags-wrapper" data-taglist="<c:out default="" value="${articleInstance.tagList}"/>">
                 <input type="checkbox" id="tag-1" name="tag" value="-1">
                 <label for="tag-1">Не выбрано</label>
                 <br>
@@ -32,12 +38,14 @@
                 <br>
             </c:forEach>
         </div>
-        <c:if test="${empty articleInstance}">
-            <button class="btn btn-primary" type="submit" name="submit" value="create">Создать статью</button>
-        </c:if>
-        <c:if test="${not empty articleInstance}">
-            <button class="btn btn-primary" type="submit" name="submit" value="edit">Отредактировать статью</button>
-        </c:if>
+        <div class="centered-content-wrapper">
+            <c:if test="${empty articleInstance}">
+                <button class="btn btn-primary" type="submit" name="submit" value="create">Создать статью</button>
+            </c:if>
+            <c:if test="${not empty articleInstance}">
+                <button class="btn btn-primary" type="submit" name="submit" value="edit">Отредактировать статью</button>
+            </c:if>
+        </div>
     </form>
 <%--    https://ckeditor.com/docs/ckeditor5/latest/builds/guides/predefined-builds/quick-start.html#next-steps--%>
     <script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/classic/ckeditor.js"></script>
@@ -47,5 +55,7 @@
             .catch( error => {
                 console.error( error );
             });
+    </script>
+    <script src="<c:url value="/scripts/checkbox-control.js"/>" charset="UTF-8">
     </script>
 </div>

@@ -9,7 +9,7 @@
             <div class="user-articles-wrapper card-group row row-cols-3 g-4">
                 <%--@elvariable id="articleList" type="java.util.List"--%>
                 <c:forEach var="article" items="${userArticlesList}">
-                    <t:article-card articleInstance="${article}" tagList="${article.tagList}">
+                    <t:article-card articleInstance="${article}">
                     </t:article-card>
                 </c:forEach>
                 <div class="col">
@@ -37,7 +37,7 @@
         </c:if>
         <div class="all-articles-wrapper card-group row row-cols-3 g-4">
             <c:forEach var="article" items="${articlesList}">
-                <t:article-card articleInstance="${article}" tagList="${article.tagList}">
+                <t:article-card articleInstance="${article}">
                 </t:article-card>
             </c:forEach>
         </div>

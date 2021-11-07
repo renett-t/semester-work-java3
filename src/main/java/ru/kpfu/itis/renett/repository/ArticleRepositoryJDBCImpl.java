@@ -23,6 +23,8 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     //language=sql
     private static final String SQL_UPDATE_BY_ID = "UPDATE article set title = ?, body = ?, thumbnail_path = ? WHERE id=?";
     //language=sql
+    private static final String SQL_UPDATE_WITHOUT_THUMBNAIL = "UPDATE article set title = ?, body = ? WHERE id=?";
+    //language=sql
     private static final String SQL_DELETE_BY_ID = "DELETE FROM article WHERE id = ?;";
     //language=sql
     private static final String SQL_INSERT_ARTICLE_TAG = "INSERT INTO article_tag(article_id, tag_id) VALUES (?, ?);";
@@ -89,13 +91,13 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
             preparedStatement.setString(j++, article.getThumbnailPath());
 
             preparedStatement.executeUpdate();
-            saveArticlesTags(article);
 
             try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
                 resultSet.next();
                 Integer id = resultSet.getInt(1);
                 article.setId(id);
             }
+            saveArticlesTags(article);
         } catch (SQLException e) {
             throw new DataBaseException("Problem with saving article", e);
         }
@@ -104,6 +106,12 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     @Override
     public void update(Article article) {
         jdbcTemplate.update(SQL_UPDATE_BY_ID, article.getTitle(), article.getBody(), article.getThumbnailPath(), article.getId());
+        saveArticlesTags(article);
+    }
+
+    @Override
+    public void updateWithoutThumbnail(Article article) {
+        jdbcTemplate.update(SQL_UPDATE_WITHOUT_THUMBNAIL, article.getTitle(), article.getBody(), article.getId());
     }
 
     @Override
@@ -134,7 +142,7 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
     }
 
     @Override
-    public void updateViewCount(int articleId, int viewCount) {
+    public void updateViewCount(int articleId, Long viewCount) {
         jdbcTemplate.update(SQL_UPDATE_VIEWS_BY_ARTICLE_ID, viewCount, articleId);
     }
 
@@ -155,8 +163,8 @@ public class ArticleRepositoryJDBCImpl implements ArticleRepository {
                      PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ARTICLE_TAG)) {
 
                     int j = 1;
-                    preparedStatement.setString(j++, article.getId().toString());
-                    preparedStatement.setString(j++, tag.getId().toString());
+                    preparedStatement.setInt(j++, article.getId());
+                    preparedStatement.setInt(j++, tag.getId());
 
                     preparedStatement.executeUpdate();
                 } catch (SQLException e) {

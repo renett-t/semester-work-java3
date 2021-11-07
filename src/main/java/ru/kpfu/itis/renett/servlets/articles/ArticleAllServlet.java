@@ -3,7 +3,7 @@ package ru.kpfu.itis.renett.servlets.articles;
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.Tag;
 import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.service.articleService.ArticleService;
+import ru.kpfu.itis.renett.service.articleService.ArticleGetDataService;
 import ru.kpfu.itis.renett.service.Constants;
 
 import javax.servlet.ServletConfig;
@@ -19,13 +19,13 @@ import java.util.Map;
 
 @WebServlet("/articles")
 public class ArticleAllServlet extends HttpServlet {
-    private ArticleService articleService;
+    private ArticleGetDataService articleGetDataService;
     private Map<String, Integer> mapOfTags;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleService = (ArticleService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SERVICE);
+        articleGetDataService = (ArticleGetDataService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_GET_SERVICE);
         mapOfTags = initializeMapOfTags();
     }
 
@@ -39,21 +39,21 @@ public class ArticleAllServlet extends HttpServlet {
 
         if (tagParameter != null) {
             if (mapOfTags.containsKey(tagParameter)) {
-                Tag searchTag = articleService.getTagById(mapOfTags.get(tagParameter));
-                list = articleService.getAllArticlesByTag(searchTag);
+                Tag searchTag = articleGetDataService.getTagById(mapOfTags.get(tagParameter));
+                list = articleGetDataService.getAllArticlesByTag(searchTag);
                 tagRequested = true;
                 request.setAttribute("searchTag", searchTag);
             }
         }
 
         if (user != null) {
-            List<Article> userArticles = articleService.getUsersArticles(user);
+            List<Article> userArticles = articleGetDataService.getUsersArticles(user);
             request.setAttribute("userArticlesList", userArticles);
             if (!tagRequested) {
-                list = articleService.getAllArticlesExceptUsers(user);
+                list = articleGetDataService.getAllArticlesExceptUsers(user);
             }
         } else if (!tagRequested){
-            list = articleService.getAllArticles();
+            list = articleGetDataService.getAllArticles();
         }
 
         request.setAttribute("articlesList", list);
@@ -62,7 +62,7 @@ public class ArticleAllServlet extends HttpServlet {
 
     private Map<String, Integer> initializeMapOfTags() {
         Map<String, Integer> map = new HashMap<>();
-        for (Tag tag: articleService.getAllTags()) {
+        for (Tag tag: articleGetDataService.getAllTags()) {
             map.put(tag.getId().toString(), tag.getId());
         }
         map.put("guitar", 3);

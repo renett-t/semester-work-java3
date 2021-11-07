@@ -1,6 +1,6 @@
 package ru.kpfu.itis.renett.service.security;
 
-import ru.kpfu.itis.renett.exceptions.InvalidSignInDataException;
+import ru.kpfu.itis.renett.exceptions.InvalidUserDataException;
 import ru.kpfu.itis.renett.models.AuthModel;
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.repository.AuthRepository;
@@ -63,7 +63,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         Optional<User> optionalUser = userRepository.findByLogin(login);
         if (!optionalUser.isPresent()) {
-            throw new InvalidSignInDataException("Пользователь с логином " + login + " не был найден. Повторите попытку.");
+            throw new InvalidUserDataException("Пользователь с логином " + login + " не был найден. Повторите попытку.");
         }
         String passHash = encoder.encodeString(password);
         if (passHash.equals(optionalUser.get().getPasswordHash())) {
@@ -77,7 +77,7 @@ public class SecurityServiceImpl implements SecurityService {
             session.setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, optionalUser.get());
             setAuthorizedCookieToResponse(uuid, response);
         } else {
-            throw new InvalidSignInDataException("Неверный пароль.");
+            throw new InvalidUserDataException("Неверный пароль.");
         }
     }
 
@@ -104,14 +104,16 @@ public class SecurityServiceImpl implements SecurityService {
 
         if (userToLogOut != null) {
             Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(Constants.COOKIE_AUTHORIZED_NAME)) {
-                    try {
-                        authModel.setUuid(UUID.fromString(cookie.getValue()));
-                    } catch (IllegalArgumentException ignored) {   // если в куках неправильные данные, без разницы, её всё равно нужно удалить
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals(Constants.COOKIE_AUTHORIZED_NAME)) {
+                        try {
+                            authModel.setUuid(UUID.fromString(cookie.getValue()));
+                        } catch (IllegalArgumentException ignored) {   // если в куках неправильные данные, без разницы, её всё равно нужно удалить
+                        }
+                        authRepository.delete(authModel);
+                        cookie.setMaxAge(1);
                     }
-                    authRepository.delete(authModel);
-                    cookie.setMaxAge(1);
                 }
             }
         }
@@ -119,9 +121,31 @@ public class SecurityServiceImpl implements SecurityService {
         httpSession.removeAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
     }
 
+    @Override
+    public void editUserData(User user, HttpServletRequest request, HttpServletResponse response) {
+        String oldPassword = (String) request.getAttribute("oldPassword");
+        String newPassword = (String) request.getAttribute("password");
+
+        User userFromDb = userRepository.findById(user.getId()).get();
+        if(!userFromDb.getPasswordHash().equals(encoder.encodeString(oldPassword))) {
+            throw new InvalidUserDataException("Пароль не совпадает с прежним.");
+        }
+
+        if (registrationDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), newPassword, newPassword)) {
+            user.setPasswordHash(encoder.encodeString(newPassword));
+            UUID newUuid = UUID.randomUUID();
+            userRepository.update(user);
+            AuthModel authModel = AuthModel.builder().login(user.getLogin()).uuid(newUuid).build();
+            authRepository.update(authModel);
+            request.getSession().setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, user);
+            setAuthorizedCookieToResponse(newUuid, response);
+        }
+    }
+
     private void setAuthorizedCookieToResponse(UUID uuid, HttpServletResponse response) {
         Cookie authorizedCookie = new Cookie(Constants.COOKIE_AUTHORIZED_NAME, uuid.toString());
         authorizedCookie.setMaxAge(60*60*24);
         response.addCookie(authorizedCookie);
     }
+
 }

@@ -2,8 +2,9 @@ package ru.kpfu.itis.renett.servlets.articles;
 
 import ru.kpfu.itis.renett.exceptions.InvalidRequestDataException;
 import ru.kpfu.itis.renett.models.Article;
-import ru.kpfu.itis.renett.service.articleService.ArticleService;
+import ru.kpfu.itis.renett.service.articleService.ArticleGetDataService;
 import ru.kpfu.itis.renett.service.Constants;
+import ru.kpfu.itis.renett.service.articleService.ArticleSaveDataService;
 import ru.kpfu.itis.renett.service.security.RequestValidatorInterface;
 
 import javax.servlet.ServletConfig;
@@ -16,13 +17,15 @@ import java.io.IOException;
 
 @WebServlet("/deleteArticle")
 public class ArticleDeleteServlet extends HttpServlet {
-    private ArticleService articleService;
+    private ArticleGetDataService articleGetDataService;
+    private ArticleSaveDataService articleSaveDataService;
     private RequestValidatorInterface requestValidator;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleService = (ArticleService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SERVICE);
+        articleGetDataService = (ArticleGetDataService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_GET_SERVICE);
+        articleSaveDataService = (ArticleSaveDataService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SAVE_SERVICE);
         requestValidator = (RequestValidatorInterface) config.getServletContext().getAttribute(Constants.CNTX_REQUEST_VALIDATOR);
     }
 
@@ -30,9 +33,9 @@ public class ArticleDeleteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             int id = requestValidator.checkRequestedIdCorrect(request.getParameter("id"));
-            Article articleToDelete = articleService.getArticleById(id);
+            Article articleToDelete = articleGetDataService.getArticleById(id);
             if (articleToDelete != null) {
-                articleService.deleteArticle(articleToDelete);
+                articleSaveDataService.deleteArticle(articleToDelete);
                 response.sendRedirect(getServletContext().getContextPath() + "/articles");
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);

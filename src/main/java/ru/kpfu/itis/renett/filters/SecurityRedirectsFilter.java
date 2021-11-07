@@ -25,7 +25,7 @@ public class SecurityRedirectsFilter implements Filter {
     }
 
     private Map<String, String> initializePathsMap() {
-        List<String> pathsToProtect = Arrays.asList("/profile", "/logout", "/newArticle", "/deleteArticle", "/editArticle", "/like", "/newComment", "/deleteComment", "/editComment");
+        List<String> pathsToProtect = Arrays.asList("/profile", "/deleteProfile", "/editProfile", "/logout", "/newArticle", "/deleteArticle", "/editArticle", "/like", "/newComment", "/deleteComment", "/editComment");
         return pathsToProtect.stream().collect(Collectors.toMap(key -> key, value -> DEFAULT_REDIRECT_PATH));
     }
 

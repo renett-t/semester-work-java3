@@ -4,6 +4,7 @@ import ru.kpfu.itis.renett.exceptions.InvalidUserDataException;
 import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.security.SecurityService;
+import ru.kpfu.itis.renett.service.userService.UserService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -14,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/signup")
-public class SignUpServlet extends HttpServlet {
+@WebServlet("/editProfile")
+public class ProfileEditServlet extends HttpServlet {
     private SecurityService securityService;
 
     @Override
@@ -27,7 +28,8 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
+        request.setAttribute("user", request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME));
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile-edit.jsp").forward(request, response);
     }
 
     @Override
@@ -38,29 +40,16 @@ public class SignUpServlet extends HttpServlet {
         String login = request.getParameter("login");
 
         try {
-            User newUser = new User(firstName, secondName, email, login);
-            securityService.signUp(newUser, request, response);
+            User editedUser = new User(firstName, secondName, email, login);
+            securityService.editUserData(editedUser, request, response);
 
             response.sendRedirect(getServletContext().getContextPath() + "/profile");
             return;
         } catch (InvalidUserDataException ex) {
-            request.setAttribute("message", "Вы не были зарегистрированы. " + ex.getMessage());
+            request.setAttribute("message", "Данные не были сохранены. " + ex.getMessage());
         }
 
-        rememberInputValues(request, firstName, secondName, email, login);
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile-edit.jsp").forward(request, response);
 
-        getServletContext().getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
-
-    }
-
-    private void rememberInputValues(HttpServletRequest request, String firstName, String secondName, String email, String login) {
-        if ((firstName != null) && (firstName.length() > 0))
-            request.getSession().setAttribute("firstName", firstName);
-        if ((secondName != null) && (secondName.length() > 0))
-            request.getSession().setAttribute("secondName", secondName);
-        if ((email != null) && (email.length() > 0))
-            request.getSession().setAttribute("email", email);
-        if ((login != null) && (login.length() > 0))
-            request.getSession().setAttribute("login", login);
     }
 }

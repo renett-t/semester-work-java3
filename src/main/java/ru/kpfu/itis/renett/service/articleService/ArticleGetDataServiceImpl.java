@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ArticleServiceImpl implements ArticleService {
+public class ArticleGetDataServiceImpl implements ArticleGetDataService {
     private ArticleRepository articleRepository;
     private UserRepository userRepository;
     private CommentRepository commentRepository;
     private TagRepository tagRepository;
 
-    public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository, CommentRepository commentRepository, TagRepository tagRepository) {
+    public ArticleGetDataServiceImpl(ArticleRepository articleRepository, UserRepository userRepository, CommentRepository commentRepository, TagRepository tagRepository) {
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
@@ -104,40 +104,6 @@ public class ArticleServiceImpl implements ArticleService {
         return tagRepository.findAllArticleTags(article.getId());
     }
 
-    @Override
-    public void createArticle(Article newArticle) {
-        if (newArticle != null) {
-            articleRepository.save(newArticle);
-        }
-    }
-
-    @Override
-    public void deleteArticle(Article articleToDelete) {
-        if (articleToDelete != null) {
-            articleRepository.delete(articleToDelete);
-        }
-    }
-
-    @Override
-    public void editArticle(Article editedArticle) {
-        if (editedArticle != null) {
-            articleRepository.update(editedArticle);
-        }
-    }
-
-    @Override
-    public void likeArticle(User user, Article likedArticle) {
-        if (likedArticle != null && user != null) {
-            articleRepository.updateLikesAmount(user.getId(), likedArticle.getId());
-        }
-    }
-
-    @Override
-    public void dislikeArticle(User user, Article dislikedArticle) {
-        if (user != null && dislikedArticle != null) {
-            articleRepository.removeLikeFromArticle(user.getId(), dislikedArticle.getId());
-        }
-    }
 
     @Override
     public boolean isArticleLikedByUser(User user, Article article) {
@@ -193,27 +159,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         }
         return commentList;
-    }
-
-    @Override
-    public void createComment(Comment newComment) {
-        if (newComment != null) {
-            commentRepository.save(newComment);
-        }
-    }
-
-    @Override
-    public void deleteComment(Comment commentToDelete) {
-        if (commentToDelete != null) {
-            commentRepository.delete(commentToDelete);
-        }
-    }
-
-    @Override
-    public void editComment(Comment editedComment) {
-        if (editedComment != null) {
-            commentRepository.update(editedComment);
-        }
     }
 
     @Override

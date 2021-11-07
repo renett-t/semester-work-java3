@@ -47,12 +47,14 @@ public class ConfigListener implements ServletContextListener {
         CommentRepository commentRepository = new CommentRepositoryJDBCImpl(dataSource);
 
         // Services Initialization
+        RequestValidatorInterface requestValidator = new RequestValidator();
         servletContext.setAttribute(Constants.CNTX_SECURITY_SERVICE, new SecurityServiceImpl(userRepository, authRepository, new Encoder(Constants.HASHING_ALGORITHM_NAME)));
-        servletContext.setAttribute(Constants.CNTX_ARTICLE_SERVICE, new ArticleServiceImpl(articleRepository, userRepository, commentRepository, tagRepository));
+        servletContext.setAttribute(Constants.CNTX_ARTICLE_GET_SERVICE, new ArticleGetDataServiceImpl(articleRepository, userRepository, commentRepository, tagRepository));
+        servletContext.setAttribute(Constants.CNTX_ARTICLE_SAVE_SERVICE, new ArticleSaveDataServiceImpl(articleRepository, userRepository, commentRepository, tagRepository, requestValidator));
         servletContext.setAttribute(Constants.CNTX_USER_SERVICE, new UserServiceImpl(userRepository));
         servletContext.setAttribute(Constants.CNTX_FILE_SERVICE, new FileServiceImpl(properties.getProperty(Constants.STORAGE_URL)));
         servletContext.setAttribute(Constants.CNTX_PREFERENCES_MANAGER, new UserPreferencesManager());
-        servletContext.setAttribute(Constants.CNTX_REQUEST_VALIDATOR, new RequestValidator());
+        servletContext.setAttribute(Constants.CNTX_REQUEST_VALIDATOR, requestValidator);
 
         // Encoding Initialization
         servletContext.setAttribute(Constants.CHAR_ENCODING_ATTR_NAME, Constants.CHAR_ENCODING);

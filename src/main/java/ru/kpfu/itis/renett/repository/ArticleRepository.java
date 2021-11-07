@@ -11,5 +11,6 @@ public interface ArticleRepository extends CRUDRepository<Article> {
     void updateLikesAmount(int userId, int articleId);
     void removeLikeFromArticle(int userId, int articleId);
     int getLikesAmount(int articleId);
-    void updateViewCount(int articleId, int viewCount);
+    void updateViewCount(int articleId, Long viewCount);
+    void updateWithoutThumbnail(Article article);
 }

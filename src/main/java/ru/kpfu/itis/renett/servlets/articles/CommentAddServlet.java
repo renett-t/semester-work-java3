@@ -1,10 +1,7 @@
 package ru.kpfu.itis.renett.servlets.articles;
 
 import ru.kpfu.itis.renett.exceptions.InvalidRequestDataException;
-import ru.kpfu.itis.renett.models.Article;
-import ru.kpfu.itis.renett.models.Comment;
-import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.service.articleService.ArticleService;
+import ru.kpfu.itis.renett.service.articleService.ArticleSaveDataService;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.security.RequestValidatorInterface;
 
@@ -18,39 +15,22 @@ import java.io.IOException;
 
 @WebServlet("/newComment")
 public class CommentAddServlet extends HttpServlet {
-    private ArticleService articleService;
+    private ArticleSaveDataService articleSaveDataService;
     private RequestValidatorInterface requestValidator;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleService = (ArticleService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SERVICE);
+        articleSaveDataService = (ArticleSaveDataService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SAVE_SERVICE);
         requestValidator = (RequestValidatorInterface) config.getServletContext().getAttribute(Constants.CNTX_REQUEST_VALIDATOR);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String body = (String) request.getAttribute("commentBody");
-        String idOfArticle = (String) request.getAttribute("articleId");
-        String parenCommentId = (String) request.getAttribute("parenCommentId");
-
-        try {
-            int artId = requestValidator.checkRequestedIdCorrect(idOfArticle);
-
-            Comment parentComment = null;
-            if (parenCommentId != null) {
-                int parentId = requestValidator.checkRequestedIdCorrect(parenCommentId);
-                parentComment = new Comment(parentId);
-            }
-
-            Comment newComment = Comment.builder()
-                    .body(body)
-                    .article(new Article(artId))
-                    .author((User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME))
-                    .parentComment(parentComment)
-                    .build();
-            articleService.createComment(newComment);
-            response.sendRedirect(getServletContext().getContextPath() + "/article?id=" + idOfArticle);
+        try {   // validation of id has the same reasons as stated at ArticleLikeServlet class. articleId sends automatically by hidden input
+            int artId = requestValidator.checkRequestedIdCorrect((String) request.getAttribute("articleId"));
+            articleSaveDataService.createComment(request);
+            response.sendRedirect(getServletContext().getContextPath() + "/article?id=" + artId);
         } catch (InvalidRequestDataException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }

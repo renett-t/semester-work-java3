@@ -3,8 +3,9 @@ package ru.kpfu.itis.renett.servlets.articles;
 import ru.kpfu.itis.renett.exceptions.InvalidRequestDataException;
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.User;
-import ru.kpfu.itis.renett.service.articleService.ArticleService;
+import ru.kpfu.itis.renett.service.articleService.ArticleGetDataService;
 import ru.kpfu.itis.renett.service.Constants;
+import ru.kpfu.itis.renett.service.articleService.ArticleSaveDataService;
 import ru.kpfu.itis.renett.service.security.RequestValidatorInterface;
 import ru.kpfu.itis.renett.service.userService.UserPreferencesInterface;
 
@@ -18,23 +19,25 @@ import java.io.IOException;
 
 @WebServlet("/article")
 public class ArticleDisplayServlet extends HttpServlet {
-    private ArticleService articleService;
+    private ArticleGetDataService articleGetDataService;
+    private ArticleSaveDataService articleSaveDataService;
     private RequestValidatorInterface requestValidator;
     private UserPreferencesInterface preferencesManager;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleService = (ArticleService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SERVICE);
-        preferencesManager = (UserPreferencesInterface) config.getServletContext().getAttribute(Constants.CNTX_PREFERENCES_MANAGER);
+        articleGetDataService = (ArticleGetDataService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_GET_SERVICE);
         requestValidator = (RequestValidatorInterface) config.getServletContext().getAttribute(Constants.CNTX_REQUEST_VALIDATOR);
+        preferencesManager = (UserPreferencesInterface) config.getServletContext().getAttribute(Constants.CNTX_PREFERENCES_MANAGER);
+        articleSaveDataService = (ArticleSaveDataService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SAVE_SERVICE);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             int idOfRequestedArticle = requestValidator.checkRequestedIdCorrect(request.getParameter("id"));
-            Article requestedArticle = articleService.getArticleById(idOfRequestedArticle);
+            Article requestedArticle = articleGetDataService.getArticleById(idOfRequestedArticle);
 
             if (requestedArticle != null) {
                 preferencesManager.saveLastViewedArticleIdCookie(requestedArticle.getId(), response);
@@ -44,10 +47,12 @@ public class ArticleDisplayServlet extends HttpServlet {
                     if (user.getId() == requestedArticle.getAuthor().getId()) {
                         request.setAttribute("author", user);
                     }
-                    if (articleService.isArticleLikedByUser(user, requestedArticle)) {
+                    if (articleGetDataService.isArticleLikedByUser(user, requestedArticle)) {
                         request.setAttribute("liked", true);
                     }
                 }
+                requestedArticle.setViewAmount(requestedArticle.getViewAmount() + 1);
+                articleSaveDataService.updateViewCount(requestedArticle);
                 request.setAttribute("articleInstance", requestedArticle);
             } else {
                 request.setAttribute("message", "Извините, но данная статья не была найдена. ");

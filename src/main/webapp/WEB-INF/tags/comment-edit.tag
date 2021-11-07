@@ -5,7 +5,7 @@
 
 <div class="comment-edit-wrapper">
     <form action="<c:url value="/newComment?id=${id}"/>" method="POST" id="comment-form">
-        <textarea class="" id="comment-body" form="comment-form" name="commentBody" placeholder="Введите текст комментария"></textarea>
+        <textarea class="comment-body" form="comment-form" name="commentBody" placeholder="Введите текст комментария"></textarea>
         <input type="hidden" name="articleId" value="${id}">
         <br>
         <button class="btn" type="submit" name="submit" value="create">Отправить комментарий</button>

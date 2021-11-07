@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         prevId = this.id;
         articleId = this.dataset.article
         console.log("ID: " + prevId);
-        document.getElementById("comment-edit-wrapper-" + prevId).innerHTML = '<div class="comment-edit-wrapper"><form id="comment-form" action="${pageContext.request.contextPath}/newComment?id=${prevId}"><textarea id="comment-body" form="comment-form" name="commentBody" placeholder="Введите текст комментария"></textarea><br><input type="hidden" name="articleId" value="${articleId}"><input type="hidden" name="parentCommentId" value="${prevId}"><button class="btn" type="submit" name="submit" value="create">Отправить комментарий</button></form></div>';
+        url = url = "${pageContext.request.contextPath}" + "/newComment?id=" + prevId;
+        document.getElementById("comment-edit-wrapper-" + prevId).innerHTML = '<div class="comment-edit-wrapper"><form id="comment-form" action="' + url + '" method="POST"><textarea class="comment-body" form="comment-form" name="commentBody" placeholder="Введите текст комментария"></textarea><br><input type="hidden" name="articleId" value="' + articleId + '"><input type="hidden" name="parentCommentId" value="' + prevId + '"><button class="btn" type="submit" name="submit" value="create">Отправить комментарий</button></form></div>';
     }
 
     document.getElementById("like-icon-request").onclick = async function () {
@@ -22,13 +23,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
         if (response.ok) {
             if (likeIcon.classList.contains("liked")) {
                 likeIcon.src = '<c:url value="/resources/icons/like.png"/>';
+                newCount = parseInt(document.getElementById("article-likes-count").innerHTML) - 1;
+                document.getElementById("article-likes-count").innerHTML = newCount;
                 likeIcon.classList.remove("liked");
             } else {
                 likeIcon.src = '<c:url value="/resources/icons/like-active.png"/>';
+                newCount = parseInt(document.getElementById("article-likes-count").innerHTML) + 1;
+                document.getElementById("article-likes-count").innerHTML = newCount;
                 likeIcon.classList.add("liked");
             }
         } else {
-            alert("Ошибка при отправлении запроса на сохранение статьи" + response.status);
+            alert("Ошибка при отправлении запроса на сохранение статьи:" + response.status);
         }
     }
 
@@ -38,8 +43,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
             id = this.dataset.id;
             console.log(id);
             url = "${pageContext.request.contextPath}" + "/deleteArticle?id=" + id;
-            console.log(url);
             let response = await fetch(url);
+
+            if (response.ok) {
+                alert("Статья была удалена! Даём возможность полюбоваться ею в последний раз :3")
+            } else {
+                alert("Ошибка при отправлении запроса на удаление статьи: " + response.status);
+            }
+
         }
     }
 });

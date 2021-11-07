@@ -7,7 +7,7 @@ import ru.kpfu.itis.renett.models.User;
 
 import java.util.List;
 
-public interface ArticleService {
+public interface ArticleGetDataService {
     Article getArticleById(int id);
     List<Article> getUsersArticles(User user);
     List<Article> getLikedArticles(User user);
@@ -15,22 +15,12 @@ public interface ArticleService {
     List<Article> getAllArticlesExceptUsers(User user);
     List<Article> getAllArticlesByTag(Tag tag);
 
+    Tag getTagById(int tagId);
     List<Tag> getAllTags();
     List<Tag> getArticleTags(Article article);
-
-    void createArticle(Article newArticle);
-    void deleteArticle(Article articleToDelete);
-    void editArticle(Article editedArticle);
-    void likeArticle(User user, Article likedArticle);
-    void dislikeArticle(User user, Article dislikedArticle);
     boolean isArticleLikedByUser(User user, Article article);
     int getArticleLikesAmount(Article article);
 
     List<Comment> getArticleComments(Article article);
     List<Comment> rearrangeArticleCommentsList(List<Comment> commentList);
-    void createComment(Comment newComment);
-    void deleteComment(Comment commentToDelete);
-    void editComment(Comment editedComment);
-
-    Tag getTagById(int tagId);
 }

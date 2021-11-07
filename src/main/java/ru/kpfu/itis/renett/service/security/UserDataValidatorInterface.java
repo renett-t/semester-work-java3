@@ -1,11 +1,11 @@
 package ru.kpfu.itis.renett.service.security;
 
-import ru.kpfu.itis.renett.exceptions.InvalidRegistrationDataException;
+import ru.kpfu.itis.renett.exceptions.InvalidUserDataException;
 
 public interface UserDataValidatorInterface {
-    boolean isNameCorrect(String name) throws InvalidRegistrationDataException;
-    boolean isEmailCorrect(String email) throws InvalidRegistrationDataException;
-    boolean isLoginCorrect(String login) throws InvalidRegistrationDataException;
+    boolean isNameCorrect(String name) throws InvalidUserDataException;
+    boolean isEmailCorrect(String email) throws InvalidUserDataException;
+    boolean isLoginCorrect(String login) throws InvalidUserDataException;
     boolean isUserParametersCorrect(String firstName, String secondName,
-                                    String email, String login, String password, String repeatedPassword) throws InvalidRegistrationDataException;
+                                    String email, String login, String password, String repeatedPassword) throws InvalidUserDataException;
 }

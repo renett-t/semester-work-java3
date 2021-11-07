@@ -12,7 +12,8 @@ public class Constants {
     public static final String DB_POOL_SIZE = "db.max-pool-size";
 
     public static final String CNTX_SECURITY_SERVICE = "securityService";
-    public static final String CNTX_ARTICLE_SERVICE = "articleService";
+    public static final String CNTX_ARTICLE_GET_SERVICE = "articleGetService";
+    public static final String CNTX_ARTICLE_SAVE_SERVICE = "articleSaveService";
     public static final String CNTX_USER_SERVICE = "userService";
     public static final String CNTX_FILE_SERVICE = "fileService";
     public static final String CNTX_PREFERENCES_MANAGER = "preferencesManager";
@@ -26,4 +27,5 @@ public class Constants {
     public static final String STORAGE_URL = "storage.url";
     public static final String CHAR_ENCODING = "UTF-8";
     public static final String CHAR_ENCODING_ATTR_NAME = "encoding";
+    public static final String DEFAULT_THUMBNAIL = "guitar-background.jpg";
 }

@@ -4,47 +4,36 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:mainLayout title="Регистрация">
-    <div class="registration-form-wrapper">
+    <div class="registration-form-wrapper centered-content-wrapper">
         <form class="registration-form" action="<c:url value="/signup"/>" method="POST">
-            <div>
-                <label for="nameInput" class="form-label">Ваше имя</label>
-                <input name="firstName" class="input-field" id="nameInput" type="text" value="<c:out default="" value="${session.getAttribute(\"firstName\")}"/>" required>
-                <div class="error-field" id="error-nameInput"></div><br>
-            </div>
-            <div>
-                <label for="name2Input" class="form-label">Ваша фамилия</label>
-                <input name="secondName" id="name2Input" type="text" value="<c:out default="" value="${session.getAttribute(\"secondName\")}"/>" required>
-            </div>
-            <div>
-                <label for="emailInput" class="form-label">E-mail</label>
-                <input name="email" class="input-field" id="emailInput" type="text" value="<c:out default="" value="${session.getAttribute(\"email\")}"/>" required>
-                <div class="error-field" id="error-emailInput"></div><br>
-            </div>
-            <div>
-                <label for="loginInput" class="form-label">Логин (никнэйм)</label>
-                <div class="input-group">
-                    <span class="input-group-text" id="inputGroupPrepend2">@</span>
-                    <input name="login" class="input-field" id="loginInput" type="text" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" required>
-                    <div class="error-field" id="error-loginInput"></div><br>
-                </div>
-            </div>
-            <div>
-                <label for="passwordInput" class="form-label">Пароль</label>
-                <input name="password" class="input-field" id="passwordInput" type="password" required>
-                <div class="error-field" id="error-passwordInput"></div><br>
-            </div>
-            <div>
-                <label for="repeatedPasswordInput" class="form-label">Повторите пароль</label>
-                <input name="repeatedPassword" class="input-field" id="repeatedPasswordInput" type="password" required>
-                <div class="error-field" id="error-repeatedPasswordInput"></div><br>
-            </div>
-            <div class="col-12">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="agreement" required>
-                    <label class="form-check-label" for="agreement">
-                        Согласен с политикой конфиденциальности и условиями обработки персональных данных
-                    </label>
-                </div>
+            <label for="nameInput" class="form-label">Ваше имя</label><br>
+            <input name="firstName" class="input-field form-control" id="nameInput" type="text" value="<c:out default="" value="${session.getAttribute(\"firstName\")}"/>" required>
+            <div class="error-field" id="error-nameInput"></div><br>
+
+            <label for="name2Input" class="form-label">Ваша фамилия</label><br>
+            <input name="secondName" class="form-control" id="name2Input" type="text" value="<c:out default="" value="${session.getAttribute(\"secondName\")}"/>" required>
+
+            <label for="emailInput" class="form-label">E-mail</label><br>
+            <input name="email" class="input-field form-control" id="emailInput" type="text" value="<c:out default="" value="${session.getAttribute(\"email\")}"/>" required>
+            <div class="error-field" id="error-emailInput"></div><br>
+
+            <label for="loginInput" class="form-label">Логин (никнэйм)</label><br>
+                <input name="login" class="input-field form-control" id="loginInput" type="text" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" required>
+                <div class="error-field" id="error-loginInput"></div><br>
+
+            <label for="passwordInput" class="form-label">Пароль</label><br>
+            <input name="password" class="input-field form-control" id="passwordInput" type="password" required>
+            <div class="error-field" id="error-passwordInput"></div><br>
+
+            <label for="repeatedPasswordInput" class="form-label">Повторите пароль</label><br>
+            <input name="repeatedPassword" class="input-field form-control" id="repeatedPasswordInput" type="password" required>
+            <div class="error-field" id="error-repeatedPasswordInput"></div><br>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="agreement" required>
+                <label class="form-check-label" for="agreement">
+                    Согласен с политикой конфиденциальности и условиями обработки персональных данных
+                </label>
             </div>
 
             <div class="message-wrapper">
@@ -53,16 +42,14 @@
                 </c:if>
             </div>
 
-            <div class="col-12">
-                <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
-            </div>
+            <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
+
         </form>
         <div>
-            Уже зарегистрированы? <a class="" href="<c:url value="/signin"/>">Вход</a>
+            Уже зарегистрированы? <a class="" href="<c:url value="/signin"/>">   Вход</a>
         </div>
     </div>
 </t:mainLayout>
 
-<script>
-    <%@include file = "/WEB-INF/scripts/form-control.js"%>
+<script src="<c:url value="/scripts/form-control.js"/>" charset="UTF-8">
 </script>

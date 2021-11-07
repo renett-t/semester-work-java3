@@ -3,7 +3,7 @@ package ru.kpfu.itis.renett.servlets;
 import ru.kpfu.itis.renett.exceptions.InvalidRequestDataException;
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.service.Constants;
-import ru.kpfu.itis.renett.service.articleService.ArticleService;
+import ru.kpfu.itis.renett.service.articleService.ArticleGetDataService;
 import ru.kpfu.itis.renett.service.security.RequestValidatorInterface;
 import ru.kpfu.itis.renett.service.userService.UserPreferencesInterface;
 
@@ -18,14 +18,14 @@ import java.io.IOException;
 
 @WebServlet("/main")
 public class MainPageServlet extends HttpServlet {
-    private ArticleService articleService;
+    private ArticleGetDataService articleGetDataService;
     private UserPreferencesInterface userPreferencesManager;
     private RequestValidatorInterface requestValidator;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        articleService = (ArticleService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_SERVICE);
+        articleGetDataService = (ArticleGetDataService) config.getServletContext().getAttribute(Constants.CNTX_ARTICLE_GET_SERVICE);
         userPreferencesManager = (UserPreferencesInterface) config.getServletContext().getAttribute(Constants.CNTX_PREFERENCES_MANAGER);
         requestValidator = (RequestValidatorInterface) config.getServletContext().getAttribute(Constants.CNTX_REQUEST_VALIDATOR);
     }
@@ -34,7 +34,7 @@ public class MainPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Cookie lwai = userPreferencesManager.getCookieOfLastViewedArticle(request);
-            Article lastViewedArticle = articleService.getArticleById(requestValidator.checkRequestedIdCorrect(lwai.getValue()));
+            Article lastViewedArticle = articleGetDataService.getArticleById(requestValidator.checkRequestedIdCorrect(lwai.getValue()));
             request.setAttribute("lwai", lastViewedArticle);
         } catch (InvalidRequestDataException ignored) {
         }
