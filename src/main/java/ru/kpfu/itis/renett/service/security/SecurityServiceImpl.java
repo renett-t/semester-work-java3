@@ -16,14 +16,14 @@ import java.util.UUID;
 
 public class SecurityServiceImpl implements SecurityService {
     private final UserRepository userRepository;
-    private final RegistrationDataValidator registrationDataValidator;
+    private final UserDataValidator userDataValidator;
     private final AuthRepository authRepository;
     private final EncoderInterface encoder;
 
     public SecurityServiceImpl(UserRepository userRepository, AuthRepository authRepository, EncoderInterface encoder) {
         this.userRepository = userRepository;
         this.encoder = encoder;
-        this.registrationDataValidator = new RegistrationDataValidator();
+        this.userDataValidator = new UserDataValidator();
         this.authRepository = authRepository;
     }
 
@@ -33,7 +33,7 @@ public class SecurityServiceImpl implements SecurityService {
         HttpSession session = request.getSession(true);
         String rawPass = (String) request.getAttribute("password");
         String repeatedPass = (String) request.getAttribute("repeatedPassword");
-        if (registrationDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), rawPass, repeatedPass)) {
+        if (userDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), rawPass, repeatedPass)) {
             user.setPasswordHash(encoder.encodeString(rawPass));
             uuid = UUID.randomUUID();
             userRepository.save(user);
@@ -126,14 +126,22 @@ public class SecurityServiceImpl implements SecurityService {
         String oldPassword = (String) request.getAttribute("oldPassword");
         String newPassword = (String) request.getAttribute("password");
 
-        User userFromDb = userRepository.findById(user.getId()).get();
-        if(!userFromDb.getPasswordHash().equals(encoder.encodeString(oldPassword))) {
-            throw new InvalidUserDataException("Пароль не совпадает с прежним.");
+        User userFromDb = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+        if (newPassword == null) {
+            user.setPasswordHash(userFromDb.getPasswordHash());
+        } else {
+            if (newPassword != null && newPassword.length() < 5) {
+                throw new InvalidUserDataException("Неккоректное значение для нового пароля.");
+            }
+            if (!userFromDb.getPasswordHash().equals(encoder.encodeString(oldPassword))) {
+                throw new InvalidUserDataException("Пароль не совпадает с прежним.");
+            }
+            user.setPasswordHash(encoder.encodeString(newPassword));
         }
 
-        if (registrationDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), newPassword, newPassword)) {
-            user.setPasswordHash(encoder.encodeString(newPassword));
+        if (userDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin())) {
             UUID newUuid = UUID.randomUUID();
+            user.setId(userFromDb.getId());
             userRepository.update(user);
             AuthModel authModel = AuthModel.builder().login(user.getLogin()).uuid(newUuid).build();
             authRepository.update(authModel);

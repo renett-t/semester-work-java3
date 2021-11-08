@@ -5,7 +5,7 @@
 
 <div class="article-wrapper">
     <div class="article-thumbnail">
-        <img class="article-thumbnail-img" src="<c:url value="/resources/articles/guitar-background.jpg"/>" alt="article thumbnail">
+        <img class="article-thumbnail-img" src="<c:url value="/resources/articles/${articleInstance.thumbnailPath}"/>" alt="article thumbnail">
     </div>
     <div class="article-heading-elements">
         <div class="article-title-controls-wrapper">
@@ -25,7 +25,7 @@
         </c:forEach>
     </div>
     <hr>
-    <div class="article-body">${articleInstance.body}</div>
+    <div class="article-body"><p>${articleInstance.body}</p></div>
     <hr>
     <div class="article-footer-wrapper">
         <div class="article-views-count">${articleInstance.viewAmount}
@@ -62,6 +62,10 @@
         <c:if test="${authorized}">
             <t:comment-edit id="${articleInstance.id}"></t:comment-edit>
             <br>
+            <script>cntx = '${pageContext.request.contextPath}';
+            activeLikeIconSrc = '<c:url value="/resources/icons/like-active.png"/>';
+            likeIconSrc = '<c:url value="/resources/icons/like.png"/>';
+            </script>
             <script src="<c:url value="/scripts/article-display-scripts-auth.js"/>" charset="UTF-8">
             </script>
         </c:if>

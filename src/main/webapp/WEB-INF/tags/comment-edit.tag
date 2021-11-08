@@ -4,10 +4,10 @@
 <%@attribute name="id" required="true" type="java.lang.Integer" %>
 
 <div class="comment-edit-wrapper">
-    <form action="<c:url value="/newComment?id=${id}"/>" method="POST" id="comment-form">
-        <textarea class="comment-body" form="comment-form" name="commentBody" placeholder="Введите текст комментария"></textarea>
-        <input type="hidden" name="articleId" value="${id}">
+    <form action="<c:url value="/newComment?id=${id}"/>" method="POST">
+        <textarea class="comment-body" name="commentBody" placeholder="Введите текст комментария" required></textarea>
+        <input name="articleId" value="${id}" type="hidden">
         <br>
-        <button class="btn" type="submit" name="submit" value="create">Отправить комментарий</button>
+        <button class="btn" type="submit">Отправить комментарий</button>
     </form>
 </div>

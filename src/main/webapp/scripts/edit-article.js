@@ -1,6 +1,12 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function() {
+    // function checkInputIsPresent() {
+    //     const editorData = editor.getData();
+    //     document.getElementById("article-body-input").value = editorData;
+    // }
+    //
+    // setInterval(checkInputIsPresent, 500)
+
     tagString = document.getElementsByClassName("tags-wrapper")[0].dataset.taglist;
-    // какой-то костыль...........
     let regexToGetArray = /(\d+)/ig
     let tagList = tagString.match(regexToGetArray);
     if (tagList !== null) {

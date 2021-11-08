@@ -1,9 +1,9 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("delete-icon-request").onclick = async function () {
         let isConfirmed = confirm(" Вы действительно хотите удалить свой аккаунт? Это действие нельзя отменить. ");
         if (isConfirmed) {
-            url = "${pageContext.request.contextPath}" + "/deleteProfile";
+            url = cntx + "/deleteProfile";
             let response = await fetch(url);
 
             if (response.ok) {

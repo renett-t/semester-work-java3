@@ -50,6 +50,7 @@
         </div>
     </div>
 </t:mainLayout>
-
+<script>cntx = '${pageContext.request.contextPath}'
+console.log("CONTEX: " + cntx)</script>
 <script src="<c:url value="/scripts/form-control.js"/>" charset="UTF-8">
 </script>

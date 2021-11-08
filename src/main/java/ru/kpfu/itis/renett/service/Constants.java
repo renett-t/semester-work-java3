@@ -1,5 +1,7 @@
 package ru.kpfu.itis.renett.service;
 
+import java.io.File;
+
 public class Constants {
     public static final String PROPS_FILE_PATH = "WEB-INF/properties/appdb.properties";
 
@@ -24,7 +26,7 @@ public class Constants {
     public static final String SESSION_USER_ATTRIBUTE_NAME = "auth_user";
     public static final String REQUEST_ATTRIBUTE_AUTHORIZED = "authorized";                          // renaming here is dangerous!! then edit jsp files
 
-    public static final String STORAGE_URL = "storage.url";
+    public static final String STORAGE_URL = "resources" + File.separator + "articles";
     public static final String CHAR_ENCODING = "UTF-8";
     public static final String CHAR_ENCODING_ATTR_NAME = "encoding";
     public static final String DEFAULT_THUMBNAIL = "guitar-background.jpg";

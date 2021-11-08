@@ -47,8 +47,9 @@ public class ArticleAddServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } catch (FileUploadException e) {
             request.setAttribute("message", e.getMessage());
-            System.out.println("UNABLE TO SAVE");
             // TODO: saving entered data
+            List<Tag> tags = articleGetDataService.getAllTags();
+            request.setAttribute("tagList", tags);
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/article_edit.jsp").forward(request, response);
         }
     }

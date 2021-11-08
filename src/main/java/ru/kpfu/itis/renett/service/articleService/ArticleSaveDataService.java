@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 public interface ArticleSaveDataService {
     int createArticle(HttpServletRequest request) throws FileUploadException;
     void editArticle(HttpServletRequest request) throws FileUploadException;
-    void editArticleWithoutThumbnail(HttpServletRequest request);
     void deleteArticle(Article articleToDelete);
     void likeArticle(User user, Article likedArticle);
     void dislikeArticle(User user, Article dislikedArticle);

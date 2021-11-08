@@ -25,6 +25,10 @@ public class TagRepositoryJDBCImpl implements TagRepository {
     private static final String SQL_FIND_ALL_BY_ARTICLE_ID = "SELECT * FROM\n" +
             "    tag left join article_tag on tag.id = article_tag.tag_id\n" +
             "WHERE article_id = ?;";
+    //language=sql
+    private static final String SQL_INSERT_NEW_TAG = "INSERT INTO article_tag(article_id, tag_id) VALUES (?, ?);";
+    //language=sql
+    private static final String SQL_DELETE_OLD_TAG = "DELETE FROM article_tag WHERE article_id = ? AND tag_id=?;";
 
     //tag columns
     private static final String id = "id";
@@ -90,5 +94,19 @@ public class TagRepositoryJDBCImpl implements TagRepository {
     @Override
     public List<Tag> findAllArticleTags(int articleId) {
        return jdbcTemplate.query(SQL_FIND_ALL_BY_ARTICLE_ID, tagRowMapper, articleId);
+    }
+
+    @Override
+    public void saveNewTags(List<Tag> newTags, int articleId) {
+        for (Tag tag : newTags) {
+            jdbcTemplate.update(SQL_INSERT_NEW_TAG, articleId, tag.getId());
+        }
+    }
+
+    @Override
+    public void deleteOldTags(List<Tag> oldTags, int articleId) {
+        for (Tag tag : oldTags) {
+            jdbcTemplate.update(SQL_DELETE_OLD_TAG, articleId, tag.getId());
+        }
     }
 }

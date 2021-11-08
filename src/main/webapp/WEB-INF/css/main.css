@@ -1,6 +1,6 @@
-    @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
-    body {
+  body {
         font-family: 'Source Code Pro', monospace;
         font-size: 22px;
         color: black;
@@ -223,12 +223,17 @@
         color: blue;
     }
 
-
     /*form control*/
     .invalid-data {
         border-color: red;
     }
     .error-field {
         color: red;
-        font-size: 10px;
+        font-size: 16px;
+    }
+
+    @media(max-width: 795px) {
+
+
+
     }

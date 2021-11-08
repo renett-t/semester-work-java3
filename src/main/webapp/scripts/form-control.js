@@ -1,9 +1,11 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("nameInput").onblur = checkNameInput;
     document.getElementById("emailInput").onblur = checkEmailInput;
     document.getElementById("loginInput").onblur = checkLoginInput;
     document.getElementById("passwordInput").onblur = checkPasswordInput;
-    document.getElementById("repeatedPasswordInput").onblur = checkRepeatedPasswordInput;
+    if (document.getElementById("repeatedPasswordInput") != null) {
+        document.getElementById("repeatedPasswordInput").onblur = checkRepeatedPasswordInput;
+    }
 
     for (const elem of document.getElementsByClassName("input-field")) {
         elem.onfocus = removeAlert;
@@ -17,9 +19,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 
     function checkNameInput() {
-        if (this.value.length < 5) {
+        if (this.value.length < 2) {
             this.classList.add('invalid-data');
-            document.getElementById("error-" + this.id).innerHTML = 'Имя не должно быть пустым и должно содержать минимум 5 символов.'
+            document.getElementById("error-" + this.id).innerHTML = 'Имя не должно быть пустым и должно содержать минимум 2 символа.'
         }
     }
 
@@ -34,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     function checkLoginInput() {
         if (this.value.length < 5) {
             this.classList.add('invalid-data');
-            document.getElementById("error-" + this.id).innerHTML = 'Логин не должен быть пустым и должно содержать минимум 5 символов.'
+            document.getElementById("error-" + this.id).innerHTML = 'Логин не должен быть пустым и должен содержать минимум 5 символов.'
         }
     }
 

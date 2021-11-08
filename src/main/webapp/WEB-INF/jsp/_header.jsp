@@ -23,9 +23,6 @@
                             <li><a class="dropdown-item" href="<c:url value="/articles?tag=songs"/>">Разборы песен</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<c:url value="/chords"/>">Аккорды</a>
-                    </li>
                 </ul>
             </div>
         </div>

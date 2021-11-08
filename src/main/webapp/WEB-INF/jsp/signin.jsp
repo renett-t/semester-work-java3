@@ -23,8 +23,9 @@
                     </c:if>
                 </div>
 
-                <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+                <button class="btn btn-lg btn-primary" type="submit">Войти</button>
             </form>
+            <br>
             <div>
                 Ещё нет аккаунта? <a class="" href="<c:url value="/signup"/>">Регистрация</a>
             </div>

@@ -4,7 +4,7 @@ import ru.kpfu.itis.renett.exceptions.InvalidUserDataException;
 
 import java.util.regex.Pattern;
 
-public class RegistrationDataValidator implements UserDataValidatorInterface {
+public class UserDataValidator implements UserDataValidatorInterface {
     private static final String EMAIL_PATTERN = "((?:[\\w\\d\\.\\-+\\/%!]*)|(?:[\\w\\d\\.\\-+\\/%!]*\\\"[\\w\\d\\.\\-+\\/%!\\s]+\\\"[\\w\\d\\.\\-+\\/%!]*))@((?:\\w|\\d)[\\w\\d-]{0,61}(?:\\w|\\d)).((?:\\w|\\d)[\\w\\d-]{0,61}(?:\\w|\\d))";
 
     public boolean isUserParametersCorrect(String firstName, String secondName, String email, String login, String password, String repeatedPassword) throws InvalidUserDataException {
@@ -12,10 +12,19 @@ public class RegistrationDataValidator implements UserDataValidatorInterface {
                 && isNameCorrect(secondName)
                 && isEmailCorrect(email)
                 && isLoginCorrect(login)
-                && isPasswordsCorrect(password, repeatedPassword);
+                && arePasswordsCorrect(password, repeatedPassword);
     }
 
-    private boolean isPasswordsCorrect(String password, String repeatedPassword) {
+    @Override
+    public boolean isUserParametersCorrect(String firstName, String secondName, String email, String login) {
+        return isNameCorrect(firstName)
+                && isNameCorrect(secondName)
+                && isEmailCorrect(email)
+                && isLoginCorrect(login);
+    }
+
+    @Override
+    public boolean arePasswordsCorrect(String password, String repeatedPassword) {
         if (password != null && repeatedPassword != null) {
             if (password.length() < 5) {
                 throw new InvalidUserDataException("Пароль не может быть меньше 5 символов");
@@ -29,7 +38,7 @@ public class RegistrationDataValidator implements UserDataValidatorInterface {
     }
 
     public boolean isNameCorrect(String name) throws InvalidUserDataException {
-        if (name != null && name.length() > 0) {
+        if (name != null && name.length() > 1) {
             return true;
         } else {
             throw new InvalidUserDataException("Invalid value for name: \'" + name + "\'");
@@ -46,10 +55,10 @@ public class RegistrationDataValidator implements UserDataValidatorInterface {
     }
 
     public boolean isLoginCorrect(String login) throws InvalidUserDataException {
-        if (login != null && login.length() > 5) {
+        if (login != null && login.length() >= 5) {
             return true;
         } else {
-            throw new InvalidUserDataException("Invalid value for login. It should contain more than 5 characters");
+            throw new InvalidUserDataException("Invalid value for login. It should contain more or equal than 5 characters");
         }
     }
 }

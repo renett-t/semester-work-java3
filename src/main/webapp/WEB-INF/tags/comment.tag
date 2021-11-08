@@ -7,7 +7,7 @@
 <div class="comment-wrapper">
     <div class="comment-heading-wrapper">
         <img class="comment-profile-icon" src="<c:url value="/resources/icons/profile.png"/>" alt="profile pic">
-        <div><b> ${commentInstance.author.login} <b></b></div>
+        <div><b>@${commentInstance.author.login} <b></b></div>
         <div>${commentInstance.publishedAt.toLocaleString()}</div>
     </div>
     <div class="comment-body-wrapper">

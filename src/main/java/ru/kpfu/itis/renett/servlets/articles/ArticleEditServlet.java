@@ -1,14 +1,11 @@
 package ru.kpfu.itis.renett.servlets.articles;
 
-import ru.kpfu.itis.renett.exceptions.FileUploadException;
 import ru.kpfu.itis.renett.exceptions.InvalidRequestDataException;
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.Tag;
-import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.service.articleService.ArticleGetDataService;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.articleService.ArticleSaveDataService;
-import ru.kpfu.itis.renett.service.fileService.FileService;
 import ru.kpfu.itis.renett.service.security.RequestValidatorInterface;
 
 import javax.servlet.ServletConfig;
@@ -59,14 +56,10 @@ public class ArticleEditServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {   // validation of id has the same reasons as stated at ArticleLikeServlet class. id sends automatically by a's href value
+        try { // validation of id has the same reasons as stated at ArticleLikeServlet class. id sends automatically by a's href value
             int artId = requestValidator.checkRequestedIdCorrect(request.getParameter("id"));
-            Part imagePart = request.getPart("thumbnailImage");
-            if (imagePart != null) {
-                articleSaveDataService.editArticle(request);
-            } else {
-                articleSaveDataService.editArticleWithoutThumbnail(request);
-            }
+            // todo: fix this  -- > \/
+            articleSaveDataService.editArticle(request);
             response.sendRedirect(getServletContext().getContextPath() + "/article?id=" + artId);
         } catch (InvalidRequestDataException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);

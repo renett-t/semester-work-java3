@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
         button = buttons[i];
         button.onclick = alertUser;
     }
+    document.getElementById("like-icon-request").onclick = alertUser;
 
     function alertUser() {
         alert("Для выполнения этого действия нужно быть авторизированным.");

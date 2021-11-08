@@ -34,22 +34,27 @@ public class ProfileEditServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String firstName = request.getParameter("firstName");
-        String secondName = request.getParameter("secondName");
-        String email = request.getParameter("email");
-        String login = request.getParameter("login");
+        String submit = request.getParameter("submit");
+        if(submit.equals("cancel")) {
+                response.sendRedirect(getServletContext().getContextPath() + "/profile");
 
-        try {
-            User editedUser = new User(firstName, secondName, email, login);
-            securityService.editUserData(editedUser, request, response);
+        } else {
+            String firstName = request.getParameter("firstName");
+            String secondName = request.getParameter("secondName");
+            String email = request.getParameter("email");
+            String login = request.getParameter("login");
 
-            response.sendRedirect(getServletContext().getContextPath() + "/profile");
-            return;
-        } catch (InvalidUserDataException ex) {
-            request.setAttribute("message", "Данные не были сохранены. " + ex.getMessage());
+            try {
+                User editedUser = new User(firstName, secondName, email, login);
+                securityService.editUserData(editedUser, request, response);
+
+                response.sendRedirect(getServletContext().getContextPath() + "/profile");
+                return;
+            } catch (InvalidUserDataException ex) {
+                request.setAttribute("message", "Данные не были сохранены. " + ex.getMessage());
+            }
+
+            getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile-edit.jsp").forward(request, response);
         }
-
-        getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile-edit.jsp").forward(request, response);
-
     }
 }

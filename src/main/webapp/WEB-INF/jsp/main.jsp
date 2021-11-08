@@ -8,7 +8,7 @@
             <h6>${message}</h6>
         </c:if>
     </div>
-    <div class="user-articles-wrapper card-group row row-cols-3 g-4">
+    <div class="articles-wrapper card-group row row-cols-3 g-4">
     <%--@elvariable id="lwai" type="ru.kpfu.itis.renett.models.Article"--%>
     <c:if test="${not empty lwai}">
         <p>Последняя просмотренная Вами статья: </p>

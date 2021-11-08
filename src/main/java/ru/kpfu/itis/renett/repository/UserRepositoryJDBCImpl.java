@@ -80,7 +80,7 @@ public class UserRepositoryJDBCImpl implements UserRepository {
 
     @Override
     public void update(User user) throws DataBaseException {
-        jdbcTemplate.update(SQL_UPDATE_BY_ID, user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), user.getPasswordHash());
+        jdbcTemplate.update(SQL_UPDATE_BY_ID, user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), user.getPasswordHash(), user.getId());
     }
 
     @Override

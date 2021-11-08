@@ -27,8 +27,8 @@ public class CommentAddServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {   // validation of id has the same reasons as stated at ArticleLikeServlet class. articleId sends automatically by hidden input
-            int artId = requestValidator.checkRequestedIdCorrect((String) request.getAttribute("articleId"));
+        try {   // validation of id has the same reasons as stated at ArticleLikeServlet class. id sends automatically by form
+            int artId = requestValidator.checkRequestedIdCorrect(request.getParameter("id"));
             articleSaveDataService.createComment(request);
             response.sendRedirect(getServletContext().getContextPath() + "/article?id=" + artId);
         } catch (InvalidRequestDataException e) {
