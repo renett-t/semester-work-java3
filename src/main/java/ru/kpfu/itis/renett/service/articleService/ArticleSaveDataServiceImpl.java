@@ -96,22 +96,14 @@ public class ArticleSaveDataServiceImpl implements ArticleSaveDataService {
 
     @Override
     public void editArticle(HttpServletRequest request) {
-        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-            System.out.println(entry.getKey() + " ---- >");
-            for (String val :
-                    entry.getValue()) {
-                System.out.println("             " + val);
-            }
-        }
-
         String title = request.getParameter("title");
         String body = request.getParameter("articleBody");
-        System.out.println("BODY: " + body);
         String[] tags = request.getParameterValues("tag");
 
         User author = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
 
         Article editedArticle = Article.builder()
+                .id(requestValidator.checkRequestedIdCorrect(request.getParameter("articleId")))
                 .title(title)
                 .body(htmlTagsValidator.checkStringInputTags(body))
                 .author(author)
@@ -136,7 +128,7 @@ public class ArticleSaveDataServiceImpl implements ArticleSaveDataService {
         } catch (IOException | ServletException e) {
             throw new FileUploadException("Проблемы с загрузкой изображения", e);
         }
-        int articleId = Integer.parseInt(request.getParameter("id"));
+        int articleId = Integer.parseInt(request.getParameter("articleId"));
         List<Tag> newTags = new ArrayList<>();
         List<Tag> leftTags = new ArrayList<>();
         List<Tag> oldTags = tagRepository.findAllArticleTags(articleId);

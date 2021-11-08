@@ -5,9 +5,10 @@
 <%@attribute name="tagList" required="true" type="java.util.List"%>
 
 <div class="article-edit-wrapper">
-    <form method="POST" enctype="multipart/form-data">
+    <form action="<c:url value="/editArticle"/>" method="POST" enctype="multipart/form-data">
         <br>
         <c:if test="${not empty articleInstance}">
+            <input type="hidden" name="articleId" value="${articleInstance.id}">
             <h3>Текущее изображение статьи:</h3>
             <img class="article-thumbnail-img" src="<c:url value="/resources/articles/guitar-background.jpg"/>" alt="article thumbnail">
             <br>
@@ -21,10 +22,11 @@
         </div>
         <br> <br>
         <label for="article-title"> Название статьи: </label><br>
-        <input class="" id="article-title" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${articleInstance.title}"/>" required>
+        <input id="article-title" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${articleInstance.title}"/>" required>
         <br> <br>
         <label for="article-body"> Основное содержимое статьи: </label><br>
-        <textarea id="article-body" name="articleBody" placeholder="Основное содержимое" required><c:out default="" value="${articleInstance.body}"/></textarea>
+        <textarea id="article-body" name="articleBodyTA" placeholder="Основное содержимое"><c:out default="" value="${articleInstance.body}"/></textarea>
+        <input id="article-body-input" type="hidden" name="articleBody" value="<c:out default="" value="${articleInstance.body}"/>">
         <br> <br>
         <p> Выберите тэги: </p>
         <div class="tags-wrapper" data-taglist="<c:out default="" value="${articleInstance.tagList}"/>">
@@ -38,7 +40,12 @@
             </c:forEach>
         </div>
         <div class="centered-content-wrapper">
-                <button id="submit" class="btn btn-success" type="submit" name="submit"> Сохранить </button>
+            <c:if test="${empty articleInstance}">
+                <button id="submit" class="btn btn-success" type="submit" name="submit" value="create">Создать статью</button>
+            </c:if>
+            <c:if test="${not empty articleInstance}">
+                <button id="submit" class="btn btn-success" type="submit" name="submit" value="edit">Отредактировать статью</button>
+            </c:if>
         </div>
     </form>
     <script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/classic/ckeditor.js"></script>
