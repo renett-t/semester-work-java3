@@ -5,7 +5,7 @@ CREATE TABLE "user"
     second_name VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,
     login VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(64) NOT NULL
+    password_hash VARCHAR(64)
 );
 
 CREATE TABLE auth

@@ -58,6 +58,10 @@
         font-size: 18px;
     }
 
+    .vk-auth-icon {
+        width: 60px;
+    }
+
     .profile-wrapper {
         margin-left: 20px;
     }
@@ -218,6 +222,7 @@
 
     .comment-body-wrapper {
         font-size: 18px;
+        font-weight: normal;
     }
 
     .reply-button {
@@ -242,7 +247,7 @@
 
 /*    displaying article's content    */
     .article-body table, .article-body th, .article-body td {
-
+        border: 1px solid black;
     }
 
     .article-body blockquote {

@@ -34,27 +34,22 @@ public class ProfileEditServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String submit = request.getParameter("submit");
-        if (submit.equals("cancel")) {
-                response.sendRedirect(getServletContext().getContextPath() + "/profile");
-        } else {
-            String firstName = request.getParameter("firstName");
-            String secondName = request.getParameter("secondName");
-            String email = request.getParameter("email");
-            String login = request.getParameter("login");
+        String firstName = request.getParameter("firstName");
+        String secondName = request.getParameter("secondName");
+        String email = request.getParameter("email");
+        String login = request.getParameter("login");
 
-            try {
-                User editedUser = new User(firstName, secondName, email, login);
-                securityService.editUserData(editedUser, request, response);
+        try {
+            User editedUser = new User(firstName, secondName, email, login);
+            securityService.editUserData(editedUser, request, response);
 
-                response.sendRedirect(getServletContext().getContextPath() + "/profile");
-                return;
-            } catch (InvalidUserDataException ex) {
-                request.setAttribute("message", "Данные не были сохранены. " + ex.getMessage());
-                request.setAttribute("user", request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME));
-            }
-
-            getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile-edit.jsp").forward(request, response);
+            response.sendRedirect(getServletContext().getContextPath() + "/profile");
+            return;
+        } catch (InvalidUserDataException ex) {
+            request.setAttribute("message", "Данные не были сохранены. " + ex.getMessage());
+            request.setAttribute("user", request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME));
         }
+
+        getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile-edit.jsp").forward(request, response);
     }
 }

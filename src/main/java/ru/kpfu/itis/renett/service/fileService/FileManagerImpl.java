@@ -23,7 +23,7 @@ public class FileManagerImpl implements FileManager {
     }
 
     private String getNameForFile(String fileName) {
-        return (int) (Math.random() * (10000 - 100) + 100) + fileName;
+        return (int) (Math.random() * (17777777 - 100) + 100) + fileName;
     }
 
     private void upload(String filename, String contextPath, InputStream fileInputStream) {

@@ -62,6 +62,7 @@ public class ArticleEditServlet extends HttpServlet {
                 return;
             }
         }
+
         List<Tag> tags = articleGetDataService.getAllTags();
         request.setAttribute("tagList", tags);
 

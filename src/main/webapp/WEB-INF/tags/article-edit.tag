@@ -14,7 +14,7 @@
             <br>
         </c:if>
         <label for="thumbnailImage"> Выберите изображение для вашей статьи: </label>
-        <input type="file" name="thumbnailImage" id="thumbnailImage" accept=".jpg, .jpeg, .png">
+        <input class="form-control" type="file" name="thumbnailImage" id="thumbnailImage" accept=".jpg, .jpeg, .png">
         <div class="message-wrapper">
             <c:if test="${not empty message}">
                 <h6>${message}</h6>
@@ -22,20 +22,20 @@
         </div>
         <br> <br>
         <label for="article-title"> Название статьи: </label><br>
-        <input id="article-title" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${aititle}"/>" required>
+        <input class="form-control form-control-lg" id="article-title" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${aititle}"/>" required>
         <br> <br>
         <label for="article-body"> Основное содержимое статьи: </label><br>
-        <textarea id="article-body" name="articleBodyTA" placeholder="Основное содержимое"><c:out default="" value="${aibody}"/></textarea>
-        <input id="article-body-input" type="hidden" name="articleBody" value="<c:out default="" value="${articleInstance.body}"/>">
+        <textarea id="article-body" name="articleBody" placeholder="Основное содержимое"><c:out default="" value="${aibody}"/></textarea>
+<%--        <input id="article-body-input" type="hidden" name="articleBody" value="<c:out default="" value="${articleInstance.body}"/>">--%>
         <br> <br>
         <p> Выберите тэги: </p>
-        <div class="tags-wrapper" data-taglist="<c:out default="" value="${articleInstance.tagList}"/>">
-                <input type="checkbox" id="tag-1" name="tag" value="-1">
-                <label for="tag-1">Не выбрано</label>
+        <div class="tags-wrapper form-check" data-taglist="<c:out default="" value="${articleInstance.tagList}"/>">
+                <input class="form-check-input" type="checkbox" id="tag-1" name="tag" value="-1">
+                <label class="form-check-label" for="tag-1">Не выбрано</label>
                 <br>
             <c:forEach var="tag" items="${tagList}">
-                <input type="checkbox" id="tag${tag.id}" name="tag" value="${tag.id}">
-                <label for="tag${tag.id}">${tag.title}</label>
+                <input class="form-check-input"  type="checkbox" id="tag${tag.id}" name="tag" value="${tag.id}">
+                <label class="form-check-label" for="tag${tag.id}">${tag.title}</label>
                 <br>
             </c:forEach>
         </div>

@@ -33,7 +33,6 @@
             <div class="col">
                 <label for="oldPasswordInput" class="form-label">Подтвердите изменение данных вводом прежнего пароля</label><br>
                 <input name="oldPassword" class="form-control" id="oldPasswordInput" type="password" required>
-                <div class="error-field" id="error-oldPasswordInput"></div><br>
             </div>
             <div class="message-wrapper">
                 <c:if test="${not empty message}">
@@ -43,9 +42,12 @@
 
             <div class="col">
                 <button type="submit" class="btn btn-info" name="submit" value="edit">Сохранить</button>
-                <button type="submit" class="btn btn-danger" name="submit" value="cancel">Отмена</button>
             </div>
         </div>
+    </form>
+    <br> <br>
+    <form method="get" action="<c:url value="/profile"/>">
+        <button type="submit" class="btn btn-danger">Отмена</button>
     </form>
     <script src="<c:url value="/scripts/form-control.js"/>" charset="UTF-8">
     </script>

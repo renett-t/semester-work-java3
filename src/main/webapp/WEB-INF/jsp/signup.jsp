@@ -7,18 +7,17 @@
     <div class="registration-form-wrapper centered-content-wrapper">
         <form class="registration-form" action="<c:url value="/signup"/>" method="POST">
             <label for="nameInput" class="form-label">Ваше имя</label><br>
-            <input name="firstName" class="input-field form-control" id="nameInput" type="text" value="<c:out default="" value="${session.getAttribute(\"firstName\")}"/>" required>
+            <input name="firstName" class="input-field form-control" id="nameInput" type="text" value="<c:out default="" value="${sessionScope.firstName}"/>" required>
             <div class="error-field" id="error-nameInput"></div><br>
-
             <label for="name2Input" class="form-label">Ваша фамилия</label><br>
-            <input name="secondName" class="form-control" id="name2Input" type="text" value="<c:out default="" value="${session.getAttribute(\"secondName\")}"/>" required>
+            <input name="secondName" class="form-control" id="name2Input" type="text" value="<c:out default="" value="${sessionScope.secondName}"/>" required>
 
             <label for="emailInput" class="form-label">E-mail</label><br>
-            <input name="email" class="input-field form-control" id="emailInput" type="text" value="<c:out default="" value="${session.getAttribute(\"email\")}"/>" required>
+            <input name="email" class="input-field form-control" id="emailInput" type="text" value="<c:out default="" value="${sessionScope.email}"/>" required>
             <div class="error-field" id="error-emailInput"></div><br>
 
             <label for="loginInput" class="form-label">Логин (никнэйм)</label><br>
-                <input name="login" class="input-field form-control" id="loginInput" type="text" value="<c:out default="" value="${session.getAttribute(\"login\")}"/>" required>
+                <input name="login" class="input-field form-control" id="loginInput" type="text" value="<c:out default="" value="${sessionScope.login}"/>" required>
                 <div class="error-field" id="error-loginInput"></div><br>
 
             <label for="passwordInput" class="form-label">Пароль</label><br>

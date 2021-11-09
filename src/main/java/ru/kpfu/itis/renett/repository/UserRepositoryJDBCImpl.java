@@ -66,7 +66,11 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             preparedStatement.setString(j++, user.getSecondName());
             preparedStatement.setString(j++, user.getEmail());
             preparedStatement.setString(j++, user.getLogin());
-            preparedStatement.setString(j++, user.getPasswordHash());
+            if (user.getPasswordHash() != null) {
+                preparedStatement.setString(j++, user.getPasswordHash());
+            } else {
+                preparedStatement.setObject(j++, null);
+            }
 
             preparedStatement.executeUpdate();
 

@@ -13,10 +13,10 @@
                         <a class="nav-link active" aria-current="page" href="<c:url value="/main"/>">Главная</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="<c:url value="/articles"/>" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Статьи
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="<c:url value="/articles"/>">Все статьи</a></li>
                             <li><a class="dropdown-item" href="<c:url value="/articles?tag=guitar"/>">Гитара</a></li>
                             <li><a class="dropdown-item" href="<c:url value="/articles?tag=music-theory"/>">Теория музыки</a></li>

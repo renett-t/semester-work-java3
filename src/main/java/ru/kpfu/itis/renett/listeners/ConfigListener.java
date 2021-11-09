@@ -3,7 +3,6 @@ package ru.kpfu.itis.renett.listeners;
 import ru.kpfu.itis.renett.repository.*;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.articleService.*;
-import ru.kpfu.itis.renett.service.fileService.*;
 import ru.kpfu.itis.renett.service.security.*;
 import ru.kpfu.itis.renett.service.userService.*;
 
@@ -54,6 +53,7 @@ public class ConfigListener implements ServletContextListener {
         servletContext.setAttribute(Constants.CNTX_USER_SERVICE, new UserServiceImpl(userRepository));
         servletContext.setAttribute(Constants.CNTX_PREFERENCES_MANAGER, new UserPreferencesManager());
         servletContext.setAttribute(Constants.CNTX_REQUEST_VALIDATOR, requestValidator);
+        servletContext.setAttribute(Constants.CNTX_VK_SERVICE, new VkServiceImpl(userRepository));
 
         // Encoding Initialization
         servletContext.setAttribute(Constants.CHAR_ENCODING_ATTR_NAME, Constants.CHAR_ENCODING);

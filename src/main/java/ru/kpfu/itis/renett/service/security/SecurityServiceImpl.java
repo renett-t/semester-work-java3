@@ -23,7 +23,7 @@ public class SecurityServiceImpl implements SecurityService {
     public SecurityServiceImpl(UserRepository userRepository, AuthRepository authRepository, EncoderInterface encoder) {
         this.userRepository = userRepository;
         this.encoder = encoder;
-        this.userDataValidator = new UserDataValidator(userRepository);
+        this.userDataValidator = new UserDataValidator();
         this.authRepository = authRepository;
     }
 
@@ -33,9 +33,18 @@ public class SecurityServiceImpl implements SecurityService {
         HttpSession session = request.getSession(true);
         String rawPass = request.getParameter("password");
         String repeatedPass = request.getParameter("repeatedPassword");
-        if (userDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), rawPass, repeatedPass)) {
 
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new InvalidUserDataException("Пользователь с почтой " + user.getEmail() + "уже был зарегистрирован.");
+        }
+
+        if (userRepository.findByLogin(user.getLogin()).isPresent()) {
+            throw new InvalidUserDataException("Пользователь с логином " + user.getLogin() + "уже был зарегистрирован.");
+        }
+
+        if (userDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), rawPass, repeatedPass)) {
             user.setPasswordHash(encoder.encodeString(rawPass));
+
             uuid = UUID.randomUUID();
             AuthModel authModel = AuthModel.builder().login(user.getLogin()).uuid(uuid).build();
 
@@ -52,24 +61,22 @@ public class SecurityServiceImpl implements SecurityService {
         UUID uuid = null;
         HttpSession session = request.getSession(true);
 
-        User sessionUser = (User) session.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-        if (sessionUser != null) {
-            if (!sessionUser.getLogin().equals(login)) {
-                session.removeAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-            } else {
-                uuid = UUID.randomUUID();
-                authRepository.update(AuthModel.builder().login(login).uuid(uuid).build());
-                setAuthorizedCookieToResponse(uuid, response);
-                return;
-            }
-        }
-
         Optional<User> optionalUser = userRepository.findByLogin(login);
         if (!optionalUser.isPresent()) {
             throw new InvalidUserDataException("Пользователь с логином " + login + " не был найден. Повторите попытку.");
         }
-        String passHash = encoder.encodeString(password);
-        if (passHash.equals(optionalUser.get().getPasswordHash())) {
+
+        String passHash;
+        String passToCompare;
+
+        if (password == null) {
+            passHash = "null";
+        } else {
+            passHash = encoder.encodeString(password);
+        }
+        passToCompare = String.valueOf(optionalUser.get().getPasswordHash());
+
+        if (passHash.equals(passToCompare)) {
             uuid = UUID.randomUUID();
             Optional<AuthModel> authModelFromRepo = authRepository.findAuthModelByLogin(login);
             if (authModelFromRepo.isPresent()) {
@@ -92,33 +99,16 @@ public class SecurityServiceImpl implements SecurityService {
             return false;
         }
         userFromSession = (User) httpSession.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-        if (userFromSession != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return userFromSession != null;
     }
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         HttpSession httpSession = request.getSession(false);
         User userToLogOut = (User) httpSession.getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-        AuthModel authModel = AuthModel.builder().login(userToLogOut.getLogin()).build();
 
         if (userToLogOut != null) {
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals(Constants.COOKIE_AUTHORIZED_NAME)) {
-                        try {
-                            authModel.setUuid(UUID.fromString(cookie.getValue()));
-                        } catch (IllegalArgumentException ignored) {   // если в куках неправильные данные, без разницы, её всё равно нужно удалить
-                        }
-                        authRepository.delete(authModel);
-                        cookie.setMaxAge(1);
-                    }
-                }
-            }
+            removeAuthorizedCookieFromRequest(userToLogOut.getLogin(), request);
         }
 
         httpSession.removeAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
@@ -132,17 +122,23 @@ public class SecurityServiceImpl implements SecurityService {
         User userFromSession = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
         user.setId(userFromSession.getId());
 
-        if (!userFromSession.getPasswordHash().equals(encoder.encodeString(oldPassword))) {
-            throw new InvalidUserDataException("Пароль не совпадает с прежним.");
-        }
-
-        if (newPassword != null && !newPassword.equals("")) {
-            if (newPassword.length() < 5) {
-                throw new InvalidUserDataException("Неккоректное значение для нового пароля.");
+        if (userFromSession.getPasswordHash() == null) {  // password wasn't set -> auth from vk
+            if (newPassword != null && !newPassword.equals("")) {   // user specified new pass
+                if (userDataValidator.isPasswordCorrect(newPassword)) {
+                    user.setPasswordHash(encoder.encodeString(newPassword));
+                }
             }
-            user.setPasswordHash(encoder.encodeString(newPassword));
-        } else {
-            user.setPasswordHash(userFromSession.getPasswordHash());
+        } else {  // ordinary user
+            if (!userFromSession.getPasswordHash().equals(encoder.encodeString(oldPassword))) {
+                throw new InvalidUserDataException("Пароль не совпадает с прежним.");
+            }
+
+            if (newPassword != null && !newPassword.equals("")) {
+                userDataValidator.isPasswordCorrect(newPassword);
+                user.setPasswordHash(encoder.encodeString(newPassword));
+            } else {   // new pass wasn't specified
+                user.setPasswordHash(userFromSession.getPasswordHash());
+            }
         }
 
         if (userDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin())) {
@@ -164,4 +160,20 @@ public class SecurityServiceImpl implements SecurityService {
         response.addCookie(authorizedCookie);
     }
 
+    private void removeAuthorizedCookieFromRequest(String login, HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(Constants.COOKIE_AUTHORIZED_NAME)) {
+                    AuthModel authModel = AuthModel.builder().login(login).build();
+                    try {
+                        authModel.setUuid(UUID.fromString(cookie.getValue()));
+                    } catch (IllegalArgumentException ignored) {   // если в куках неправильные данные, без разницы, её всё равно нужно удалить
+                    }
+                    authRepository.delete(authModel);
+                    cookie.setMaxAge(-1);
+                }
+            }
+        }
+    }
 }

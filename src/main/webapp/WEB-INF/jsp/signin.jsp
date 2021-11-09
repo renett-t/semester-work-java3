@@ -16,18 +16,22 @@
                     <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
                     <label for="floatingPassword">Пароль</label>
                 </div>
-                <br>
                 <div class="message-wrapper">
                     <c:if test="${not empty message}">
                         <h6>${message}</h6>
                     </c:if>
+                    <br>
                 </div>
-
-                <button class="btn btn-lg btn-primary" type="submit">Войти</button>
+                <button class="btn btn-primary" type="submit">Войти</button>
             </form>
             <br>
             <div>
                 Ещё нет аккаунта? <br> <a class="" href="<c:url value="/signup"/>">Регистрация</a>
+            </div>
+            <br>
+            <div>
+                <a href="<c:url value="/vkOauth"/>"><img class="vk-auth-icon" src="<c:url value="/resources/icons/vk-logo-mediator.png"/>" alt="authorization via vk.com">
+                    Зайти через Вконтакте</a>
             </div>
         </div>
 </t:mainLayout>

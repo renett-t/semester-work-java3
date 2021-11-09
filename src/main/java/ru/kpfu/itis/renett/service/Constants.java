@@ -16,8 +16,8 @@ public class Constants {
     public static final String CNTX_SECURITY_SERVICE = "securityService";
     public static final String CNTX_ARTICLE_GET_SERVICE = "articleGetService";
     public static final String CNTX_ARTICLE_SAVE_SERVICE = "articleSaveService";
+    public static final String CNTX_VK_SERVICE = "vkSerice";
     public static final String CNTX_USER_SERVICE = "userService";
-    public static final String CNTX_FILE_SERVICE = "fileService";
     public static final String CNTX_PREFERENCES_MANAGER = "preferencesManager";
     public static final String CNTX_REQUEST_VALIDATOR = "requestValidator";
 
