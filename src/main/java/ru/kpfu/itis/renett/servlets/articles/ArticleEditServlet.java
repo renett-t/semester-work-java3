@@ -4,6 +4,7 @@ import ru.kpfu.itis.renett.exceptions.FileUploadException;
 import ru.kpfu.itis.renett.exceptions.InvalidRequestDataException;
 import ru.kpfu.itis.renett.models.Article;
 import ru.kpfu.itis.renett.models.Tag;
+import ru.kpfu.itis.renett.models.User;
 import ru.kpfu.itis.renett.service.articleService.ArticleGetDataService;
 import ru.kpfu.itis.renett.service.Constants;
 import ru.kpfu.itis.renett.service.articleService.ArticleSaveDataService;
@@ -40,8 +41,17 @@ public class ArticleEditServlet extends HttpServlet {
             try {
                 int idOfRequestedArticle = requestValidator.checkRequestedIdCorrect(request.getParameter("id"));
                 Article requestedArticle = articleGetDataService.getArticleById(idOfRequestedArticle);
+                User author = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+
+                if (requestedArticle.getAuthor().getId() != author.getId()) {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    return;
+                }
+
                 if (requestedArticle != null) {
                     request.setAttribute("articleInstance", requestedArticle);
+                    request.setAttribute("aititle", requestedArticle.getTitle());
+                    request.setAttribute("aibody", requestedArticle.getBody());
                 } else {
                     request.setAttribute("message", "Извините, но данная статья не была найдена, нечего редактировать. Глядите, что у нас есть для вас:");
                     getServletContext().getRequestDispatcher("/WEB-INF/jsp/main.jsp").forward(request, response);
@@ -79,7 +89,8 @@ public class ArticleEditServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } catch (FileUploadException e) {
                 request.setAttribute("message", e.getMessage());
-                // TODO: saving entered data
+                request.setAttribute("aititle", request.getParameter("title"));
+                request.setAttribute("aibody", request.getParameter("articleBody"));
                 List<Tag> tags = articleGetDataService.getAllTags();
                 request.setAttribute("tagList", tags);
                 getServletContext().getRequestDispatcher("/WEB-INF/jsp/article_edit.jsp").forward(request, response);

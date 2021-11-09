@@ -69,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("delete-icon-request").onclick = async function () {
             let isConfirmed = confirm(" Вы уверены, что хотите удалить статью? Это действие невозможно отменить.");
             if (isConfirmed) {
-                alert("Статья удаляется! Пока посмотрите, что вы наделали ХХАХАХ")
                 id = this.dataset.id;
                 url = cntx + "/deleteArticle?id=" + id;
                 let response = await fetch(url);

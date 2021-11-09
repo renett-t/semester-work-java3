@@ -19,13 +19,13 @@
                 </div>
             </c:if>
         </div>
-        <div class="article-heading-author">Опубликовано пользователем ${articleInstance.author.login}, ${articleInstance.publishedAt.toLocaleString()}</div>
+        <div class="article-heading-author"> Опубликовано пользователем ${articleInstance.author.login}, ${articleInstance.publishedAt.toLocaleString()}</div>
         <c:forEach var="tagInstance" items="${articleInstance.tagList}">
-            <t:tags tag="${tagInstance}"></t:tags>
+            <t:tags tag="${tagInstance}" isBlankPage="true"></t:tags>
         </c:forEach>
     </div>
     <hr>
-    <div class="article-body"><p>${articleInstance.body}</p></div>
+    <div class="article-body">${articleInstance.body}</div>
     <hr>
     <div class="article-footer-wrapper">
         <div class="article-views-count">${articleInstance.viewAmount}
@@ -51,7 +51,7 @@
             <t:comment commentInstance="${commentInstance}"></t:comment>
         </c:forEach>
         <br><hr><br>
-        <c:if test="${not empty authorized && not authorized}">
+        <c:if test="${not authorized}">
             <div>
                 Войдите, чтобы оставить комментарий: <a class="" href="<c:url value="/signin"/>">Вход</a>
             </div>

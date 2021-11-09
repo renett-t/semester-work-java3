@@ -17,6 +17,8 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     //language=sql
     private static final String SQL_FIND_BY_LOGIN = "SELECT * FROM \"user\" WHERE login = ?";
     //language=sql
+    private static final String SQL_FIND_BY_EMAIL = "SELECT * FROM \"user\" WHERE email = ?";
+    //language=sql
     private static final String SQL_INSERT_USER = "INSERT INTO \"user\"(first_name, second_name, email, login, password_hash) VALUES (?, ?, ?, ?, ?);";
     //language=sql
     private static final String SQL_FIND_BY_ID = "SELECT * FROM \"user\" WHERE id = ?";
@@ -89,8 +91,19 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByLogin(String login) throws DataBaseException {
+    public Optional<User> findByLogin(String login) {
         List<User> userList = jdbcTemplate.query(SQL_FIND_BY_LOGIN, userRowMapper, login);
+
+        if (userList.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(userList.get(0));
+        }
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        List<User> userList = jdbcTemplate.query(SQL_FIND_BY_EMAIL, userRowMapper, email);
 
         if (userList.size() == 0) {
             return Optional.empty();

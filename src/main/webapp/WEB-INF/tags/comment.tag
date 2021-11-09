@@ -11,7 +11,7 @@
         <div>${commentInstance.publishedAt.toLocaleString()}</div>
     </div>
     <div class="comment-body-wrapper">
-        ${commentInstance.body}
+        <p>${commentInstance.body}</p>
     </div>
     <div class="comment-footer-wrapper">
         <button class="reply-button" id="${commentInstance.id}" data-article="${commentInstance.article.id}" name="parentComment" value="${parentCommentInstance.id}">Ответить</button>

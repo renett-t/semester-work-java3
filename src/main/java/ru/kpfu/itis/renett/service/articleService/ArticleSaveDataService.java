@@ -17,5 +17,4 @@ public interface ArticleSaveDataService {
     void createComment(HttpServletRequest request);
     void deleteComment(Comment commentToDelete);
     void editComment(Comment editedComment);
-
 }

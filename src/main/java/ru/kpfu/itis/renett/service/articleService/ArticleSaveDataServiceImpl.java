@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ArticleSaveDataServiceImpl implements ArticleSaveDataService {
     private final String DEFAULT_THUMBNAIL = Constants.DEFAULT_THUMBNAIL;
@@ -62,7 +61,7 @@ public class ArticleSaveDataServiceImpl implements ArticleSaveDataService {
             if (imagePart != null && imagePart.getSize() != 0) {
                 imageFileName = Paths.get(imagePart.getSubmittedFileName()).getFileName().toString();
                 try {
-                    imageFileName = fileManager.saveFile(imageFileName, imagePart.getInputStream());
+                    imageFileName = fileManager.saveFile(imageFileName, request.getServletContext().getRealPath(""), imagePart.getInputStream());
                 } catch (FileUploadException e) {
                     throw new FileUploadException(e);
                 }
@@ -113,10 +112,10 @@ public class ArticleSaveDataServiceImpl implements ArticleSaveDataService {
         String imageFileName = null;
         try {
             imagePart = request.getPart("thumbnailImage");
-            if (imagePart != null) {
+            if (imagePart != null && imagePart.getSize() > 0) {
                 imageFileName = Paths.get(imagePart.getSubmittedFileName()).getFileName().toString();
                 try {
-                    imageFileName = fileManager.saveFile(imageFileName, imagePart.getInputStream());
+                    imageFileName = fileManager.saveFile(imageFileName, request.getServletContext().getRealPath(""), imagePart.getInputStream());
                 } catch (FileUploadException e) {
                     throw new FileUploadException(e);
                 }

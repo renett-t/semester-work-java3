@@ -15,9 +15,9 @@ public class FileManagerImpl implements FileManager {
     }
 
     @Override
-    public String saveFile(String fileName, InputStream fileInputStream) {
+    public String saveFile(String fileName, String contextPath, InputStream fileInputStream) {
         String randomizedFileName = getNameForFile(fileName);
-        upload(randomizedFileName, fileInputStream);
+        upload(randomizedFileName, contextPath, fileInputStream);
 
         return randomizedFileName;
     }
@@ -26,9 +26,9 @@ public class FileManagerImpl implements FileManager {
         return (int) (Math.random() * (10000 - 100) + 100) + fileName;
     }
 
-    private void upload(String filename, InputStream fileInputStream) {
+    private void upload(String filename, String contextPath, InputStream fileInputStream) {
         try {
-            String uploadPath = "/home/renett/apache-tomcat-9.0.54/webapps/pima" + File.separator + storageUrl;
+            String uploadPath = contextPath + File.separator + storageUrl;
             File fileToSave = new File(uploadPath + File.separator + filename);
             if (!fileToSave.getParentFile().exists()) {
                 fileToSave.getParentFile().mkdirs();

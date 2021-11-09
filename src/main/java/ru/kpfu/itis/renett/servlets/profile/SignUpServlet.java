@@ -36,7 +36,6 @@ public class SignUpServlet extends HttpServlet {
         String secondName = request.getParameter("secondName");
         String email = request.getParameter("email");
         String login = request.getParameter("login");
-
         rememberInputValues(request, firstName, secondName, email, login);
         
         try {
@@ -49,9 +48,7 @@ public class SignUpServlet extends HttpServlet {
             request.setAttribute("message", "Вы не были зарегистрированы. " + ex.getMessage());
         }
 
-
         getServletContext().getRequestDispatcher("/WEB-INF/jsp/signup.jsp").forward(request, response);
-
     }
 
     private void rememberInputValues(HttpServletRequest request, String firstName, String secondName, String email, String login) {

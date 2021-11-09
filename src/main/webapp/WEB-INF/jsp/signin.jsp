@@ -27,7 +27,7 @@
             </form>
             <br>
             <div>
-                Ещё нет аккаунта? <a class="" href="<c:url value="/signup"/>">Регистрация</a>
+                Ещё нет аккаунта? <br> <a class="" href="<c:url value="/signup"/>">Регистрация</a>
             </div>
         </div>
 </t:mainLayout>

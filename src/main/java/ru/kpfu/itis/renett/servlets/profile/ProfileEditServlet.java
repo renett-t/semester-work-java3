@@ -35,9 +35,8 @@ public class ProfileEditServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String submit = request.getParameter("submit");
-        if(submit.equals("cancel")) {
+        if (submit.equals("cancel")) {
                 response.sendRedirect(getServletContext().getContextPath() + "/profile");
-
         } else {
             String firstName = request.getParameter("firstName");
             String secondName = request.getParameter("secondName");
@@ -52,6 +51,7 @@ public class ProfileEditServlet extends HttpServlet {
                 return;
             } catch (InvalidUserDataException ex) {
                 request.setAttribute("message", "Данные не были сохранены. " + ex.getMessage());
+                request.setAttribute("user", request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME));
             }
 
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/profile-edit.jsp").forward(request, response);

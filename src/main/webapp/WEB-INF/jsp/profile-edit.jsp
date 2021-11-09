@@ -25,14 +25,15 @@
                 <div class="error-field" id="error-loginInput"></div><br>
             </div>
             <div class="col">
-                <label for="oldPasswordInput" class="form-label">Старый пароль</label><br>
-                <input name="oldPassword" class="form-control" id="oldPasswordInput" type="password">
-                <div class="error-field" id="error-oldPasswordInput"></div><br>
-            </div>
-            <div class="col">
                 <label for="passwordInput" class="form-label">Новый пароль</label><br>
                 <input name="password" class="input-field form-control" id="passwordInput" type="password">
                 <div class="error-field" id="error-passwordInput"></div><br>
+            </div>
+            <br>
+            <div class="col">
+                <label for="oldPasswordInput" class="form-label">Подтвердите изменение данных вводом прежнего пароля</label><br>
+                <input name="oldPassword" class="form-control" id="oldPasswordInput" type="password" required>
+                <div class="error-field" id="error-oldPasswordInput"></div><br>
             </div>
             <div class="message-wrapper">
                 <c:if test="${not empty message}">

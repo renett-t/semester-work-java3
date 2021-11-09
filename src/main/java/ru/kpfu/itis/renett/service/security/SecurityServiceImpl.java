@@ -23,7 +23,7 @@ public class SecurityServiceImpl implements SecurityService {
     public SecurityServiceImpl(UserRepository userRepository, AuthRepository authRepository, EncoderInterface encoder) {
         this.userRepository = userRepository;
         this.encoder = encoder;
-        this.userDataValidator = new UserDataValidator();
+        this.userDataValidator = new UserDataValidator(userRepository);
         this.authRepository = authRepository;
     }
 
@@ -31,14 +31,17 @@ public class SecurityServiceImpl implements SecurityService {
     public void signUp(User user, HttpServletRequest request, HttpServletResponse response) {
         UUID uuid = null;
         HttpSession session = request.getSession(true);
-        String rawPass = (String) request.getAttribute("password");
-        String repeatedPass = (String) request.getAttribute("repeatedPassword");
+        String rawPass = request.getParameter("password");
+        String repeatedPass = request.getParameter("repeatedPassword");
         if (userDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin(), rawPass, repeatedPass)) {
+
             user.setPasswordHash(encoder.encodeString(rawPass));
             uuid = UUID.randomUUID();
-            userRepository.save(user);
             AuthModel authModel = AuthModel.builder().login(user.getLogin()).uuid(uuid).build();
+
+            userRepository.save(user);
             authRepository.save(authModel);
+
             session.setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, user);
             setAuthorizedCookieToResponse(uuid, response);
         }
@@ -123,28 +126,33 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public void editUserData(User user, HttpServletRequest request, HttpServletResponse response) {
-        String oldPassword = (String) request.getAttribute("oldPassword");
-        String newPassword = (String) request.getAttribute("password");
+        String oldPassword = request.getParameter("oldPassword");
+        String newPassword = request.getParameter("password");
 
-        User userFromDb = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
-        if (newPassword == null) {
-            user.setPasswordHash(userFromDb.getPasswordHash());
-        } else {
-            if (newPassword != null && newPassword.length() < 5) {
+        User userFromSession = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
+        user.setId(userFromSession.getId());
+
+        if (!userFromSession.getPasswordHash().equals(encoder.encodeString(oldPassword))) {
+            throw new InvalidUserDataException("Пароль не совпадает с прежним.");
+        }
+
+        if (newPassword != null && !newPassword.equals("")) {
+            if (newPassword.length() < 5) {
                 throw new InvalidUserDataException("Неккоректное значение для нового пароля.");
             }
-            if (!userFromDb.getPasswordHash().equals(encoder.encodeString(oldPassword))) {
-                throw new InvalidUserDataException("Пароль не совпадает с прежним.");
-            }
             user.setPasswordHash(encoder.encodeString(newPassword));
+        } else {
+            user.setPasswordHash(userFromSession.getPasswordHash());
         }
 
         if (userDataValidator.isUserParametersCorrect(user.getFirstName(), user.getSecondName(), user.getEmail(), user.getLogin())) {
             UUID newUuid = UUID.randomUUID();
-            user.setId(userFromDb.getId());
-            userRepository.update(user);
+            user.setId(userFromSession.getId());
             AuthModel authModel = AuthModel.builder().login(user.getLogin()).uuid(newUuid).build();
+
+            userRepository.update(user);
             authRepository.update(authModel);
+
             request.getSession().setAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME, user);
             setAuthorizedCookieToResponse(newUuid, response);
         }

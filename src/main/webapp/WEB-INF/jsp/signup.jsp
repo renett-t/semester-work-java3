@@ -29,24 +29,27 @@
             <input name="repeatedPassword" class="input-field form-control" id="repeatedPasswordInput" type="password" required>
             <div class="error-field" id="error-repeatedPasswordInput"></div><br>
 
-            <div class="form-check">
+            <br><div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="agreement" required>
                 <label class="form-check-label" for="agreement">
                     Согласен с политикой конфиденциальности и условиями обработки персональных данных
                 </label>
             </div>
-
+            <br>
             <div class="message-wrapper">
                 <c:if test="${not empty message}">
                     <h6 class="mx-3">${message}</h6>
                 </c:if>
+                <br>
             </div>
 
             <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
 
         </form>
+        <br>
         <div>
-            Уже зарегистрированы? <a class="" href="<c:url value="/signin"/>">   Вход</a>
+            Уже зарегистрированы?<br>
+            <a class="" href="<c:url value="/signin"/>">   Вход</a>
         </div>
     </div>
 </t:mainLayout>

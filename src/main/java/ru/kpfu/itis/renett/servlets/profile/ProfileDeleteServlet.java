@@ -30,5 +30,7 @@ public class ProfileDeleteServlet extends HttpServlet {
         User userToDelete = (User) request.getSession().getAttribute(Constants.SESSION_USER_ATTRIBUTE_NAME);
         securityService.logout(request, response);
         userService.deleteUser(userToDelete);
+
+        response.sendRedirect(request.getServletContext().getContextPath() + "/signin");
     }
 }

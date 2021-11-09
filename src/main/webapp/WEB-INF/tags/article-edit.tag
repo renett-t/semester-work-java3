@@ -10,7 +10,7 @@
         <c:if test="${not empty articleInstance}">
             <input type="hidden" name="articleId" value="${articleInstance.id}">
             <h3>Текущее изображение статьи:</h3>
-            <img class="article-thumbnail-img" src="<c:url value="/resources/articles/guitar-background.jpg"/>" alt="article thumbnail">
+            <img class="article-thumbnail-img" src="<c:url value="resources/articles/${articleInstance.thumbnailPath}"/>" alt="article thumbnail">
             <br>
         </c:if>
         <label for="thumbnailImage"> Выберите изображение для вашей статьи: </label>
@@ -22,10 +22,10 @@
         </div>
         <br> <br>
         <label for="article-title"> Название статьи: </label><br>
-        <input id="article-title" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${articleInstance.title}"/>" required>
+        <input id="article-title" type="text" name="title" placeholder="Введите название Вашей статьи" value="<c:out default="" value="${aititle}"/>" required>
         <br> <br>
         <label for="article-body"> Основное содержимое статьи: </label><br>
-        <textarea id="article-body" name="articleBodyTA" placeholder="Основное содержимое"><c:out default="" value="${articleInstance.body}"/></textarea>
+        <textarea id="article-body" name="articleBodyTA" placeholder="Основное содержимое"><c:out default="" value="${aibody}"/></textarea>
         <input id="article-body-input" type="hidden" name="articleBody" value="<c:out default="" value="${articleInstance.body}"/>">
         <br> <br>
         <p> Выберите тэги: </p>
@@ -49,16 +49,7 @@
         </div>
     </form>
     <script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/classic/ckeditor.js"></script>
-    <script>
-        ClassicEditor
-            .create( document.querySelector( '#article-body' ) )
-            .then( newEditor => {
-                editor = newEditor;
-            })
-            .catch( error => {
-                console.error( error );
-            });
-    </script>
+    <script src="<c:url value="/scripts/wysiwyg-config.js"/>"></script>
     <script src="<c:url value="/scripts/edit-article.js"/>" charset="UTF-8">
     </script>
 </div>
