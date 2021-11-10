@@ -31,7 +31,7 @@
         </c:if>
             <%--@elvariable id="searchTag" type="ru.kpfu.itis.renett.models.Tag"--%>
         <c:if test="${not empty searchTag}">
-            <div class="heading-second">Все статьи, найденные по тэгу: ${searchTag.title}</div>
+            <div class="heading-second">Все статьи, найденные по тегу: ${searchTag.title}</div>
         </c:if>
         <c:if test="${empty searchTag}">
             <div class="heading-second">Все статьи: </div>
